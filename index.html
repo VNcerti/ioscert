@@ -139,8 +139,8 @@
     }
 
     .logo {
-      width: 100px;
-      height: 100px;
+      width: 125px;
+      height: 125px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--card-bg);
@@ -154,7 +154,7 @@
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 10px;
@@ -491,7 +491,7 @@
 
     <header>
       <img src="https://i.imgur.com/BIbDCrO.png" alt="VIET NAM CERT Logo" class="logo">
-      <h1 data-i18n="title">VIET NAM CERT</h1>
+      <h1 data-i18n="title">APPLE CERTIFICATE.</h1>
       <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
 
       <div class="social-icons">
@@ -507,7 +507,7 @@
         <a href="https://chungchip12.com" target="_blank" class="website-link" data-i18n="website">
           <i class="fas fa-globe"></i> Website Bán Chứng Chỉ Tự Động
         </a>
-        <a href="https://www.mediafire.com/file/of64kximaice9d4/DNS+Anti-Revoke.mobileconfig/file" target="_blank" class="dns-link" data-i18n="dns">
+        <a href="https://is.gd/K5b0t1" target="_blank" class="dns-link" data-i18n="dns">
           <i class="fas fa-shield-alt"></i> Cài Đặt DNS Chặn Thu Hồi
         </a>
       </div>
@@ -854,8 +854,13 @@
               element.textContent = translations[lang][key] || element.textContent;
             }
           } else if (element.classList.contains('app-meta')) {
-            // Preserve map marker icon for app-meta
             element.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('support-link')) {
+            element.innerHTML = `<i class="fas fa-headset"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('website-link')) {
+            element.innerHTML = `<i class="fas fa-globe"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('dns-link')) {
+            element.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[lang][key] || element.textContent}`;
           } else {
             element.textContent = translations[lang][key] || element.textContent;
           }
