@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESign & Cert Manager</title>
+  <link rel="icon" href="https://i.imgur.com/BIbDCrO.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -17,53 +18,141 @@
       --light-gray: #e9ecef;
       --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       --transition: all 0.3s ease;
+      --background: #f5f7ff;
+      --text: #212529;
+      --card-bg: #ffffff;
+      --button-bg: #f8f9fa;
+      --button-border: #e9ecef;
     }
-    
+
+    [data-theme="dark"] {
+      --background: #1a1a1a;
+      --text: #e0e0e0;
+      --card-bg: #2a2a2a;
+      --button-bg: #333333;
+      --button-border: #444444;
+      --light-gray: #444444;
+      --gray: #a0a0a0;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f5f7ff;
-      color: var(--dark);
+      background-color: var(--background);
+      color: var(--text);
       line-height: 1.6;
       padding: 20px;
       min-height: 100vh;
       max-width: 100%;
       overflow-x: hidden;
+      transition: var(--transition);
+      padding-top: 70px;
     }
-    
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       width: 100%;
     }
-    
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 10px 20px;
+      background: var(--card-bg);
+      border-radius: 0;
+      box-shadow: var(--card-shadow);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      width: 100%;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .top-header.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    .home-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--light-gray);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .home-link img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .home-link:hover {
+      background: var(--gray);
+      transform: scale(1.1);
+    }
+
+    .lang-btn, .theme-toggle {
+      padding: 8px 15px;
+      border-radius: 50px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .lang-btn:hover, .theme-toggle:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .lang-btn.active {
+      background: var(--secondary);
+    }
+
+    .theme-toggle i {
+      font-size: 14px;
+    }
+
     header {
       text-align: center;
       margin-bottom: 30px;
       animation: fadeIn 1s ease-in-out;
     }
-    
+
     .logo {
       width: 100px;
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid white;
+      border: 3px solid var(--card-bg);
       box-shadow: var(--card-shadow);
       margin-bottom: 15px;
       transition: var(--transition);
     }
-    
+
     .logo:hover {
       transform: rotate(10deg) scale(1.05);
     }
-    
+
     h1 {
       font-size: 28px;
       font-weight: 700;
@@ -74,7 +163,7 @@
       -webkit-text-fill-color: transparent;
       animation: slideIn 0.8s ease-out;
     }
-    
+
     .subtitle {
       color: var(--gray);
       font-size: 16px;
@@ -82,7 +171,7 @@
       margin: 0 auto 20px;
       animation: fadeIn 1.2s ease-in-out;
     }
-    
+
     .social-icons {
       display: flex;
       justify-content: center;
@@ -90,7 +179,7 @@
       margin-bottom: 25px;
       animation: fadeIn 1.5s ease-in-out;
     }
-    
+
     .social-icon {
       width: 36px;
       height: 36px;
@@ -98,11 +187,11 @@
       cursor: pointer;
       transition: var(--transition);
     }
-    
+
     .social-icon:hover {
       transform: translateY(-3px) scale(1.1);
     }
-    
+
     .links-container {
       display: flex;
       flex-direction: column;
@@ -110,7 +199,7 @@
       gap: 15px;
       margin-bottom: 15px;
     }
-    
+
     .website-link, .support-link, .dns-link {
       display: inline-flex;
       align-items: center;
@@ -126,18 +215,18 @@
       font-size: 15px;
       animation: bounceIn 1s ease-out;
     }
-    
+
     .website-link:hover, .support-link:hover, .dns-link:hover {
       background: var(--primary-dark);
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
     }
-    
+
     .tab-container {
       display: flex;
       justify-content: center;
       margin-bottom: 25px;
-      background: white;
+      background: var(--card-bg);
       padding: 6px;
       border-radius: 50px;
       box-shadow: var(--card-shadow);
@@ -146,7 +235,7 @@
       margin-right: auto;
       animation: slideUp 0.8s ease-out;
     }
-    
+
     .tab-btn {
       padding: 10px 25px;
       border-radius: 50px;
@@ -158,12 +247,12 @@
       transition: var(--transition);
       font-size: 15px;
     }
-    
+
     .tab-btn.active {
       background: var(--primary);
       color: white;
     }
-    
+
     .app-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -171,27 +260,27 @@
       margin-bottom: 40px;
       animation: fadeIn 1s ease-in-out;
     }
-    
+
     .app-card {
-      background: white;
+      background: var(--card-bg);
       border-radius: 12px;
       padding: 20px;
       box-shadow: var(--card-shadow);
       transition: var(--transition);
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
-    
+
     .app-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
-    
+
     .app-header {
       display: flex;
       align-items: center;
       margin-bottom: 15px;
     }
-    
+
     .app-icon {
       width: 50px;
       height: 50px;
@@ -205,51 +294,62 @@
       font-size: 20px;
       border: 3px solid #dbeafe;
     }
-    
+
     .app-title {
       font-weight: 600;
       font-size: 16px;
       margin-bottom: 3px;
     }
-    
+
     .app-meta {
       display: flex;
       align-items: center;
       color: var(--gray);
       font-size: 13px;
     }
-    
+
     .app-meta i {
       margin-right: 5px;
       color: var(--primary);
       font-size: 12px;
     }
-    
+
     .download-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
       padding: 10px;
-      background: var(--light);
+      background: var(--button-bg);
       border-radius: 8px;
       color: var(--primary);
       font-weight: 600;
       text-decoration: none;
       transition: var(--transition);
       margin-top: 15px;
-      border: 1px solid var(--light-gray);
+      border: 1px solid var(--button-border);
     }
-    
+
+    .app-card .download-btn {
+      background: var(--button-bg);
+      border: 1px solid var(--button-border);
+      color: var(--primary);
+    }
+
+    .app-card .download-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
     .download-btn:hover {
       background: var(--primary);
       color: white;
     }
-    
+
     .download-btn i {
       margin-left: 8px;
     }
-    
+
     footer {
       text-align: center;
       padding: 20px;
@@ -258,104 +358,156 @@
       margin-top: 40px;
       animation: fadeIn 1.5s ease-in-out;
     }
-    
+
     footer a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 500;
     }
-    
+
     footer a:hover {
       text-decoration: underline;
     }
-    
+
     .hidden {
       display: none;
     }
-    
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    
+
     @keyframes slideIn {
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-    
+
     @keyframes slideUp {
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-    
+
     @keyframes bounceIn {
       0% { transform: scale(0.8); opacity: 0; }
       50% { transform: scale(1.05); }
       70% { transform: scale(0.95); }
       100% { transform: scale(1); opacity: 1; }
     }
-    
+
     @media (max-width: 768px) {
       h1 {
         font-size: 24px;
       }
-      
+
       .subtitle {
         font-size: 14px;
       }
-      
+
       .tab-btn {
         padding: 8px 20px;
         font-size: 14px;
       }
-      
+
       body {
         padding: 15px;
+        padding-top: 60px;
       }
-      
+
       .container {
         padding: 15px;
       }
+
+      .top-header {
+        padding: 8px 15px;
+      }
+
+      .lang-btn, .theme-toggle {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      .home-link {
+        width: 36px;
+        height: 36px;
+      }
+
+      .home-link img {
+        width: 20px;
+        height: 20px;
+      }
     }
-    
+
     @media (max-width: 480px) {
       .website-link, .support-link, .dns-link {
         padding: 10px 20px;
         font-size: 14px;
       }
-      
+
       .logo {
         width: 80px;
         height: 80px;
       }
-      
+
       h1 {
         font-size: 22px;
+      }
+
+      .top-header {
+        gap: 10px;
+      }
+
+      .lang-btn, .theme-toggle {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
+      .home-link {
+        width: 32px;
+        height: 32px;
+      }
+
+      .home-link img {
+        width: 18px;
+        height: 18px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="top-header">
+      <a href="https://ioscert.site/" class="home-link" title="Home">
+        <img src="https://i.imgur.com/rM8vpto.png" alt="Home Icon">
+      </a>
+      <div>
+        <button class="lang-btn active" data-lang="vi">VI</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+
     <header>
       <img src="https://i.imgur.com/BIbDCrO.png" alt="VIET NAM CERT Logo" class="logo">
-      <h1>VIET NAM CERT</h1>
-      <p class="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
-      
+      <h1 data-i18n="title">VIET NAM CERT</h1>
+      <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
+
       <div class="social-icons">
         <img src="https://i.imgur.com/zsy9xD9.png" class="social-icon" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
         <img src="https://i.imgur.com/HTuuzNZ.png" class="social-icon" onclick="window.open('https://t.me/vietnamcert', '_blank')">
         <img src="https://i.imgur.com/PNgQPOG.png" class="social-icon" onclick="window.open('https://t.me/p12certvn', '_blank')">
       </div>
-      
+
       <div class="links-container">
-        <a href="https://t.me/m/8QBiXPz3Yzg1" target="_blank" class="support-link">
+        <a href="https://t.me/m/8QBiXPz3Yzg1" target="_blank" class="support-link" data-i18n="support">
           <i class="fas fa-headset"></i> Admin Hỗ Trợ 24/7
         </a>
-        <a href="https://chungchip12.com" target="_blank" class="website-link">
+        <a href="https://chungchip12.com" target="_blank" class="website-link" data-i18n="website">
           <i class="fas fa-globe"></i> Website Bán Chứng Chỉ Tự Động
         </a>
-        <a href="https://www.mediafire.com/file/of64kximaice9d4/DNS+Anti-Revoke.mobileconfig/file" target="_blank" class="dns-link">
+        <a href="https://www.mediafire.com/file/of64kximaice9d4/DNS+Anti-Revoke.mobileconfig/file" target="_blank" class="dns-link" data-i18n="dns">
           <i class="fas fa-shield-alt"></i> Cài Đặt DNS Chặn Thu Hồi
         </a>
       </div>
@@ -372,29 +524,6 @@
 
     <!-- ESign List -->
     <div id="esign-list" class="app-grid">
-
-
-
-
-
-
-      <!-- ESign Item: chờ cập nhật -->
-         
-
-
-
-
-
-      <!-- End ESign Item: chờ cập nhật -->
-
-
-
-
-
-
-
-
-
       <!-- ESign Item: Beijing -->
       <div class="app-card">
         <div class="app-header">
@@ -403,7 +532,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="beijing">
               <i class="fas fa-map-marker-alt"></i> Beijing
             </div>
           </div>
@@ -422,7 +551,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="china-railway">
               <i class="fas fa-map-marker-alt"></i> China Railway
             </div>
           </div>
@@ -441,7 +570,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="dtt-technology">
               <i class="fas fa-map-marker-alt"></i> Dtt Technology
             </div>
           </div>
@@ -460,7 +589,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="tcl-household">
               <i class="fas fa-map-marker-alt"></i> TCL Household
             </div>
           </div>
@@ -479,7 +608,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="wuling-power">
               <i class="fas fa-map-marker-alt"></i> Wuling Power
             </div>
           </div>
@@ -498,7 +627,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="vietnamcert-01">
               <i class="fas fa-map-marker-alt"></i> VietNamCert.01
             </div>
           </div>
@@ -517,7 +646,7 @@
           </div>
           <div>
             <div class="app-title">ESign 5.0.2</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="national-science-library">
               <i class="fas fa-map-marker-alt"></i> National Science Library
             </div>
           </div>
@@ -528,27 +657,13 @@
       </div>
       <!-- End ESign Item: National Science Library -->
     </div>
-
-
-
-
-
-
+    <!-- End ESign List -->
 
     <!-- Cert List -->
     <div id="cert-list" class="app-grid hidden">
-
-
       <!-- Cert Item: chờ cập nhật -->
-
-
-
-
-
+      <!-- Placeholder for future updates -->
       <!-- End Cert Item: chờ cập nhật -->
-
-
-
 
       <!-- Cert Item: Beijing -->
       <div class="app-card">
@@ -558,7 +673,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="beijing">
               <i class="fas fa-map-marker-alt"></i> Beijing
             </div>
           </div>
@@ -569,9 +684,6 @@
       </div>
       <!-- End Cert Item: Beijing -->
 
-
-
-
       <!-- Cert Item: China Railway -->
       <div class="app-card">
         <div class="app-header">
@@ -580,7 +692,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="china-railway">
               <i class="fas fa-map-marker-alt"></i> China Railway
             </div>
           </div>
@@ -599,7 +711,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="dtt-technology">
               <i class="fas fa-map-marker-alt"></i> Dtt Technology
             </div>
           </div>
@@ -618,7 +730,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="tcl-household">
               <i class="fas fa-map-marker-alt"></i> TCL Household
             </div>
           </div>
@@ -637,7 +749,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="wuling-power">
               <i class="fas fa-map-marker-alt"></i> Wuling Power
             </div>
           </div>
@@ -656,7 +768,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="vietnamcert-01">
               <i class="fas fa-map-marker-alt"></i> VietNamCert.01
             </div>
           </div>
@@ -675,7 +787,7 @@
           </div>
           <div>
             <div class="app-title">Certificate File</div>
-            <div class="app-meta">
+            <div class="app-meta" data-i18n="national-science-library">
               <i class="fas fa-map-marker-alt"></i> National Science Library
             </div>
           </div>
@@ -686,19 +798,87 @@
       </div>
       <!-- End Cert Item: National Science Library -->
     </div>
+    <!-- End Cert List -->
 
     <footer>
-      <p>Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
-      <p>Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền</p>
+      <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
+      <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền</p>
     </footer>
   </div>
 
   <script>
+    const translations = {
+      vi: {
+        title: "VIET NAM CERT",
+        subtitle: "Website cho Esign/Chứng chỉ trên iPhone/iPad với tính năng chống thu hồi",
+        support: "Admin Hỗ Trợ 24/7",
+        website: "Website Bán Chứng Chỉ Tự Động",
+        dns: "Cài Đặt DNS Chặn Thu Hồi",
+        contact: "Liên hệ: ",
+        copyright: "Bản quyền © 2022 CHUNGCHIP12.COM. Bảo lưu mọi quyền.",
+        beijing: "Beijing",
+        "china-railway": "China Railway",
+        "dtt-technology": "Dtt Technology",
+        "tcl-household": "TCL Household",
+        "wuling-power": "Wuling Power",
+        "vietnamcert-01": "VietNamCert.01",
+        "national-science-library": "National Science Library"
+      },
+      en: {
+        title: "VIET NAM CERT",
+        subtitle: "Website for ESign/Certificate on iPhone/iPad With Anti-Revoke",
+        support: "Admin Support 24/7",
+        website: "Automatic Certificate Sales Website",
+        dns: "Install DNS Anti-Revoke",
+        contact: "Contact me: ",
+        copyright: "Copyright © 2022 CHUNGCHIP12.COM. All rights reserved.",
+        beijing: "Beijing",
+        "china-railway": "China Railway",
+        "dtt-technology": "Dtt Technology",
+        "tcl-household": "TCL Household",
+        "wuling-power": "Wuling Power",
+        "vietnamcert-01": "VietNamCert.01",
+        "national-science-library": "National Science Library"
+      }
+    };
+
+    function setLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (key !== "esign" && key !== "cert" && !element.classList.contains('download-btn')) {
+          if (key === 'contact') {
+            const link = element.querySelector('a');
+            if (link) {
+              element.innerHTML = translations[lang][key] + link.outerHTML;
+            } else {
+              element.textContent = translations[lang][key] || element.textContent;
+            }
+          } else if (element.classList.contains('app-meta')) {
+            // Preserve map marker icon for app-meta
+            element.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${translations[lang][key] || element.textContent}`;
+          } else {
+            element.textContent = translations[lang][key] || element.textContent;
+          }
+        }
+      });
+
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+      document.documentElement.lang = lang;
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.querySelector('.theme-toggle i').className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
     function showList(type) {
       try {
         const esignList = document.getElementById('esign-list');
         const certList = document.getElementById('cert-list');
-        
+
         if (!esignList || !certList) {
           console.error('Error: One or both lists not found in DOM');
           return;
@@ -718,6 +898,28 @@
         console.error('Error in showList:', error.message);
       }
     }
+
+    // Header scroll behavior with animation
+    let lastScrollTop = 0;
+    const header = document.querySelector('.top-header');
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop && scrollTop > 200) {
+        header.classList.add('hidden');
+      } else if (scrollTop < lastScrollTop && scrollTop <= 200) {
+        header.classList.remove('hidden');
+      }
+      lastScrollTop = scrollTop;
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+    });
+
+    document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
+
+    // Initialize language
+    setLanguage('vi');
   </script>
 </body>
 </html>
