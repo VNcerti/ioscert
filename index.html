@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESign & Cert </title>
+  <title>ESign & Cert</title>
   <link rel="icon" href="https://i.imgur.com/BIbDCrO.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -230,7 +230,7 @@
       padding: 6px;
       border-radius: 50px;
       box-shadow: var(--card-shadow);
-      max-width: 200px;
+      max-width: 300px;
       margin-left: auto;
       margin-right: auto;
       animation: slideUp 0.8s ease-out;
@@ -520,10 +520,25 @@
       <button class="tab-btn" onclick="showList('cert')">
         <i class="fas fa-certificate"></i> Cert
       </button>
+      <button class="tab-btn" onclick="showList('mods')">
+        <i class="fas fa-cogs"></i> Mods
+      </button>
     </div>
+
+
+
 
     <!-- ESign List -->
     <div id="esign-list" class="app-grid">
+
+
+
+
+
+
+
+
+
       <!-- ESign Item: Beijing -->
       <div class="app-card">
         <div class="app-header">
@@ -542,6 +557,9 @@
         </a>
       </div>
       <!-- End ESign Item: Beijing -->
+
+
+
 
       <!-- ESign Item: China Railway -->
       <div class="app-card">
@@ -661,10 +679,6 @@
 
     <!-- Cert List -->
     <div id="cert-list" class="app-grid hidden">
-      <!-- Cert Item: chờ cập nhật -->
-      <!-- Placeholder for future updates -->
-      <!-- End Cert Item: chờ cập nhật -->
-
       <!-- Cert Item: Beijing -->
       <div class="app-card">
         <div class="app-header">
@@ -800,6 +814,44 @@
     </div>
     <!-- End Cert List -->
 
+
+
+
+
+
+    <!-- Mods List -->
+<div id="mods-list" class="app-grid hidden">
+
+
+  <!-- Mods Item: liên quân -->
+  <div class="app-card">
+    <div class="app-header">
+      <div class="app-icon">
+        <img src="https://i.pinimg.com/736x/98/c0/13/98c013e3c3e4fbce344108fb7b960d76.jpg" alt="Mods Icon" style="width: 100%; height: 100%; border-radius: 12px; object-fit: cover;">
+      </div>
+      <div>
+        <div class="app-title">HACK MAP LQM</div>
+        <div class="app-meta" data-i18n="MENU FULL CHỨC NĂNG">
+          <i class="fas fa-map-marker-alt"></i> MENU FULL CHỨC NĂNG
+        </div>
+      </div>
+    </div>
+    <a href="https://is.gd/NNLH2v" target="_blank" class="download-btn">
+      Download <i class="fas fa-download"></i>
+    </a>
+  </div>
+  <!-- End Mods Item: Placeholder -->
+</div>
+<!-- End Mods List -->
+
+
+
+
+
+
+
+
+
     <footer>
       <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
       <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền</p>
@@ -822,10 +874,11 @@
         "tcl-household": "TCL Household",
         "wuling-power": "Wuling Power",
         "vietnamcert-01": "VietNamCert.01",
-        "national-science-library": "National Science Library"
+        "national-science-library": "National Science Library",
+        "mods-placeholder": "Mods Placeholder"
       },
       en: {
-        title: "VIET NAM CERT",
+        title: "APPLE CERTIFICATE.",
         subtitle: "Website share ESign/Certificate on iPhone/iPad With Anti-Revoke",
         support: "Admin Support 24/7",
         website: "Automatic Certificate Sales Website",
@@ -838,14 +891,15 @@
         "tcl-household": "TCL Household",
         "wuling-power": "Wuling Power",
         "vietnamcert-01": "VietNamCert.01",
-        "national-science-library": "National Science Library"
+        "national-science-library": "National Science Library",
+        "mods-placeholder": "Mods Placeholder"
       }
     };
 
     function setLanguage(lang) {
       document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
-        if (key !== "esign" && key !== "cert" && !element.classList.contains('download-btn')) {
+        if (key !== "esign" && key !== "cert" && key !== "mods" && !element.classList.contains('download-btn')) {
           if (key === 'contact') {
             const link = element.querySelector('a');
             if (link) {
@@ -883,14 +937,16 @@
       try {
         const esignList = document.getElementById('esign-list');
         const certList = document.getElementById('cert-list');
+        const modsList = document.getElementById('mods-list');
 
-        if (!esignList || !certList) {
-          console.error('Error: One or both lists not found in DOM');
+        if (!esignList || !certList || !modsList) {
+          console.error('Error: One or more lists not found in DOM');
           return;
         }
 
         esignList.classList.toggle('hidden', type !== 'esign');
         certList.classList.toggle('hidden', type !== 'cert');
+        modsList.classList.toggle('hidden', type !== 'mods');
 
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.tab-btn[onclick="showList('${type}')"]`);
