@@ -99,33 +99,28 @@
       }
     }
 
-    // Hàm xử lý sự kiện click download - SỬA ĐỔI CHÍNH Ở ĐÂY
+    // Hàm xử lý sự kiện click download
     function setupDownloadButton(btnId, linkId, url) {
       const btn = document.getElementById(btnId);
       const counterElementId = `counter-${linkId}`;
-      
-      // Thay đổi cách xử lý sự kiện click
       btn.addEventListener("click", async (e) => {
-        e.preventDefault(); // Ngăn hành vi mặc định
+        e.preventDefault(); // Ngăn hành vi mặc định (scroll lên đầu trang)
         try {
           const docRef = doc(db, "downloads", linkId);
           await updateDoc(docRef, { count: increment(1) });
           await updateCounter(linkId, counterElementId);
-          
-          // Thay vì dùng window.open (gây popup blocker), chuyển hướng trực tiếp
-          // Sử dụng window.location.assign thay vì window.open để tránh popup blocker
-          const newWindow = window.open('', '_blank');
-          if (newWindow) {
-            newWindow.location.href = url;
-          } else {
-            // Fallback nếu trình duyệt chặn cửa sổ mới
-            window.location.href = url;
-          }
+          // Tạo liên kết tạm thời để mở tab mới mà không bị chặn popup và không scroll
+          const tempLink = document.createElement('a');
+          tempLink.href = url;
+          tempLink.target = '_blank';
+          tempLink.rel = 'noopener noreferrer';
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          tempLink.remove();
         } catch (error) {
           console.error(`Error on download click for ${linkId}:`, error);
         }
       });
-      
       // Cập nhật số lượt tải khi trang tải
       updateCounter(linkId, counterElementId);
     }
@@ -236,7 +231,11 @@
 
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
-      // Thiết lập các nút download cho ESign
+
+
+           // Thiết lập các nút download cho ESign
+
+
       const esignButtons = [
         { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
@@ -250,7 +249,8 @@
         { btnId: 'download-esign-nsl', linkId: 'esign-nsl', url: 'https://link4sub.com/2k3j' }
       ];
 
-      // Thiết lập các nút download cho CERT
+       // Thiết lập các nút download cho CERT
+
       const certButtons = [
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
         { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
@@ -267,7 +267,7 @@
       // Thiết lập các nút download cho MODS
       const modsButtons = [
         { btnId: 'download-mods-capcutpro', linkId: 'mods-capcutpro', url: 'https://link4m.com/d2Yq2hs9' },
-        { btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
+{ btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
         { btnId: 'download-mods-coin', linkId: 'mods-coin', url: 'https://link4m.com/UKWKXe' },
         { btnId: 'download-mods-lqm-v2', linkId: 'mods-lqm-v2', url: 'https://link4m.com/UKWKXe' },
         { btnId: 'download-mods-lqm-v1', linkId: 'mods-lqm-v1', url: 'https://is.gd/NNLH2v' },
@@ -690,9 +690,6 @@
       transition: var(--transition);
       margin-top: 15px;
       border: 1px solid var(--button-border);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: inherit;
     }
 
     .app-card .download-btn {
@@ -911,6 +908,8 @@
 
     <!-- ========== ESIGN LIST ========== -->
     <div id="esign-list" class="app-grid">
+
+
       <!-- ESign Item: GLOBAL TAKEOFF, INC -->
       <div class="app-card">
         <div class="app-header">
@@ -932,9 +931,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-global" class="download-btn" data-url="https://link4sub.com/JjFO">
+        <a href="javascript:void(0);" id="download-esign-global" class="download-btn" data-url="https://link4sub.com/JjFO">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: GLOBAL TAKEOFF, INC -->
 
@@ -959,9 +958,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-zheshang" class="download-btn" data-url="https://link4sub.com/JjFO">
+        <a href="javascript:void(0);" id="download-esign-zheshang" class="download-btn" data-url="https://link4sub.com/JjFO">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: China Zheshang Bank Co., Ltd -->
 
@@ -984,9 +983,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-bmw" class="download-btn" data-url="https://link4sub.com/jh5D">
+        <a href="javascript:void(0);" id="download-esign-bmw" class="download-btn" data-url="https://link4sub.com/jh5D">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: BMW -->
 
@@ -1007,9 +1006,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-beijing" class="download-btn" data-url="https://link4sub.com/K8V9">
+        <a href="javascript:void(0);" id="download-esign-beijing" class="download-btn" data-url="https://link4sub.com/K8V9">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: Beijing -->
 
@@ -1030,9 +1029,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-railway" class="download-btn" data-url="https://link4sub.com/9WWn">
+        <a href="javascript:void(0);" id="download-esign-railway" class="download-btn" data-url="https://link4sub.com/9WWn">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: China Railway -->
 
@@ -1053,9 +1052,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-dtt" class="download-btn" data-url="https://link4sub.com/y6nn">
+        <a href="javascript:void(0);" id="download-esign-dtt" class="download-btn" data-url="https://link4sub.com/y6nn">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: Dtt Technology -->
 
@@ -1076,9 +1075,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-tcl" class="download-btn" data-url="https://link4sub.com/Xnjk">
+        <a href="javascript:void(0);" id="download-esign-tcl" class="download-btn" data-url="https://link4sub.com/Xnjk">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: TCL Household -->
 
@@ -1099,9 +1098,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-wuling" class="download-btn" data-url="https://link4sub.com/OKaz">
+        <a href="javascript:void(0);" id="download-esign-wuling" class="download-btn" data-url="https://link4sub.com/OKaz">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: Wuling Power -->
 
@@ -1122,9 +1121,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-vietnamcert" class="download-btn" data-url="https://link4sub.com/bsZQ">
+        <a href="javascript:void(0);" id="download-esign-vietnamcert" class="download-btn" data-url="https://link4sub.com/bsZQ">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: VietNamCert.01 -->
 
@@ -1145,9 +1144,9 @@
             </div>
           </div>
         </div>
-        <button id="download-esign-nsl" class="download-btn" data-url="https://link4sub.com/2k3j">
+        <a href="javascript:void(0);" id="download-esign-nsl" class="download-btn" data-url="https://link4sub.com/2k3j">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End ESign Item: National Science Library -->
     </div>
@@ -1176,9 +1175,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-global" class="download-btn" data-url="https://link4m.com/4bQLgsj">
+        <a href="javascript:void(0);" id="download-cert-global" class="download-btn" data-url="https://link4m.com/4bQLgsj">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: GLOBAL TAKEOFF, INC -->
 
@@ -1203,9 +1202,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-zheshang" class="download-btn" data-url="https://link4m.com/epZLK">
+        <a href="javascript:void(0);" id="download-cert-zheshang" class="download-btn" data-url="https://link4m.com/epZLK">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: China Zheshang Bank -->
 
@@ -1228,9 +1227,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-bmw" class="download-btn" data-url="https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file">
+        <a href="javascript:void(0);" id="download-cert-bmw" class="download-btn" data-url="https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: BMW -->
 
@@ -1251,9 +1250,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-beijing" class="download-btn" data-url="https://link4m.com/phPY35Qe">
+        <a href="javascript:void(0);" id="download-cert-beijing" class="download-btn" data-url="https://link4m.com/phPY35Qe">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: Beijing -->
 
@@ -1274,9 +1273,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-railway" class="download-btn" data-url="https://link4m.com/tB8urR">
+        <a href="javascript:void(0);" id="download-cert-railway" class="download-btn" data-url="https://link4m.com/tB8urR">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: China Railway -->
 
@@ -1297,9 +1296,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-dtt" class="download-btn" data-url="https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file">
+        <a href="javascript:void(0);" id="download-cert-dtt" class="download-btn" data-url="https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: Dtt Technology -->
 
@@ -1320,9 +1319,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-tcl" class="download-btn" data-url="https://link4m.com/kZuQ2sb">
+        <a href="javascript:void(0);" id="download-cert-tcl" class="download-btn" data-url="https://link4m.com/kZuQ2sb">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: TCL Household -->
 
@@ -1343,9 +1342,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-wuling" class="download-btn" data-url="https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file">
+        <a href="javascript:void(0);" id="download-cert-wuling" class="download-btn" data-url="https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: Wuling Power -->
 
@@ -1366,9 +1365,9 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-vietnamcert" class="download-btn" data-url="https://yeumoney.com/3GTBHW">
+        <a href="javascript:void(0);" id="download-cert-vietnamcert" class="download-btn" data-url="https://yeumoney.com/3GTBHW">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: VietNamCert.01 -->
 
@@ -1389,16 +1388,20 @@
             </div>
           </div>
         </div>
-        <button id="download-cert-nsl" class="download-btn" data-url="https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file">
+        <a href="javascript:void(0);" id="download-cert-nsl" class="download-btn" data-url="https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Cert Item: National Science Library -->
     </div>
     <!-- ========== END CERT LIST ========== -->
 
+
+
+
     <!-- ========== MODS LIST ========== -->
     <div id="mods-list" class="app-grid hidden">
+
       <!-- Mods Item: capcut pro -->
       <div class="app-card">
         <div class="app-header">
@@ -1417,9 +1420,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-capcutpro" class="download-btn" data-url="https://link4m.com/Beevd">
+        <a href="javascript:void(0);" id="download-mods-capcutpro" class="download-btn" data-url="https://link4m.com/Beevd">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: capcutpro -->
 
@@ -1441,9 +1444,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-locket" class="download-btn" data-url="https://link4m.com/Beevd">
+        <a href="javascript:void(0);" id="download-mods-locket" class="download-btn" data-url="https://link4m.com/Beevd">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: locket gold -->
 
@@ -1465,9 +1468,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-coin" class="download-btn" data-url="https://link4m.com/UKWKXe">
+        <a href="javascript:void(0);" id="download-mods-coin" class="download-btn" data-url="https://link4m.com/UKWKXe">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: COIN MASTER -->
 
@@ -1489,9 +1492,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-lqm-v2" class="download-btn" data-url="https://link4m.com/UKWKXe">
+        <a href="javascript:void(0);" id="download-mods-lqm-v2" class="download-btn" data-url="https://link4m.com/UKWKXe">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: liên quân chống tố -->
 
@@ -1512,9 +1515,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-lqm-v1" class="download-btn" data-url="https://is.gd/NNLH2v">
+        <a href="javascript:void(0);" id="download-mods-lqm-v1" class="download-btn" data-url="https://is.gd/NNLH2v">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: liên quân -->
 
@@ -1535,9 +1538,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-key" class="download-btn" data-url="https://link4m.com/zvHS2">
+        <a href="javascript:void(0);" id="download-mods-key" class="download-btn" data-url="https://link4m.com/zvHS2">
           Get Key <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: key hack -->
 
@@ -1558,9 +1561,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-fb" class="download-btn" data-url="https://link4m.com/56CAI48p">
+        <a href="javascript:void(0);" id="download-mods-fb" class="download-btn" data-url="https://link4m.com/56CAI48p">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: facebook nhân bản -->
 
@@ -1581,9 +1584,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-mess" class="download-btn" data-url="https://link4m.com/hRIjYxr">
+        <a href="javascript:void(0);" id="download-mods-mess" class="download-btn" data-url="https://link4m.com/hRIjYxr">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: mess nhân bản -->
 
@@ -1604,9 +1607,9 @@
             </div>
           </div>
         </div>
-        <button id="download-mods-yt" class="download-btn" data-url="https://link4m.com/zDZwh7">
+        <a href="javascript:void(0);" id="download-mods-yt" class="download-btn" data-url="https://link4m.com/zDZwh7">
           Download <i class="fas fa-download"></i>
-        </button>
+        </a>
       </div>
       <!-- End Mods Item: YOUTUBE PLUS -->
     </div>
