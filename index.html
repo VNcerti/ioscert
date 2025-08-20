@@ -103,18 +103,19 @@
     function setupDownloadButton(btnId, linkId, url) {
       const btn = document.getElementById(btnId);
       const counterElementId = `counter-${linkId}`;
+      btn.href = url; // Đặt trực tiếp URL vào href của thẻ <a>
+      btn.setAttribute('target', '_blank'); // Đảm bảo mở trong tab mới
+      btn.setAttribute('rel', 'noopener noreferrer'); // Bảo mật
       btn.addEventListener("click", async (e) => {
-        e.preventDefault(); // Ngăn hành vi mặc định
+        // Không ngăn hành vi mặc định, cho phép thẻ <a> xử lý navigation
+        // Cập nhật counter Firebase bất đồng bộ
         try {
           const docRef = doc(db, "downloads", linkId);
           await updateDoc(docRef, { count: increment(1) });
           await updateCounter(linkId, counterElementId);
-          // Mở liên kết trong tab mới mà không gây ra popup blocker
-          window.open(url, '_blank', 'noopener,noreferrer');
         } catch (error) {
           console.error(`Error on download click for ${linkId}:`, error);
-          // Fallback: Mở liên kết ngay cả khi có lỗi Firebase
-          window.open(url, '_blank', 'noopener,noreferrer');
+          // Không chặn navigation ngay cả khi Firebase lỗi
         }
       });
       // Cập nhật số lượt tải khi trang tải
@@ -920,7 +921,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-global" class="download-btn" data-url="https://link4sub.com/JjFO">
+        <a id="download-esign-global" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -947,7 +948,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-zheshang" class="download-btn" data-url="https://link4sub.com/JjFO">
+        <a id="download-esign-zheshang" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -972,7 +973,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-bmw" class="download-btn" data-url="https://link4sub.com/jh5D">
+        <a id="download-esign-bmw" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -995,7 +996,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-beijing" class="download-btn" data-url="https://link4sub.com/K8V9">
+        <a id="download-esign-beijing" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1018,7 +1019,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-railway" class="download-btn" data-url="https://link4sub.com/9WWn">
+        <a id="download-esign-railway" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1041,7 +1042,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-dtt" class="download-btn" data-url="https://link4sub.com/y6nn">
+        <a id="download-esign-dtt" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1064,7 +1065,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-tcl" class="download-btn" data-url="https://link4sub.com/Xnjk">
+        <a id="download-esign-tcl" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1087,7 +1088,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-wuling" class="download-btn" data-url="https://link4sub.com/OKaz">
+        <a id="download-esign-wuling" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1110,7 +1111,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-vietnamcert" class="download-btn" data-url="https://link4sub.com/bsZQ">
+        <a id="download-esign-vietnamcert" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1133,7 +1134,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-esign-nsl" class="download-btn" data-url="https://link4sub.com/2k3j">
+        <a id="download-esign-nsl" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1164,7 +1165,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-global" class="download-btn" data-url="https://link4m.com/4bQLgsj">
+        <a id="download-cert-global" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1191,7 +1192,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-zheshang" class="download-btn" data-url="https://link4m.com/epZLK">
+        <a id="download-cert-zheshang" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1216,7 +1217,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-bmw" class="download-btn" data-url="https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file">
+        <a id="download-cert-bmw" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1239,7 +1240,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-beijing" class="download-btn" data-url="https://link4m.com/phPY35Qe">
+        <a id="download-cert-beijing" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1262,7 +1263,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-railway" class="download-btn" data-url="https://link4m.com/tB8urR">
+        <a id="download-cert-railway" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1285,7 +1286,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-dtt" class="download-btn" data-url="https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file">
+        <a id="download-cert-dtt" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1308,7 +1309,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-tcl" class="download-btn" data-url="https://link4m.com/kZuQ2sb">
+        <a id="download-cert-tcl" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1331,7 +1332,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-wuling" class="download-btn" data-url="https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file">
+        <a id="download-cert-wuling" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1354,7 +1355,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-vietnamcert" class="download-btn" data-url="https://yeumoney.com/3GTBHW">
+        <a id="download-cert-vietnamcert" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1377,7 +1378,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-cert-nsl" class="download-btn" data-url="https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file">
+        <a id="download-cert-nsl" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1405,7 +1406,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-capcutpro" class="download-btn" data-url="https://link4m.com/d2Yq2hs9">
+        <a id="download-mods-capcutpro" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1429,7 +1430,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-locket" class="download-btn" data-url="https://link4m.com/Beevd">
+        <a id="download-mods-locket" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1453,7 +1454,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-coin" class="download-btn" data-url="https://link4m.com/UKWKXe">
+        <a id="download-mods-coin" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1477,7 +1478,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-lqm-v2" class="download-btn" data-url="https://link4m.com/UKWKXe">
+        <a id="download-mods-lqm-v2" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1500,7 +1501,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-lqm-v1" class="download-btn" data-url="https://is.gd/NNLH2v">
+        <a id="download-mods-lqm-v1" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1523,7 +1524,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-key" class="download-btn" data-url="https://link4m.com/zvHS2">
+        <a id="download-mods-key" class="download-btn" href="#">
           Get Key <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1546,7 +1547,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-fb" class="download-btn" data-url="https://link4m.com/56CAI48p">
+        <a id="download-mods-fb" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1569,7 +1570,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-mess" class="download-btn" data-url="https://link4m.com/hRIjYxr">
+        <a id="download-mods-mess" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
@@ -1592,7 +1593,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-yt" class="download-btn" data-url="https://link4m.com/zDZwh7">
+        <a id="download-mods-yt" class="download-btn" href="#">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
