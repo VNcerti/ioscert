@@ -86,7 +86,7 @@
         const counterElement = document.getElementById(elementId);
         if (counterElement) {
           const currentLang = localStorage.getItem('language') || 'vi';
-          counterElement.innerHTML = `<span style="font-weight: bold; color: red;">${count}</span> ${translations[currentLang]['download-suffix']}`;
+          counterElement.innerHTML = `<span style="font-weight: bold; color:#e63946;">${count}</span> ${translations[currentLang]['download-suffix']}`;
         } else {
           console.error(`Counter element not found: ${elementId}`);
         }
