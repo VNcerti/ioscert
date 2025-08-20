@@ -104,21 +104,17 @@
       const btn = document.getElementById(btnId);
       const counterElementId = `counter-${linkId}`;
       btn.addEventListener("click", async (e) => {
-        e.preventDefault(); // Ngăn hành vi mặc định (scroll lên đầu trang)
+        e.preventDefault(); // Ngăn hành vi mặc định
         try {
           const docRef = doc(db, "downloads", linkId);
           await updateDoc(docRef, { count: increment(1) });
           await updateCounter(linkId, counterElementId);
-          // Tạo liên kết tạm thời để mở tab mới mà không bị chặn popup và không scroll
-          const tempLink = document.createElement('a');
-          tempLink.href = url;
-          tempLink.target = '_blank';
-          tempLink.rel = 'noopener noreferrer';
-          document.body.appendChild(tempLink);
-          tempLink.click();
-          tempLink.remove();
+          // Mở liên kết trong tab mới mà không gây ra popup blocker
+          window.open(url, '_blank', 'noopener,noreferrer');
         } catch (error) {
           console.error(`Error on download click for ${linkId}:`, error);
+          // Fallback: Mở liên kết ngay cả khi có lỗi Firebase
+          window.open(url, '_blank', 'noopener,noreferrer');
         }
       });
       // Cập nhật số lượt tải khi trang tải
@@ -231,11 +227,7 @@
 
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
-
-
-           // Thiết lập các nút download cho ESign
-
-
+      // Thiết lập các nút download cho ESign
       const esignButtons = [
         { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
@@ -249,8 +241,7 @@
         { btnId: 'download-esign-nsl', linkId: 'esign-nsl', url: 'https://link4sub.com/2k3j' }
       ];
 
-       // Thiết lập các nút download cho CERT
-
+      // Thiết lập các nút download cho CERT
       const certButtons = [
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
         { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
@@ -267,7 +258,7 @@
       // Thiết lập các nút download cho MODS
       const modsButtons = [
         { btnId: 'download-mods-capcutpro', linkId: 'mods-capcutpro', url: 'https://link4m.com/d2Yq2hs9' },
-{ btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
+        { btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
         { btnId: 'download-mods-coin', linkId: 'mods-coin', url: 'https://link4m.com/UKWKXe' },
         { btnId: 'download-mods-lqm-v2', linkId: 'mods-lqm-v2', url: 'https://link4m.com/UKWKXe' },
         { btnId: 'download-mods-lqm-v1', linkId: 'mods-lqm-v1', url: 'https://is.gd/NNLH2v' },
@@ -908,8 +899,6 @@
 
     <!-- ========== ESIGN LIST ========== -->
     <div id="esign-list" class="app-grid">
-
-
       <!-- ESign Item: GLOBAL TAKEOFF, INC -->
       <div class="app-card">
         <div class="app-header">
@@ -1396,12 +1385,8 @@
     </div>
     <!-- ========== END CERT LIST ========== -->
 
-
-
-
     <!-- ========== MODS LIST ========== -->
     <div id="mods-list" class="app-grid hidden">
-
       <!-- Mods Item: capcut pro -->
       <div class="app-card">
         <div class="app-header">
@@ -1420,7 +1405,7 @@
             </div>
           </div>
         </div>
-        <a href="javascript:void(0);" id="download-mods-capcutpro" class="download-btn" data-url="https://link4m.com/Beevd">
+        <a href="javascript:void(0);" id="download-mods-capcutpro" class="download-btn" data-url="https://link4m.com/d2Yq2hs9">
           Download <i class="fas fa-download"></i>
         </a>
       </div>
