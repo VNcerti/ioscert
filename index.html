@@ -47,7 +47,9 @@
         "Nhân bản app": "Nhân bản và nhiều tính năng VIP ",
         youtube: "Mở khoá tính năng Premium",
         "mods-placeholder": "Mods Placeholder",
-        "download-suffix": "lượt cài đặt thành công"
+        "download-suffix": "lượt cài đặt thành công",
+        "search-placeholder": "Tìm kiếm ứng dụng...",
+        "no-results": "Không tìm thấy ứng dụng"
       },
       en: {
         title: "APPLE CERTIFICATE.",
@@ -67,7 +69,9 @@
         "Nhân bản app": "Clone apps and unlock exclusive VIP features ",
         youtube: "Unlock Premium Mods",
         "mods-placeholder": "Mods Placeholder",
-        "download-suffix": "successful installations"
+        "download-suffix": "successful installations",
+        "search-placeholder": "Search for apps...",
+        "no-results": "No apps found"
       }
     };
 
@@ -103,22 +107,18 @@
     function setupDownloadButton(btnId, linkId, url) {
       const btn = document.getElementById(btnId);
       const counterElementId = `counter-${linkId}`;
-      btn.href = url; // Đặt trực tiếp URL vào href của thẻ <a>
-      btn.setAttribute('target', '_blank'); // Đảm bảo mở trong tab mới
-      btn.setAttribute('rel', 'noopener noreferrer'); // Bảo mật
+      btn.href = url;
+      btn.setAttribute('target', '_blank');
+      btn.setAttribute('rel', 'noopener noreferrer');
       btn.addEventListener("click", async (e) => {
-        // Không ngăn hành vi mặc định, cho phép thẻ <a> xử lý navigation
-        // Cập nhật counter Firebase bất đồng bộ
         try {
           const docRef = doc(db, "downloads", linkId);
           await updateDoc(docRef, { count: increment(1) });
           await updateCounter(linkId, counterElementId);
         } catch (error) {
           console.error(`Error on download click for ${linkId}:`, error);
-          // Không chặn navigation ngay cả khi Firebase lỗi
         }
       });
-      // Cập nhật số lượt tải khi trang tải
       updateCounter(linkId, counterElementId);
     }
 
@@ -158,14 +158,17 @@
         }
       });
 
+      const searchInput = document.getElementById('mods-search');
+      if (searchInput) {
+        searchInput.placeholder = translations[lang]['search-placeholder'];
+      }
+
       document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
       document.documentElement.lang = lang;
       
-      // Lưu ngôn ngữ đã chọn
       saveSettings('language', lang);
 
-      // Cập nhật lại các counter để hiển thị đúng ngôn ngữ
       document.querySelectorAll('.download-count span[id^="counter-"]').forEach(counter => {
         const linkId = counter.id.replace('counter-', '');
         updateCounter(linkId, counter.id);
@@ -179,7 +182,6 @@
       document.documentElement.setAttribute('data-theme', newTheme);
       document.querySelector('.theme-toggle i').className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
       
-      // Lưu chế độ giao diện đã chọn
       saveSettings('theme', newTheme);
     }
 
@@ -204,15 +206,17 @@
         const esignList = document.getElementById('esign-list');
         const certList = document.getElementById('cert-list');
         const modsList = document.getElementById('mods-list');
+        const searchContainer = document.getElementById('search-container');
 
-        if (!esignList || !certList || !modsList) {
-          console.error('Error: One or more lists not found in DOM');
+        if (!esignList || !certList || !modsList || !searchContainer) {
+          console.error('Error: One or more elements not found in DOM');
           return;
         }
 
         esignList.classList.toggle('hidden', type !== 'esign');
         certList.classList.toggle('hidden', type !== 'cert');
         modsList.classList.toggle('hidden', type !== 'mods');
+        searchContainer.classList.toggle('hidden', type !== 'mods');
 
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.querySelector(`.tab-btn[data-tab="${type}"]`);
@@ -221,14 +225,61 @@
         } else {
           console.error(`Error: Tab button for ${type} not found`);
         }
+
+        if (type === 'mods') {
+          const searchInput = document.getElementById('mods-search');
+          searchInput.value = '';
+          filterMods();
+        }
       } catch (error) {
         console.error('Error in showList:', error.message);
       }
     }
 
+    // Hàm lọc mods theo chuỗi tìm kiếm (tìm kiếm ở bất kỳ vị trí nào trong tiêu đề)
+    function filterMods() {
+      const input = document.getElementById('mods-search').value.toLowerCase().trim();
+      const modsList = document.getElementById('mods-list');
+      const cards = modsList.querySelectorAll('.app-card');
+      const noResults = document.getElementById('no-results');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = card.querySelector('.app-title').textContent.toLowerCase();
+        if (input === '' || title.includes(input)) {
+          // Hiển thị với animation fade-in và slide-up
+          if (card.style.display === 'none' || card.style.display === '') {
+            card.style.display = 'block';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 10); // Delay nhỏ để trigger transition
+          } else {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }
+          visibleCount++;
+        } else {
+          // Ẩn với animation fade-out và slide-down
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.display = 'none';
+          }, 300); // Thời gian transition
+        }
+      });
+
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    }
+
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
-      // Thiết lập các nút download cho ESign
       const esignButtons = [
         { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
@@ -242,7 +293,6 @@
         { btnId: 'download-esign-nsl', linkId: 'esign-nsl', url: 'https://link4sub.com/2k3j' }
       ];
 
-      // Thiết lập các nút download cho CERT
       const certButtons = [
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
         { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
@@ -256,8 +306,8 @@
         { btnId: 'download-cert-nsl', linkId: 'cert-nsl', url: 'https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file' }
       ];
 
-      // Thiết lập các nút download cho MODS
       const modsButtons = [
+{ btnId: 'download-mods-coin2', linkId: 'mods-coin2', url: 'https://link4m.com/TE058' },
         { btnId: 'download-mods-capcutpro', linkId: 'mods-capcutpro', url: 'https://link4m.com/d2Yq2hs9' },
         { btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
         { btnId: 'download-mods-coin', linkId: 'mods-coin', url: 'https://link4m.com/UKWKXe' },
@@ -269,7 +319,6 @@
         { btnId: 'download-mods-yt', linkId: 'mods-yt', url: 'https://link4m.com/zDZwh7' }
       ];
 
-      // Thiết lập tất cả các nút download
       esignButtons.forEach(({ btnId, linkId, url }) => {
         setupDownloadButton(btnId, linkId, url);
       });
@@ -282,7 +331,6 @@
         setupDownloadButton(btnId, linkId, url);
       });
 
-      // Gắn sự kiện cho các tab button
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const tabType = btn.getAttribute('data-tab');
@@ -291,9 +339,13 @@
           }
         });
       });
+
+      const searchInput = document.getElementById('mods-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', filterMods);
+      }
     });
 
-    // Header scroll behavior with animation
     let lastScrollTop = 0;
     const header = document.querySelector('.top-header');
     window.addEventListener('scroll', () => {
@@ -306,18 +358,14 @@
       lastScrollTop = scrollTop;
     });
 
-    // Khởi tạo sự kiện
     document.addEventListener('DOMContentLoaded', function() {
-      // Áp dụng các cài đặt đã lưu
       applySavedTheme();
       applySavedLanguage();
       
-      // Thiết lập sự kiện cho nút ngôn ngữ
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
       });
 
-      // Thiết lập sự kiện cho nút chuyển đổi giao diện
       document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
     });
   </script>
@@ -568,6 +616,46 @@
       color: white;
     }
 
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      animation: slideUp 0.8s ease-out;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 40px 12px 20px;
+      border-radius: 50px;
+      border: 1px solid var(--button-border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: var(--transition);
+      box-shadow: var(--card-shadow);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 16px;
+    }
+
     .app-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -581,7 +669,7 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: var(--card-shadow);
-      transition: var(--transition);
+      transition: opacity 0.3s ease, transform 0.3s ease;
       border: 3px solid #dbeafe;
     }
 
@@ -702,6 +790,17 @@
 
     .download-btn i {
       margin-left: 8px;
+    }
+
+    .no-results {
+      text-align: center;
+      color: var(--gray);
+      font-size: 16px;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      margin: 20px 0;
     }
 
     footer {
@@ -896,6 +995,13 @@
       <button class="tab-btn" data-tab="mods">
         <i class="fas fa-cogs"></i> Mods
       </button>
+    </div>
+
+    <div id="search-container" class="search-container hidden">
+      <div class="search-wrapper">
+        <input type="text" id="mods-search" class="search-input" placeholder="Tìm kiếm ứng dụng...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
     </div>
 
     <!-- ========== ESIGN LIST ========== -->
@@ -1388,6 +1494,35 @@
 
     <!-- ========== MODS LIST ========== -->
     <div id="mods-list" class="app-grid hidden">
+      <div id="no-results" class="no-results hidden" data-i18n="no-results">Không tìm thấy ứng dụng</div>
+
+
+
+
+<!-- Mods Item: COIN MASTER 2 -->
+      <div class="app-card">
+        <div class="app-header">
+          <div class="app-icon">
+            <img src="https://i.pinimg.com/736x/0b/3e/4d/0b3e4dc205f9e93a5eac272be03397d5.jpg" alt="Mods Icon" style="width: 100%; height: 100%; border-radius: 12px; object-fit: cover;">
+            <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+          </div>
+          <div>
+            <div class="app-title">Coin Master V2</div>
+            <div class="app-meta" data-i18n="mod-lqm">
+              <i class="fas fa-map-marker-alt"></i> MOD SPEED | UPDATE 26/08/2025
+            </div>
+            <div class="download-count">
+              <i class="fas fa-user"></i>
+              <span id="counter-mods-coin2">Đang tải dữ liệu...</span>
+            </div>
+          </div>
+        </div>
+        <a id="download-mods-coin2" class="download-btn" href="#">
+          Download <i class="fas fa-download"></i>
+        </a>
+      </div>
+      <!-- End Mods Item: COIN MASTER 2 -->
+
       <!-- Mods Item: capcut pro -->
       <div class="app-card">
         <div class="app-header">
