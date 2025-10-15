@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.1/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
+        /* CSS giữ nguyên như trước */
         :root {
             --card-bg: rgba(30, 41, 59, 0.8);
             --darker: #0f172a;
@@ -1020,7 +1021,8 @@
                     e: certInfo.expiryDate.getTime(),
                     s: certInfo.status,
                     d: certInfo.daysLeft,
-                    t: certInfo.type
+                    t: certInfo.type,
+                    h: certInfo.hasAppGroup
                 };
                 
                 const jsonString = JSON.stringify(certData);
@@ -1104,20 +1106,26 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Xử lý khi trang được load - kiểm tra xem có tham số order không
-        document.addEventListener('DOMContentLoaded', function() {
+        // Hàm xử lý khi có tham số order trong URL
+        function handleOrderParameter() {
             const urlParams = new URLSearchParams(window.location.search);
             const orderCode = urlParams.get('order');
             
             if (orderCode) {
+                console.log('🔍 Đang tìm kết quả cho mã:', orderCode);
+                
                 // Lấy dữ liệu từ localStorage
                 const storedData = localStorage.getItem(`cert_${orderCode}`);
                 
                 if (storedData) {
                     try {
+                        console.log('📁 Đã tìm thấy dữ liệu trong localStorage');
+                        
                         // Giải mã dữ liệu
                         const decodedString = analyzer.safeAtob(storedData);
                         const decodedData = JSON.parse(decodedString);
+                        
+                        console.log('📊 Dữ liệu đã giải mã:', decodedData);
                         
                         const certInfo = {
                             name: decodedData.n,
@@ -1125,16 +1133,37 @@
                             status: decodedData.s,
                             daysLeft: decodedData.d,
                             type: decodedData.t,
-                            hasAppGroup: decodedData.t.includes('có hỗ trợ App Group')
+                            hasAppGroup: decodedData.h || false
                         };
                         
+                        console.log('✅ Đang hiển thị kết quả...');
                         displayCertificateInfo(certInfo);
                         showResultSection();
+                        
                     } catch (error) {
-                        console.error('Lỗi khi giải mã dữ liệu:', error);
+                        console.error('❌ Lỗi khi giải mã dữ liệu:', error);
+                        showCheckSection();
                     }
+                } else {
+                    console.log('❌ Không tìm thấy dữ liệu cho mã:', orderCode);
+                    showCheckSection();
                 }
+            } else {
+                console.log('ℹ️ Không có tham số order trong URL');
+                showCheckSection();
             }
+        }
+
+        // Xử lý khi trang được load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Trang đã được tải');
+            handleOrderParameter();
+        });
+
+        // Xử lý khi URL thay đổi (khi người dùng navigate)
+        window.addEventListener('popstate', function() {
+            console.log('🔄 URL đã thay đổi');
+            handleOrderParameter();
         });
     </script>
 </body>
