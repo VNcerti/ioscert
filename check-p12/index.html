@@ -705,6 +705,16 @@
                 });
             }
 
+            // Hàm tạo mã ngẫu nhiên 6 ký tự
+            generateRandomCode() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
             async analyzeP12(p12Data, password) {
                 try {
                     await this.simulateStepProgress(0);
@@ -897,53 +907,6 @@
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
             }
-
-            // Tạo URL chia sẻ - chỉ trả về URL, không hiển thị
-            generateShareableUrl(certInfo) {
-                // Tạo ID duy nhất cho kết quả
-                const resultId = 'order' + Date.now().toString().slice(-6);
-                
-                // Mã hóa thông tin chứng chỉ thành base64 (sử dụng safeBtoa)
-                const certData = {
-                    n: certInfo.name,
-                    e: certInfo.expiryDate.getTime(),
-                    s: certInfo.status,
-                    d: certInfo.daysLeft,
-                    t: certInfo.type
-                };
-                
-                const jsonString = JSON.stringify(certData);
-                const encodedData = this.safeBtoa(jsonString);
-                
-                // Tạo URL chia sẻ dạng: ioscert.site/check-p12/order01
-                const shareUrl = `${window.location.origin}/check-p12/${resultId}`;
-                
-                return {
-                    id: resultId,
-                    url: shareUrl,
-                    data: encodedData
-                };
-            }
-
-            // Giải mã URL chia sẻ
-            decodeShareableUrl(encodedData) {
-                try {
-                    const decodedString = this.safeAtob(encodedData);
-                    const decodedData = JSON.parse(decodedString);
-                    
-                    // Chuyển đổi timestamp thành Date object
-                    return {
-                        name: decodedData.n,
-                        expiryDate: new Date(decodedData.e),
-                        status: decodedData.s,
-                        daysLeft: decodedData.d,
-                        type: decodedData.t
-                    };
-                } catch (error) {
-                    console.error('Lỗi giải mã URL:', error);
-                    return null;
-                }
-            }
         }
 
         const analyzer = new CertificateAnalyzer();
@@ -1042,13 +1005,30 @@
                 analyzer.setProgressCallback(updateProgressBar);
                 const certInfo = await analyzer.processFile(p12File, password);
                 
-                // Tạo URL chia sẻ và hiển thị trong console để bạn copy
-                const shareInfo = analyzer.generateShareableUrl(certInfo);
-                console.log('🔗 URL chia sẻ kết quả:', shareInfo.url);
-                console.log('📋 Bạn có thể copy URL trên để gửi cho người dùng');
+                // Tạo mã ngẫu nhiên 6 ký tự
+                const randomCode = analyzer.generateRandomCode();
                 
-                // Lưu vào localStorage để có thể truy cập sau
-                localStorage.setItem(`cert_${shareInfo.id}`, shareInfo.data);
+                // Tạo URL mới với tham số order
+                const newUrl = `${window.location.origin}${window.location.pathname}?order=${randomCode}`;
+                
+                // Thay đổi URL mà không reload trang
+                window.history.pushState({}, '', newUrl);
+                
+                // Mã hóa và lưu dữ liệu vào localStorage
+                const certData = {
+                    n: certInfo.name,
+                    e: certInfo.expiryDate.getTime(),
+                    s: certInfo.status,
+                    d: certInfo.daysLeft,
+                    t: certInfo.type
+                };
+                
+                const jsonString = JSON.stringify(certData);
+                const encodedData = analyzer.safeBtoa(jsonString);
+                localStorage.setItem(`cert_${randomCode}`, encodedData);
+                
+                console.log('🔗 URL chia sẻ:', newUrl);
+                console.log('📋 Mã đơn:', randomCode);
                 
                 displayCertificateInfo(certInfo);
                 showResultSection();
@@ -1095,6 +1075,10 @@
         }
 
         document.getElementById('backButton').addEventListener('click', function() {
+            // Quay về URL gốc không có tham số
+            const baseUrl = `${window.location.origin}${window.location.pathname}`;
+            window.history.pushState({}, '', baseUrl);
+            
             showCheckSection();
             document.getElementById('p12File').value = '';
             document.getElementById('fileText').textContent = 'Hãy chọn file .p12 hoặc file .zip';
@@ -1120,26 +1104,34 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Xử lý khi trang được load - kiểm tra xem có phải đang truy cập URL chia sẻ không
+        // Xử lý khi trang được load - kiểm tra xem có tham số order không
         document.addEventListener('DOMContentLoaded', function() {
-            const path = window.location.pathname;
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderCode = urlParams.get('order');
             
-            // Kiểm tra nếu URL có dạng /check-p12/order01
-            const pathMatch = path.match(/\/check-p12\/(order\d+)/);
-            
-            if (pathMatch) {
-                const resultId = pathMatch[1];
-                
+            if (orderCode) {
                 // Lấy dữ liệu từ localStorage
-                const storedData = localStorage.getItem(`cert_${resultId}`);
+                const storedData = localStorage.getItem(`cert_${orderCode}`);
                 
                 if (storedData) {
-                    // Giải mã từ dữ liệu đã lưu
-                    const certInfo = analyzer.decodeShareableUrl(storedData);
-                    
-                    if (certInfo) {
+                    try {
+                        // Giải mã dữ liệu
+                        const decodedString = analyzer.safeAtob(storedData);
+                        const decodedData = JSON.parse(decodedString);
+                        
+                        const certInfo = {
+                            name: decodedData.n,
+                            expiryDate: new Date(decodedData.e),
+                            status: decodedData.s,
+                            daysLeft: decodedData.d,
+                            type: decodedData.t,
+                            hasAppGroup: decodedData.t.includes('có hỗ trợ App Group')
+                        };
+                        
                         displayCertificateInfo(certInfo);
                         showResultSection();
+                    } catch (error) {
+                        console.error('Lỗi khi giải mã dữ liệu:', error);
                     }
                 }
             }
