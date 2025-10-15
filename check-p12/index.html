@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.1/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        /* CSS giữ nguyên như trước */
         :root {
             --card-bg: rgba(30, 41, 59, 0.8);
             --darker: #0f172a;
@@ -466,38 +465,6 @@
             cursor: pointer;
         }
 
-        /* Share section styles */
-        .share-section {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px dashed var(--accent);
-        }
-
-        .share-url-container {
-            display: flex;
-            gap: 0;
-            margin-top: 8px;
-        }
-
-        .share-url-container input {
-            border-radius: 8px 0 0 8px !important;
-            border-right: none !important;
-            flex: 1;
-        }
-
-        .share-url-container button {
-            border-radius: 0 8px 8px 0 !important;
-            border-left: none !important;
-            width: auto;
-            padding: 10px 15px;
-            margin: 0;
-        }
-
-        .share-section .info-label i {
-            margin-right: 8px;
-            color: var(--accent);
-        }
-
         /* Mobile optimizations */
         @media (max-width: 480px) {
             body {
@@ -672,23 +639,6 @@
                 <div class="cert-info">
                     <div class="info-label">Loại:</div>
                     <div class="info-value" id="certType">-</div>
-                </div>
-
-                <!-- Phần chia sẻ kết quả -->
-                <div class="cert-info share-section">
-                    <div class="info-label">
-                        <i class="fas fa-share-alt"></i> Link chia sẻ kết quả:
-                    </div>
-                    <div class="share-url-container">
-                        <input type="text" id="shareUrl" class="file-input" readonly 
-                               style="border-color: var(--accent);">
-                        <button id="copyShareUrl" class="btn">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                    <div class="info-value" style="font-size: 0.8rem; margin-top: 5px; color: var(--text-muted);">
-                        Copy link này để chia sẻ kết quả. Người dùng có thể xem trực tiếp mà không cần kiểm tra lại.
-                    </div>
                 </div>
 
                 <button id="backButton" class="btn btn-back">← Quay lại kiểm tra</button>
@@ -948,7 +898,7 @@
                 }).join(''));
             }
 
-            // Tạo URL chia sẻ
+            // Tạo URL chia sẻ - chỉ trả về URL, không hiển thị
             generateShareableUrl(certInfo) {
                 // Tạo ID duy nhất cho kết quả
                 const resultId = 'order' + Date.now().toString().slice(-6);
@@ -965,13 +915,13 @@
                 const jsonString = JSON.stringify(certData);
                 const encodedData = this.safeBtoa(jsonString);
                 
-                // Tạo URL chia sẻ
-                const shareUrl = `${window.location.origin}${window.location.pathname}?result=${resultId}&data=${encodedData}`;
+                // Tạo URL chia sẻ dạng: ioscert.site/check-p12/order01
+                const shareUrl = `${window.location.origin}/check-p12/${resultId}`;
                 
                 return {
                     id: resultId,
                     url: shareUrl,
-                    shortUrl: `${window.location.origin}/check-p12/${resultId}`
+                    data: encodedData
                 };
             }
 
@@ -1091,6 +1041,15 @@
                 showLoadingSection();
                 analyzer.setProgressCallback(updateProgressBar);
                 const certInfo = await analyzer.processFile(p12File, password);
+                
+                // Tạo URL chia sẻ và hiển thị trong console để bạn copy
+                const shareInfo = analyzer.generateShareableUrl(certInfo);
+                console.log('🔗 URL chia sẻ kết quả:', shareInfo.url);
+                console.log('📋 Bạn có thể copy URL trên để gửi cho người dùng');
+                
+                // Lưu vào localStorage để có thể truy cập sau
+                localStorage.setItem(`cert_${shareInfo.id}`, shareInfo.data);
+                
                 displayCertificateInfo(certInfo);
                 showResultSection();
                 
@@ -1133,45 +1092,7 @@
             document.getElementById('status').className = `info-value ${statusClass}`;
             document.getElementById('daysLeft').textContent = `${certInfo.daysLeft} ngày`;
             document.getElementById('certType').textContent = typeText;
-            
-            // Tạo và hiển thị URL chia sẻ
-            const shareInfo = analyzer.generateShareableUrl(certInfo);
-            document.getElementById('shareUrl').value = shareInfo.shortUrl;
-            
-            // Lưu thông tin vào localStorage để sử dụng sau này
-            localStorage.setItem(`certResult_${shareInfo.id}`, JSON.stringify(certInfo));
         }
-
-        document.getElementById('copyShareUrl').addEventListener('click', function() {
-            const shareUrlInput = document.getElementById('shareUrl');
-            shareUrlInput.select();
-            shareUrlInput.setSelectionRange(0, 99999);
-            
-            try {
-                navigator.clipboard.writeText(shareUrlInput.value).then(() => {
-                    // Hiển thị thông báo copy thành công
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check"></i>';
-                    this.style.background = 'var(--success)';
-                    
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.style.background = '';
-                    }, 2000);
-                });
-            } catch (err) {
-                // Fallback cho trình duyệt cũ
-                document.execCommand('copy');
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-check"></i>';
-                this.style.background = 'var(--success)';
-                
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.style.background = '';
-                }, 2000);
-            }
-        });
 
         document.getElementById('backButton').addEventListener('click', function() {
             showCheckSection();
@@ -1199,36 +1120,27 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Xử lý khi trang được load
+        // Xử lý khi trang được load - kiểm tra xem có phải đang truy cập URL chia sẻ không
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const resultId = urlParams.get('result');
-            const encodedData = urlParams.get('data');
+            const path = window.location.pathname;
             
-            // Kiểm tra nếu có tham số result trong URL
-            if (resultId || encodedData) {
-                let certInfo = null;
+            // Kiểm tra nếu URL có dạng /check-p12/order01
+            const pathMatch = path.match(/\/check-p12\/(order\d+)/);
+            
+            if (pathMatch) {
+                const resultId = pathMatch[1];
                 
-                if (encodedData) {
-                    // Giải mã từ URL parameter
-                    certInfo = analyzer.decodeShareableUrl(encodedData);
-                } else if (resultId) {
-                    // Lấy từ localStorage
-                    const storedData = localStorage.getItem(`certResult_${resultId}`);
-                    if (storedData) {
-                        certInfo = JSON.parse(storedData);
-                        // Chuyển đổi string thành Date object
-                        certInfo.expiryDate = new Date(certInfo.expiryDate);
-                        certInfo.startDate = new Date(certInfo.startDate);
-                    }
-                }
+                // Lấy dữ liệu từ localStorage
+                const storedData = localStorage.getItem(`cert_${resultId}`);
                 
-                if (certInfo) {
-                    displayCertificateInfo(certInfo);
-                    showResultSection();
+                if (storedData) {
+                    // Giải mã từ dữ liệu đã lưu
+                    const certInfo = analyzer.decodeShareableUrl(storedData);
                     
-                    // Ẩn phần chia sẻ khi đang xem kết quả từ link chia sẻ
-                    document.querySelector('.share-section').style.display = 'none';
+                    if (certInfo) {
+                        displayCertificateInfo(certInfo);
+                        showResultSection();
+                    }
                 }
             }
         });
