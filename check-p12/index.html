@@ -895,22 +895,52 @@
                 });
             }
 
-            // Hàm mã hóa an toàn cho Unicode - URL safe
-            safeBtoa(str) {
-                return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-                    return String.fromCharCode('0x' + p1);
-                })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            // Hàm mã hóa dữ liệu đơn giản
+            encodeData(data) {
+                // Rút gọn dữ liệu
+                const compressedData = {
+                    n: data.name.length > 40 ? data.name.substring(0, 37) + '...' : data.name,
+                    e: Math.floor(data.expiryDate.getTime() / 1000), // Giảm kích thước timestamp
+                    s: data.status === "🟢 Hoạt động" ? 2 : data.status === "🟡 Sắp hết hạn" ? 1 : 0,
+                    d: data.daysLeft,
+                    t: data.type === "Distribution" ? 1 : 0,
+                    h: data.hasAppGroup ? 1 : 0
+                };
+                
+                const jsonString = JSON.stringify(compressedData);
+                
+                // Mã hóa base64 URL-safe
+                return btoa(encodeURIComponent(jsonString))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
             }
 
-            // Hàm giải mã an toàn cho Unicode - URL safe
-            safeAtob(str) {
-                str = str.replace(/-/g, '+').replace(/_/g, '/');
-                while (str.length % 4) {
-                    str += '=';
+            // Hàm giải mã dữ liệu
+            decodeData(encodedString) {
+                try {
+                    // Thêm padding nếu cần
+                    let str = encodedString.replace(/-/g, '+').replace(/_/g, '/');
+                    while (str.length % 4) {
+                        str += '=';
+                    }
+                    
+                    const jsonString = decodeURIComponent(atob(str));
+                    const compressedData = JSON.parse(jsonString);
+                    
+                    // Khôi phục dữ liệu
+                    return {
+                        name: compressedData.n,
+                        expiryDate: new Date(compressedData.e * 1000),
+                        status: compressedData.s === 2 ? "🟢 Hoạt động" : compressedData.s === 1 ? "🟡 Sắp hết hạn" : "🔴 Đã hết hạn",
+                        daysLeft: compressedData.d,
+                        type: compressedData.t === 1 ? "Distribution" : "Development",
+                        hasAppGroup: compressedData.h === 1
+                    };
+                } catch (error) {
+                    console.error('Lỗi giải mã dữ liệu:', error);
+                    return null;
                 }
-                return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
             }
         }
 
@@ -1013,28 +1043,20 @@
                 // Tạo mã ngẫu nhiên 6 ký tự
                 const randomCode = analyzer.generateRandomCode();
                 
-                // Mã hóa toàn bộ thông tin vào URL
-                const certData = {
-                    n: certInfo.name,
-                    e: certInfo.expiryDate.getTime(),
-                    s: certInfo.status,
-                    d: certInfo.daysLeft,
-                    t: certInfo.type,
-                    h: certInfo.hasAppGroup
-                };
+                // Mã hóa dữ liệu
+                const encodedData = analyzer.encodeData(certInfo);
                 
-                const jsonString = JSON.stringify(certData);
-                const encodedData = analyzer.safeBtoa(jsonString);
+                console.log('📊 Dữ liệu đã mã hóa:', encodedData);
+                console.log('📏 Độ dài dữ liệu:', encodedData.length, 'ký tự');
                 
-                // Tạo URL mới với cả order và data
-                const newUrl = `${window.location.origin}${window.location.pathname}?order=${randomCode}&data=${encodedData}`;
+                // Tạo URL với hash ngắn: https://ioscert.site/check-p12/#ABC123-data
+                const newUrl = `${window.location.origin}${window.location.pathname}#${randomCode}-${encodedData}`;
+                
+                console.log('🔗 URL cuối cùng:', newUrl);
+                console.log('📏 Độ dài URL:', newUrl.length, 'ký tự');
                 
                 // Thay đổi URL mà không reload trang
                 window.history.pushState({}, '', newUrl);
-                
-                console.log('🔗 URL chia sẻ:', newUrl);
-                console.log('📋 Mã đơn:', randomCode);
-                console.log('📊 Dữ liệu đã mã hóa:', encodedData);
                 
                 displayCertificateInfo(certInfo);
                 showResultSection();
@@ -1081,7 +1103,7 @@
         }
 
         document.getElementById('backButton').addEventListener('click', function() {
-            // Quay về URL gốc không có tham số
+            // Quay về URL gốc không có hash
             const baseUrl = `${window.location.origin}${window.location.pathname}`;
             window.history.pushState({}, '', baseUrl);
             
@@ -1110,43 +1132,40 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Hàm xử lý khi có tham số order và data trong URL
-        function handleURLParameters() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const orderCode = urlParams.get('order');
-            const encodedData = urlParams.get('data');
+        // Hàm xử lý hash từ URL
+        function handleHashURL() {
+            const hash = window.location.hash.substring(1); // Bỏ dấu #
             
-            console.log('🔍 Kiểm tra URL parameters:', { orderCode, encodedData });
-            
-            if (orderCode && encodedData) {
-                console.log('✅ Có tham số order và data trong URL');
+            if (hash && hash.includes('-')) {
+                const parts = hash.split('-');
+                const orderCode = parts[0];
+                const encodedData = parts.slice(1).join('-'); // Phần còn lại là dữ liệu
                 
-                try {
-                    // Giải mã dữ liệu từ URL
-                    const decodedString = analyzer.safeAtob(encodedData);
-                    const decodedData = JSON.parse(decodedString);
+                console.log('🔍 Kiểm tra hash URL:', { orderCode, encodedData });
+                
+                if (orderCode && encodedData) {
+                    console.log('✅ Có dữ liệu trong hash');
                     
-                    console.log('📊 Dữ liệu đã giải mã:', decodedData);
-                    
-                    const certInfo = {
-                        name: decodedData.n,
-                        expiryDate: new Date(decodedData.e),
-                        status: decodedData.s,
-                        daysLeft: decodedData.d,
-                        type: decodedData.t,
-                        hasAppGroup: decodedData.h || false
-                    };
-                    
-                    console.log('✅ Đang hiển thị kết quả từ URL...');
-                    displayCertificateInfo(certInfo);
-                    showResultSection();
-                    
-                } catch (error) {
-                    console.error('❌ Lỗi khi giải mã dữ liệu từ URL:', error);
+                    try {
+                        const certInfo = analyzer.decodeData(encodedData);
+                        
+                        if (certInfo) {
+                            console.log('✅ Đang hiển thị kết quả từ hash...');
+                            displayCertificateInfo(certInfo);
+                            showResultSection();
+                        } else {
+                            throw new Error('Không thể giải mã dữ liệu');
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Lỗi khi xử lý dữ liệu từ hash:', error);
+                        showCheckSection();
+                    }
+                } else {
                     showCheckSection();
                 }
             } else {
-                console.log('ℹ️ Không có đủ tham số trong URL');
+                console.log('ℹ️ Không có hash hợp lệ trong URL');
                 showCheckSection();
             }
         }
@@ -1154,13 +1173,19 @@
         // Xử lý khi trang được load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Trang đã được tải');
-            handleURLParameters();
+            handleHashURL();
         });
 
         // Xử lý khi URL thay đổi (khi người dùng navigate)
         window.addEventListener('popstate', function() {
             console.log('🔄 URL đã thay đổi');
-            handleURLParameters();
+            handleHashURL();
+        });
+
+        // Xử lý khi hash thay đổi (khi người dùng click link)
+        window.addEventListener('hashchange', function() {
+            console.log('🔗 Hash đã thay đổi');
+            handleHashURL();
         });
     </script>
 </body>
