@@ -895,15 +895,19 @@
                 });
             }
 
-            // Hàm mã hóa an toàn cho Unicode
+            // Hàm mã hóa an toàn cho Unicode - URL safe
             safeBtoa(str) {
                 return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                     return String.fromCharCode('0x' + p1);
-                }));
+                })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
             }
 
-            // Hàm giải mã an toàn cho Unicode
+            // Hàm giải mã an toàn cho Unicode - URL safe
             safeAtob(str) {
+                str = str.replace(/-/g, '+').replace(/_/g, '/');
+                while (str.length % 4) {
+                    str += '=';
+                }
                 return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
@@ -1009,13 +1013,7 @@
                 // Tạo mã ngẫu nhiên 6 ký tự
                 const randomCode = analyzer.generateRandomCode();
                 
-                // Tạo URL mới với tham số order
-                const newUrl = `${window.location.origin}${window.location.pathname}?order=${randomCode}`;
-                
-                // Thay đổi URL mà không reload trang
-                window.history.pushState({}, '', newUrl);
-                
-                // Mã hóa và lưu dữ liệu vào localStorage
+                // Mã hóa toàn bộ thông tin vào URL
                 const certData = {
                     n: certInfo.name,
                     e: certInfo.expiryDate.getTime(),
@@ -1027,10 +1025,16 @@
                 
                 const jsonString = JSON.stringify(certData);
                 const encodedData = analyzer.safeBtoa(jsonString);
-                localStorage.setItem(`cert_${randomCode}`, encodedData);
+                
+                // Tạo URL mới với cả order và data
+                const newUrl = `${window.location.origin}${window.location.pathname}?order=${randomCode}&data=${encodedData}`;
+                
+                // Thay đổi URL mà không reload trang
+                window.history.pushState({}, '', newUrl);
                 
                 console.log('🔗 URL chia sẻ:', newUrl);
                 console.log('📋 Mã đơn:', randomCode);
+                console.log('📊 Dữ liệu đã mã hóa:', encodedData);
                 
                 displayCertificateInfo(certInfo);
                 showResultSection();
@@ -1106,50 +1110,43 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Hàm xử lý khi có tham số order trong URL
-        function handleOrderParameter() {
+        // Hàm xử lý khi có tham số order và data trong URL
+        function handleURLParameters() {
             const urlParams = new URLSearchParams(window.location.search);
             const orderCode = urlParams.get('order');
+            const encodedData = urlParams.get('data');
             
-            if (orderCode) {
-                console.log('🔍 Đang tìm kết quả cho mã:', orderCode);
+            console.log('🔍 Kiểm tra URL parameters:', { orderCode, encodedData });
+            
+            if (orderCode && encodedData) {
+                console.log('✅ Có tham số order và data trong URL');
                 
-                // Lấy dữ liệu từ localStorage
-                const storedData = localStorage.getItem(`cert_${orderCode}`);
-                
-                if (storedData) {
-                    try {
-                        console.log('📁 Đã tìm thấy dữ liệu trong localStorage');
-                        
-                        // Giải mã dữ liệu
-                        const decodedString = analyzer.safeAtob(storedData);
-                        const decodedData = JSON.parse(decodedString);
-                        
-                        console.log('📊 Dữ liệu đã giải mã:', decodedData);
-                        
-                        const certInfo = {
-                            name: decodedData.n,
-                            expiryDate: new Date(decodedData.e),
-                            status: decodedData.s,
-                            daysLeft: decodedData.d,
-                            type: decodedData.t,
-                            hasAppGroup: decodedData.h || false
-                        };
-                        
-                        console.log('✅ Đang hiển thị kết quả...');
-                        displayCertificateInfo(certInfo);
-                        showResultSection();
-                        
-                    } catch (error) {
-                        console.error('❌ Lỗi khi giải mã dữ liệu:', error);
-                        showCheckSection();
-                    }
-                } else {
-                    console.log('❌ Không tìm thấy dữ liệu cho mã:', orderCode);
+                try {
+                    // Giải mã dữ liệu từ URL
+                    const decodedString = analyzer.safeAtob(encodedData);
+                    const decodedData = JSON.parse(decodedString);
+                    
+                    console.log('📊 Dữ liệu đã giải mã:', decodedData);
+                    
+                    const certInfo = {
+                        name: decodedData.n,
+                        expiryDate: new Date(decodedData.e),
+                        status: decodedData.s,
+                        daysLeft: decodedData.d,
+                        type: decodedData.t,
+                        hasAppGroup: decodedData.h || false
+                    };
+                    
+                    console.log('✅ Đang hiển thị kết quả từ URL...');
+                    displayCertificateInfo(certInfo);
+                    showResultSection();
+                    
+                } catch (error) {
+                    console.error('❌ Lỗi khi giải mã dữ liệu từ URL:', error);
                     showCheckSection();
                 }
             } else {
-                console.log('ℹ️ Không có tham số order trong URL');
+                console.log('ℹ️ Không có đủ tham số trong URL');
                 showCheckSection();
             }
         }
@@ -1157,13 +1154,13 @@
         // Xử lý khi trang được load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Trang đã được tải');
-            handleOrderParameter();
+            handleURLParameters();
         });
 
         // Xử lý khi URL thay đổi (khi người dùng navigate)
         window.addEventListener('popstate', function() {
             console.log('🔄 URL đã thay đổi');
-            handleOrderParameter();
+            handleURLParameters();
         });
     </script>
 </body>
