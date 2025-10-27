@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.1/forge.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <!-- THÊM DÒNG NÀY ↓ -->
+        <script src="protect.js"></script>
+        <!-- THÊM DÒNG NÀY ↑ -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
     <style>
-        /* CSS giữ nguyên như trước */
         :root {
             --card-bg: rgba(30, 41, 59, 0.8);
             --darker: #0f172a;
@@ -314,7 +320,6 @@
             border: 1px solid rgba(229, 62, 62, 0.3);
         }
 
-        /* Progress bar styles */
         .progress-container {
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
@@ -407,7 +412,6 @@
             background: var(--accent);
         }
 
-        /* Custom file input styles */
         .file-input-wrapper {
             position: relative;
             display: block;
@@ -466,7 +470,6 @@
             cursor: pointer;
         }
 
-        /* Mobile optimizations */
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -657,6 +660,113 @@
     </footer>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCv_8gkQi2YPbXp0PyLZIp73NcNWMuZJ8",
+            authDomain: "ios-cert-check-p12.firebaseapp.com",
+            projectId: "ios-cert-check-p12",
+            storageBucket: "ios-cert-check-p12.firebasestorage.app",
+            messagingSenderId: "39487670631",
+            appId: "1:39487670631:web:2362f3c305647d7acc87c2",
+            measurementId: "G-47VMZZPJWX"
+        };
+
+        // Firebase Service Class
+        class FirebaseCertificateService {
+            constructor() {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                
+                this.db = firebase.firestore();
+                this.collectionName = 'certificates';
+                this.ttl = 24 * 60 * 60 * 1000; // 24 giờ
+            }
+
+            generateShortId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            async saveCertificate(certInfo) {
+                const shortId = this.generateShortId();
+                const expiresAt = new Date(Date.now() + this.ttl);
+
+                try {
+                    const certificateData = {
+                        data: {
+                            name: certInfo.name,
+                            expiryDate: firebase.firestore.Timestamp.fromDate(certInfo.expiryDate),
+                            status: certInfo.status,
+                            daysLeft: certInfo.daysLeft,
+                            type: certInfo.type,
+                            hasAppGroup: certInfo.hasAppGroup
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        expiresAt: firebase.firestore.Timestamp.fromDate(expiresAt),
+                        views: 0
+                    };
+
+                    await this.db.collection(this.collectionName).doc(shortId).set(certificateData);
+                    console.log('✅ Đã lưu certificate với ID:', shortId);
+                    return shortId;
+                } catch (error) {
+                    console.error('❌ Lỗi lưu certificate:', error);
+                    throw new Error('Không thể lưu dữ liệu lên server');
+                }
+            }
+
+            async getCertificate(shortId) {
+                try {
+                    const doc = await this.db.collection(this.collectionName).doc(shortId).get();
+                    
+                    if (!doc.exists) {
+                        console.log('❌ Không tìm thấy document với ID:', shortId);
+                        return null;
+                    }
+
+                    const data = doc.data();
+                    const now = new Date();
+                    const expiresAt = data.expiresAt.toDate();
+                    
+                    if (now > expiresAt) {
+                        console.log('🗑️ Certificate đã hết hạn, đang xóa...');
+                        await this.deleteCertificate(shortId);
+                        return null;
+                    }
+
+                    await this.db.collection(this.collectionName).doc(shortId).update({
+                        views: firebase.firestore.FieldValue.increment(1)
+                    });
+
+                    const certInfo = {
+                        ...data.data,
+                        expiryDate: data.data.expiryDate.toDate()
+                    };
+
+                    console.log('✅ Đã tải certificate:', certInfo.name);
+                    return certInfo;
+                } catch (error) {
+                    console.error('❌ Lỗi lấy certificate:', error);
+                    return null;
+                }
+            }
+
+            async deleteCertificate(shortId) {
+                try {
+                    await this.db.collection(this.collectionName).doc(shortId).delete();
+                    console.log('🗑️ Đã xóa certificate:', shortId);
+                } catch (error) {
+                    console.error('❌ Lỗi xóa certificate:', error);
+                }
+            }
+        }
+
+        // Certificate Analyzer Class
         class CertificateAnalyzer {
             constructor() {
                 this.supportedExtensions = ['.p12', '.zip'];
@@ -704,16 +814,6 @@
                         }
                     }, interval);
                 });
-            }
-
-            // Hàm tạo mã ngẫu nhiên 6 ký tự
-            generateRandomCode() {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = '';
-                for (let i = 0; i < 6; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
             }
 
             async analyzeP12(p12Data, password) {
@@ -857,7 +957,6 @@
                     const arrayBuffer = await this.readFileAsArrayBuffer(file);
                     const zip = await JSZip.loadAsync(arrayBuffer);
                     
-                    // Tìm file P12 trong zip
                     let p12File = null;
                     for (const fileName in zip.files) {
                         if (fileName.toLowerCase().endsWith('.p12')) {
@@ -894,94 +993,179 @@
                     reader.readAsArrayBuffer(file);
                 });
             }
+        }
 
-            // Hàm mã hóa dữ liệu đơn giản
-            encodeData(data) {
-                // Rút gọn dữ liệu
-                const compressedData = {
-                    n: data.name.length > 40 ? data.name.substring(0, 37) + '...' : data.name,
-                    e: Math.floor(data.expiryDate.getTime() / 1000), // Giảm kích thước timestamp
-                    s: data.status === "🟢 Hoạt động" ? 2 : data.status === "🟡 Sắp hết hạn" ? 1 : 0,
-                    d: data.daysLeft,
-                    t: data.type === "Distribution" ? 1 : 0,
-                    h: data.hasAppGroup ? 1 : 0
-                };
-                
-                const jsonString = JSON.stringify(compressedData);
-                
-                // Mã hóa base64 URL-safe
-                return btoa(encodeURIComponent(jsonString))
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_')
-                    .replace(/=+$/, '');
+        // Global Variables
+        const analyzer = new CertificateAnalyzer();
+        let certService;
+
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Khởi tạo Firebase Service
+            try {
+                certService = new FirebaseCertificateService();
+                console.log('🚀 Firebase Service đã khởi tạo');
+            } catch (error) {
+                console.error('❌ Lỗi khởi tạo Firebase:', error);
             }
 
-            // Hàm giải mã dữ liệu
-            decodeData(encodedString) {
-                try {
-                    // Thêm padding nếu cần
-                    let str = encodedString.replace(/-/g, '+').replace(/_/g, '/');
-                    while (str.length % 4) {
-                        str += '=';
-                    }
-                    
-                    const jsonString = decodeURIComponent(atob(str));
-                    const compressedData = JSON.parse(jsonString);
-                    
-                    // Khôi phục dữ liệu
-                    return {
-                        name: compressedData.n,
-                        expiryDate: new Date(compressedData.e * 1000),
-                        status: compressedData.s === 2 ? "🟢 Hoạt động" : compressedData.s === 1 ? "🟡 Sắp hết hạn" : "🔴 Đã hết hạn",
-                        daysLeft: compressedData.d,
-                        type: compressedData.t === 1 ? "Distribution" : "Development",
-                        hasAppGroup: compressedData.h === 1
-                    };
-                } catch (error) {
-                    console.error('Lỗi giải mã dữ liệu:', error);
-                    return null;
+            // Event Listeners
+            document.getElementById('p12File').addEventListener('change', function() {
+                const file = this.files[0];
+                const fileLabel = document.getElementById('p12FileLabel');
+                const fileText = document.getElementById('fileText');
+                
+                if (file) {
+                    fileText.textContent = file.name;
+                    fileLabel.classList.add('has-file');
+                } else {
+                    fileText.textContent = 'Hãy chọn file .p12 hoặc file .zip';
+                    fileLabel.classList.remove('has-file');
                 }
+            });
+
+            document.getElementById('password').addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.classList.add('has-value');
+                } else {
+                    this.classList.remove('has-value');
+                }
+            });
+
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const icon = this.querySelector('i');
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                if (type === 'password') {
+                    icon.className = 'fas fa-eye';
+                } else {
+                    icon.className = 'fas fa-eye-slash';
+                }
+            });
+
+            document.getElementById('checkButton').addEventListener('click', handleCheckCertificate);
+            document.getElementById('backButton').addEventListener('click', handleBackButton);
+
+            // Xử lý hash URL
+            setTimeout(() => {
+                handleHashURL();
+            }, 500);
+        }
+
+        async function handleCheckCertificate() {
+            const p12File = document.getElementById('p12File').files[0];
+            const password = document.getElementById('password').value;
+
+            if (!p12File || !password) {
+                showError('Vui lòng chọn file P12 và nhập mật khẩu!');
+                return;
+            }
+
+            const p12Ext = '.' + p12File.name.split('.').pop().toLowerCase();
+            
+            if (!analyzer.supportedExtensions.includes(p12Ext)) {
+                showError('Định dạng file không được hỗ trợ. Vui lòng chọn file .p12 hoặc .zip');
+                return;
+            }
+
+            hideError();
+            document.getElementById('checkButton').disabled = true;
+
+            try {
+                showLoadingSection();
+                analyzer.setProgressCallback(updateProgressBar);
+                
+                const certInfo = await analyzer.processFile(p12File, password);
+                
+                if (!certService) {
+                    certService = new FirebaseCertificateService();
+                }
+                
+                console.log('💾 Đang lưu certificate lên Firebase...');
+                const shortId = await certService.saveCertificate(certInfo);
+                
+                const newUrl = `${window.location.origin}${window.location.pathname}#${shortId}`;
+                console.log('🔗 URL mới:', newUrl);
+                
+                window.history.pushState({}, '', newUrl);
+                
+                displayCertificateInfo(certInfo);
+                showResultSection();
+                
+            } catch (error) {
+                showCheckSection();
+                let errorMessage = 'Lỗi khi xử lý chứng chỉ: ';
+                
+                if (error.message.includes('Invalid password or PKCS12 data')) {
+                    errorMessage = '❌ Mật khẩu P12 sai.\nBạn vui lòng hãy nhập chính xác mật khẩu để hệ thống có thể phân tích được dữ liệu nhé!';
+                } else if (error.message.includes('Không thể lưu dữ liệu lên server')) {
+                    errorMessage = '❌ Lỗi kết nối đến server. Vui lòng thử lại sau.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showError(errorMessage);
+            } finally {
+                document.getElementById('checkButton').disabled = false;
             }
         }
 
-        const analyzer = new CertificateAnalyzer();
-
-        // Cập nhật giao diện khi chọn file
-        document.getElementById('p12File').addEventListener('change', function() {
-            const file = this.files[0];
-            const fileLabel = document.getElementById('p12FileLabel');
-            const fileText = document.getElementById('fileText');
+        function handleBackButton() {
+            const baseUrl = `${window.location.origin}${window.location.pathname}`;
+            window.history.pushState({}, '', baseUrl);
             
-            if (file) {
-                fileText.textContent = file.name;
-                fileLabel.classList.add('has-file');
-            } else {
-                fileText.textContent = 'Hãy chọn file .p12 hoặc file .zip';
-                fileLabel.classList.remove('has-file');
-            }
-        });
+            showCheckSection();
+            document.getElementById('p12File').value = '';
+            document.getElementById('fileText').textContent = 'Hãy chọn file .p12 hoặc file .zip';
+            document.getElementById('p12FileLabel').classList.remove('has-file');
+            document.getElementById('password').value = '';
+            document.getElementById('password').classList.remove('has-value');
+            document.getElementById('password').setAttribute('type', 'password');
+            document.getElementById('togglePassword').innerHTML = '<i class="fas fa-eye"></i>';
+            hideError();
+        }
 
-        // Cập nhật giao diện khi nhập mật khẩu
-        document.getElementById('password').addEventListener('input', function() {
-            if (this.value.length > 0) {
-                this.classList.add('has-value');
-            } else {
-                this.classList.remove('has-value');
-            }
-        });
-
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+        async function handleHashURL() {
+            const hash = window.location.hash.substring(1);
             
-            if (type === 'password') {
-                icon.className = 'fas fa-eye';
+            if (hash && hash.length === 6) {
+                console.log('🔍 Đang tải certificate với ID:', hash);
+                
+                try {
+                    if (!certService) {
+                        certService = new FirebaseCertificateService();
+                    }
+                    
+                    showLoadingSection();
+                    updateProgressBar(50, 'Đang tải dữ liệu...');
+                    
+                    const certInfo = await certService.getCertificate(hash);
+                    
+                    if (certInfo) {
+                        console.log('✅ Tìm thấy certificate');
+                        displayCertificateInfo(certInfo);
+                        showResultSection();
+                    } else {
+                        console.log('❌ Không tìm thấy certificate hoặc đã hết hạn');
+                        showCheckSection();
+                        showError('Liên kết không tồn tại hoặc đã hết hạn (24 giờ)');
+                    }
+                    
+                } catch (error) {
+                    console.error('Lỗi tải certificate:', error);
+                    showCheckSection();
+                    showError('Lỗi kết nối đến server. Vui lòng thử lại.');
+                }
             } else {
-                icon.className = 'fas fa-eye-slash';
+                showCheckSection();
             }
-        });
+        }
 
         function showCheckSection() {
             document.getElementById('checkSection').style.display = 'block';
@@ -1016,69 +1200,6 @@
             });
         }
 
-        document.getElementById('checkButton').addEventListener('click', async function() {
-            const p12File = document.getElementById('p12File').files[0];
-            const password = document.getElementById('password').value;
-
-            if (!p12File || !password) {
-                showError('Vui lòng chọn file P12 và nhập mật khẩu!');
-                return;
-            }
-
-            const p12Ext = '.' + p12File.name.split('.').pop().toLowerCase();
-            
-            if (!analyzer.supportedExtensions.includes(p12Ext)) {
-                showError('Định dạng file không được hỗ trợ. Vui lòng chọn file .p12 hoặc .zip');
-                return;
-            }
-
-            hideError();
-            document.getElementById('checkButton').disabled = true;
-
-            try {
-                showLoadingSection();
-                analyzer.setProgressCallback(updateProgressBar);
-                const certInfo = await analyzer.processFile(p12File, password);
-                
-                // Tạo mã ngẫu nhiên 6 ký tự
-                const randomCode = analyzer.generateRandomCode();
-                
-                // Mã hóa dữ liệu
-                const encodedData = analyzer.encodeData(certInfo);
-                
-                console.log('📊 Dữ liệu đã mã hóa:', encodedData);
-                console.log('📏 Độ dài dữ liệu:', encodedData.length, 'ký tự');
-                
-                // Tạo URL với hash ngắn: https://ioscert.site/check-p12/#ABC123-data
-                const newUrl = `${window.location.origin}${window.location.pathname}#${randomCode}-${encodedData}`;
-                
-                console.log('🔗 URL cuối cùng:', newUrl);
-                console.log('📏 Độ dài URL:', newUrl.length, 'ký tự');
-                
-                // Thay đổi URL mà không reload trang
-                window.history.pushState({}, '', newUrl);
-                
-                displayCertificateInfo(certInfo);
-                showResultSection();
-                
-            } catch (error) {
-                showCheckSection();
-                let errorMessage = 'Lỗi khi xử lý chứng chỉ: ';
-                
-                if (error.message.includes('Invalid password or PKCS12 data')) {
-                    errorMessage = '❌ Mật khẩu P12 sai.\nBạn vui lòng hãy nhập chính xác mật khẩu để hệ thống có thể phân tích được dữ liệu nhé!';
-                } else if (error.message.includes('Không tìm thấy file P12 trong file ZIP')) {
-                    errorMessage = '❌ Không tìm thấy file P12 trong file ZIP.\nVui lòng kiểm tra lại file ZIP của bạn.';
-                } else {
-                    errorMessage += error.message;
-                }
-                
-                showError(errorMessage);
-            } finally {
-                document.getElementById('checkButton').disabled = false;
-            }
-        });
-
         function displayCertificateInfo(certInfo) {
             let typeText = certInfo.type;
             if (certInfo.hasAppGroup) {
@@ -1102,22 +1223,6 @@
             document.getElementById('certType').textContent = typeText;
         }
 
-        document.getElementById('backButton').addEventListener('click', function() {
-            // Quay về URL gốc không có hash
-            const baseUrl = `${window.location.origin}${window.location.pathname}`;
-            window.history.pushState({}, '', baseUrl);
-            
-            showCheckSection();
-            document.getElementById('p12File').value = '';
-            document.getElementById('fileText').textContent = 'Hãy chọn file .p12 hoặc file .zip';
-            document.getElementById('p12FileLabel').classList.remove('has-file');
-            document.getElementById('password').value = '';
-            document.getElementById('password').classList.remove('has-value');
-            document.getElementById('password').setAttribute('type', 'password');
-            document.getElementById('togglePassword').innerHTML = '<i class="fas fa-eye"></i>';
-            hideError();
-        });
-
         function formatDate(date) {
             return date.toLocaleDateString('vi-VN');
         }
@@ -1132,57 +1237,12 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Hàm xử lý hash từ URL
-        function handleHashURL() {
-            const hash = window.location.hash.substring(1); // Bỏ dấu #
-            
-            if (hash && hash.includes('-')) {
-                const parts = hash.split('-');
-                const orderCode = parts[0];
-                const encodedData = parts.slice(1).join('-'); // Phần còn lại là dữ liệu
-                
-                console.log('🔍 Kiểm tra hash URL:', { orderCode, encodedData });
-                
-                if (orderCode && encodedData) {
-                    console.log('✅ Có dữ liệu trong hash');
-                    
-                    try {
-                        const certInfo = analyzer.decodeData(encodedData);
-                        
-                        if (certInfo) {
-                            console.log('✅ Đang hiển thị kết quả từ hash...');
-                            displayCertificateInfo(certInfo);
-                            showResultSection();
-                        } else {
-                            throw new Error('Không thể giải mã dữ liệu');
-                        }
-                        
-                    } catch (error) {
-                        console.error('❌ Lỗi khi xử lý dữ liệu từ hash:', error);
-                        showCheckSection();
-                    }
-                } else {
-                    showCheckSection();
-                }
-            } else {
-                console.log('ℹ️ Không có hash hợp lệ trong URL');
-                showCheckSection();
-            }
-        }
-
-        // Xử lý khi trang được load
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Trang đã được tải');
-            handleHashURL();
-        });
-
-        // Xử lý khi URL thay đổi (khi người dùng navigate)
+        // Xử lý popstate và hashchange
         window.addEventListener('popstate', function() {
             console.log('🔄 URL đã thay đổi');
             handleHashURL();
         });
 
-        // Xử lý khi hash thay đổi (khi người dùng click link)
         window.addEventListener('hashchange', function() {
             console.log('🔗 Hash đã thay đổi');
             handleHashURL();
