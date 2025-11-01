@@ -8,371 +8,9 @@
   <link rel="icon" href="https://i.imgur.com/BIbDCrO.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <!-- Firebase Modular SDKs và logic chính -->
-      <!-- THÊM DÒNG NÀY ↓ -->
-    <script src="protect.js"></script>
-    <!-- THÊM DÒNG NÀY ↑ -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-
-    // Cấu hình Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCBYy6EFilwx2ZTzHWMjtL3g59uQb3q7vk",
-      authDomain: "ioscert.firebaseapp.com",
-      projectId: "ioscert",
-      storageBucket: "ioscert.firebasestorage.app",
-      messagingSenderId: "564732555427",
-      appId: "1:564732555427:web:331de00a9db74007250f16",
-      measurementId: "G-327870BB4V"
-    };
-
-    // Khởi tạo Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Object translations
-    const translations = {
-      vi: {
-        title: "APPLE CERTIFICATE.",
-        subtitle: "Chia sẻ chứng chỉ ESign iPhone/iPad và các file iPAs mod",
-        support: "Liên Hệ Hỗ Trợ 24/7",
-        website: "Website Bán Chứng Chỉ Tự Động",
-        dns: "DNS Chặn Thu Hồi và Quảng Cáo",
-        contact: "Liên hệ: ",
-        copyright: "Bản quyền © 2022 CHUNGCHIP12.COM. Bảo lưu mọi quyền.",
-        beijing: "Beijing",
-        "china-railway": "China Railway",
-        "dtt-technology": "Dtt Technology",
-        "tcl-household": "TCL Household",
-        "wuling-power": "Wuling Power",
-        "vietnamcert-01": "VietNamCert.01",
-        "national-science-library": "National Science Library",
-        "Nhân bản app": "Nhân bản và nhiều tính năng VIP ",
-        youtube: "Mở khoá tính năng Premium",
-        "mods-placeholder": "Mods Placeholder",
-        "download-suffix": "lượt cài đặt thành công",
-        "search-placeholder": "Tìm kiếm ứng dụng...",
-        "no-results": "Không tìm thấy ứng dụng"
-      },
-      en: {
-        title: "APPLE CERTIFICATE.",
-        subtitle: "Website share ESign/Certificate on iPhone/iPad With Anti-Revoke",
-        support: "Contact Support 24/7",
-        website: "Automatic Certificate Sales Website",
-        dns: "DNS for Anti-Revoke and Ads Block ",
-        contact: "Contact me: ",
-        copyright: "Copyright © 2022 CHUNGCHIP12.COM. All rights reserved.",
-        beijing: "Beijing",
-        "china-railway": "China Railway",
-        "dtt-technology": "Dtt Technology",
-        "tcl-household": "TCL Household",
-        "wuling-power": "Wuling Power",
-        "vietnamcert-01": "VietNamCert.01",
-        "national-science-library": "National Science Library",
-        "Nhân bản app": "Clone apps and unlock exclusive VIP features ",
-        youtube: "Unlock Premium Mods",
-        "mods-placeholder": "Mods Placeholder",
-        "download-suffix": "successful installations",
-        "search-placeholder": "Search for apps...",
-        "no-results": "No apps found"
-      }
-    };
-
-    // Hàm hiển thị số lượt tải
-    async function updateCounter(linkId, elementId) {
-      try {
-        const docRef = doc(db, "downloads", linkId);
-        const docSnap = await getDoc(docRef);
-        let count = 0;
-        if (docSnap.exists()) {
-          count = docSnap.data().count;
-        } else {
-          await setDoc(docRef, { count: 3007 });
-          count = 3007;
-        }
-        const counterElement = document.getElementById(elementId);
-        if (counterElement) {
-          const currentLang = localStorage.getItem('language') || 'vi';
-          counterElement.innerHTML = `<span style="font-weight: bold; color:#e63946;">${count}</span> ${translations[currentLang]['download-suffix']}`;
-        } else {
-          console.error(`Counter element not found: ${elementId}`);
-        }
-      } catch (error) {
-        console.error(`Error updating counter for ${linkId}:`, error);
-        const counterElement = document.getElementById(elementId);
-        if (counterElement) {
-          counterElement.textContent = `Lỗi: ${error.message}`;
-        }
-      }
-    }
-
-    // Hàm xử lý sự kiện click download
-    function setupDownloadButton(btnId, linkId, url) {
-      const btn = document.getElementById(btnId);
-      const counterElementId = `counter-${linkId}`;
-      btn.href = url;
-      btn.setAttribute('target', '_blank');
-      btn.setAttribute('rel', 'noopener noreferrer');
-      btn.addEventListener("click", async (e) => {
-        try {
-          const docRef = doc(db, "downloads", linkId);
-          await updateDoc(docRef, { count: increment(1) });
-          await updateCounter(linkId, counterElementId);
-        } catch (error) {
-          console.error(`Error on download click for ${linkId}:`, error);
-        }
-      });
-      updateCounter(linkId, counterElementId);
-    }
-
-    // Lưu cài đặt vào localStorage
-    function saveSettings(key, value) {
-      localStorage.setItem(key, value);
-    }
-
-    // Lấy cài đặt từ localStorage
-    function getSetting(key) {
-      return localStorage.getItem(key);
-    }
-
-    // Thiết lập ngôn ngữ
-    function setLanguage(lang) {
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (key !== "esign" && key !== "cert" && key !== "mods" && !element.classList.contains('download-btn')) {
-          if (key === 'contact') {
-            const link = element.querySelector('a');
-            if (link) {
-              element.innerHTML = translations[lang][key] + link.outerHTML;
-            } else {
-              element.textContent = translations[lang][key] || element.textContent;
-            }
-          } else if (element.classList.contains('app-meta')) {
-            element.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${translations[lang][key] || element.textContent}`;
-          } else if (element.classList.contains('support-link')) {
-            element.innerHTML = `<i class="fas fa-headset"></i> ${translations[lang][key] || element.textContent}`;
-          } else if (element.classList.contains('website-link')) {
-            element.innerHTML = `<i class="fas fa-globe"></i> ${translations[lang][key] || element.textContent}`;
-          } else if (element.classList.contains('dns-link')) {
-            element.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[lang][key] || element.textContent}`;
-          } else {
-            element.textContent = translations[lang][key] || element.textContent;
-          }
-        }
-      });
-
-      const searchInput = document.getElementById('mods-search');
-      if (searchInput) {
-        searchInput.placeholder = translations[lang]['search-placeholder'];
-      }
-
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-      document.documentElement.lang = lang;
-      
-      saveSettings('language', lang);
-
-      document.querySelectorAll('.download-count span[id^="counter-"]').forEach(counter => {
-        const linkId = counter.id.replace('counter-', '');
-        updateCounter(linkId, counter.id);
-      });
-    }
-
-    // Thiết lập chế độ giao diện
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      document.querySelector('.theme-toggle i').className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-      
-      saveSettings('theme', newTheme);
-    }
-
-    // Áp dụng chế độ giao diện đã lưu
-    function applySavedTheme() {
-      const savedTheme = getSetting('theme');
-      if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.querySelector('.theme-toggle i').className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-      }
-    }
-
-    // Áp dụng ngôn ngữ đã lưu
-    function applySavedLanguage() {
-      const savedLang = getSetting('language') || 'vi';
-      setLanguage(savedLang);
-    }
-
-    // Hàm chuyển đổi tab
-    function showList(type) {
-      try {
-        const esignList = document.getElementById('esign-list');
-        const certList = document.getElementById('cert-list');
-        const modsList = document.getElementById('mods-list');
-        const searchContainer = document.getElementById('search-container');
-
-        if (!esignList || !certList || !modsList || !searchContainer) {
-          console.error('Error: One or more elements not found in DOM');
-          return;
-        }
-
-        esignList.classList.toggle('hidden', type !== 'esign');
-        certList.classList.toggle('hidden', type !== 'cert');
-        modsList.classList.toggle('hidden', type !== 'mods');
-        searchContainer.classList.toggle('hidden', type !== 'mods');
-
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.tab-btn[data-tab="${type}"]`);
-        if (activeBtn) {
-          activeBtn.classList.add('active');
-        } else {
-          console.error(`Error: Tab button for ${type} not found`);
-        }
-
-        if (type === 'mods') {
-          const searchInput = document.getElementById('mods-search');
-          searchInput.value = '';
-          filterMods();
-        }
-      } catch (error) {
-        console.error('Error in showList:', error.message);
-      }
-    }
-
-    // Hàm lọc mods theo chuỗi tìm kiếm (tìm kiếm ở bất kỳ vị trí nào trong tiêu đề)
-    function filterMods() {
-      const input = document.getElementById('mods-search').value.toLowerCase().trim();
-      const modsList = document.getElementById('mods-list');
-      const cards = modsList.querySelectorAll('.app-card');
-      const noResults = document.getElementById('no-results');
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const title = card.querySelector('.app-title').textContent.toLowerCase();
-        if (input === '' || title.includes(input)) {
-          // Hiển thị với animation fade-in và slide-up
-          if (card.style.display === 'none' || card.style.display === '') {
-            card.style.display = 'block';
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-              card.style.opacity = '1';
-              card.style.transform = 'translateY(0)';
-            }, 10); // Delay nhỏ để trigger transition
-          } else {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          }
-          visibleCount++;
-        } else {
-          // Ẩn với animation fade-out và slide-down
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(20px)';
-          setTimeout(() => {
-            card.style.display = 'none';
-          }, 300); // Thời gian transition
-        }
-      });
-
-      if (visibleCount === 0) {
-        noResults.classList.remove('hidden');
-      } else {
-        noResults.classList.add('hidden');
-      }
-    }
-
-    // Khởi tạo các nút download khi trang tải xong
-    window.addEventListener("load", () => {
-      const esignButtons = [
-        { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
-        { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
-        { btnId: 'download-esign-bmw', linkId: 'esign-bmw', url: 'https://link4sub.com/jh5D' },
-        { btnId: 'download-esign-beijing', linkId: 'esign-beijing', url: 'https://link4sub.com/K8V9' },
-        { btnId: 'download-esign-railway', linkId: 'esign-railway', url: 'https://link4sub.com/9WWn' },
-        { btnId: 'download-esign-dtt', linkId: 'esign-dtt', url: 'https://link4sub.com/y6nn' },
-        { btnId: 'download-esign-tcl', linkId: 'esign-tcl', url: 'https://link4sub.com/Xnjk' },
-        { btnId: 'download-esign-wuling', linkId: 'esign-wuling', url: 'https://link4sub.com/OKaz' },
-        { btnId: 'download-esign-vietnamcert', linkId: 'esign-vietnamcert', url: 'https://link4sub.com/bsZQ' },
-        { btnId: 'download-esign-nsl', linkId: 'esign-nsl', url: 'https://link4sub.com/2k3j' }
-      ];
-
-      const certButtons = [
-        { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
-        { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
-        { btnId: 'download-cert-bmw', linkId: 'cert-bmw', url: 'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file' },
-        { btnId: 'download-cert-beijing', linkId: 'cert-beijing', url: 'https://link4m.com/phPY35Qe' },
-        { btnId: 'download-cert-railway', linkId: 'cert-railway', url: 'https://link4m.com/tB8urR' },
-        { btnId: 'download-cert-dtt', linkId: 'cert-dtt', url: 'https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file' },
-        { btnId: 'download-cert-tcl', linkId: 'cert-tcl', url: 'https://link4m.com/kZuQ2sb' },
-        { btnId: 'download-cert-wuling', linkId: 'cert-wuling', url: 'https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file' },
-        { btnId: 'download-cert-vietnamcert', linkId: 'cert-vietnamcert', url: 'https://yeumoney.com/3GTBHW' },
-        { btnId: 'download-cert-nsl', linkId: 'cert-nsl', url: 'https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file' }
-      ];
-
-      const modsButtons = [
-{ btnId: 'download-mods-coin2', linkId: 'mods-coin2', url: 'https://link4m.com/TE058' },
-        { btnId: 'download-mods-capcutpro', linkId: 'mods-capcutpro', url: 'https://link4m.com/d2Yq2hs9' },
-        { btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
-        { btnId: 'download-mods-coin', linkId: 'mods-coin', url: 'https://link4m.com/UKWKXe' },
-        { btnId: 'download-mods-lqm-v2', linkId: 'mods-lqm-v2', url: 'https://link4m.com/UKWKXe' },
-        { btnId: 'download-mods-lqm-v1', linkId: 'mods-lqm-v1', url: 'https://is.gd/NNLH2v' },
-        { btnId: 'download-mods-key', linkId: 'mods-key', url: 'https://link4m.com/zvHS2' },
-        { btnId: 'download-mods-fb', linkId: 'mods-fb', url: 'https://link4m.com/56CAI48p' },
-        { btnId: 'download-mods-mess', linkId: 'mods-mess', url: 'https://link4m.com/hRIjYxr' },
-        { btnId: 'download-mods-yt', linkId: 'mods-yt', url: 'https://link4m.com/zDZwh7' }
-      ];
-
-      esignButtons.forEach(({ btnId, linkId, url }) => {
-        setupDownloadButton(btnId, linkId, url);
-      });
-
-      certButtons.forEach(({ btnId, linkId, url }) => {
-        setupDownloadButton(btnId, linkId, url);
-      });
-
-      modsButtons.forEach(({ btnId, linkId, url }) => {
-        setupDownloadButton(btnId, linkId, url);
-      });
-
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tabType = btn.getAttribute('data-tab');
-          if (tabType) {
-            showList(tabType);
-          }
-        });
-      });
-
-      const searchInput = document.getElementById('mods-search');
-      if (searchInput) {
-        searchInput.addEventListener('input', filterMods);
-      }
-    });
-
-    let lastScrollTop = 0;
-    const header = document.querySelector('.top-header');
-    window.addEventListener('scroll', () => {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      if (scrollTop > lastScrollTop && scrollTop > 200) {
-        header.classList.add('hidden');
-      } else if (scrollTop < lastScrollTop && scrollTop <= 200) {
-        header.classList.remove('hidden');
-      }
-      lastScrollTop = scrollTop;
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-      applySavedTheme();
-      applySavedLanguage();
-      
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
-      });
-
-      document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
-    });
-  </script>
+  <script src="protect.js"></script>
   <style>
     :root {
       --primary: #4361ee;
@@ -386,7 +24,7 @@
       --transition: all 0.3s ease;
       --background: #f5f7ff;
       --text: #212529;
-      --card-bg: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.85);
       --button-bg: #f8f9fa;
       --button-border: #e9ecef;
     }
@@ -394,8 +32,8 @@
     [data-theme="dark"] {
       --background: #1a1a1a;
       --text: #e0e0e0;
-      --card-bg: #2a2a2a;
-      --button-bg: #333333;
+      --card-bg: rgba(18, 18, 18, 0.85);
+      --button-bg: rgba(18, 18, 18, 0.85);
       --button-border: #444444;
       --light-gray: #444444;
       --gray: #a0a0a0;
@@ -409,7 +47,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--background);
+      background: linear-gradient(135deg, #121212, #000000);
       color: var(--text);
       line-height: 1.6;
       padding: 20px;
@@ -420,11 +58,33 @@
       padding-top: 70px;
     }
 
+    [data-theme="light"] body {
+      background: linear-gradient(135deg, #ffffff, #ebe4e4);
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #121212, #000000);
+      background-size: cover;
+    }
+
+    [data-theme="light"] #particles-js {
+      background: linear-gradient(135deg, #ffffff, #ebe4e4);
+      background-size: cover;
+    }
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
     .top-header {
@@ -433,7 +93,6 @@
       align-items: center;
       gap: 15px;
       padding: 10px 20px;
-      background: var(--card-bg);
       border-radius: 0;
       box-shadow: var(--card-shadow);
       position: fixed;
@@ -443,6 +102,12 @@
       z-index: 1000;
       width: 100%;
       transition: transform 0.3s ease, opacity 0.3s ease;
+      backdrop-filter: blur(2px);
+      background: rgba(18, 18, 18, 0.85);
+    }
+
+    [data-theme="light"] .top-header {
+      background: rgba(255, 255, 255, 0.85);
     }
 
     .top-header.hidden {
@@ -520,7 +185,7 @@
     }
 
     h1 {
-      font-size: 40px;
+      font-size: 50px;
       font-weight: 800;
       color: var(--primary);
       margin-bottom: 10px;
@@ -589,11 +254,11 @@
     }
 
     .tab-container {
-      border: 1.9px solid #dbeafe;
+      border: 1.9px solid rgba(219, 234, 254, 0.3);
       display: flex;
       justify-content: center;
       margin-bottom: 25px;
-      background: var(--card-bg);
+      
       padding: 6px;
       border-radius: 50px;
       box-shadow: var(--card-shadow);
@@ -601,6 +266,11 @@
       margin-left: auto;
       margin-right: auto;
       animation: slideUp 0.8s ease-out;
+      
+    }
+
+    [data-theme="light"] .tab-container {
+      background: rgba(255, 255, 255, 0.5);
     }
 
     .tab-btn {
@@ -616,7 +286,7 @@
     }
 
     .tab-btn.active {
-      background: var(--primary);
+background: #4461ee;
       color: white;
     }
 
@@ -644,6 +314,7 @@
       outline: none;
       transition: var(--transition);
       box-shadow: var(--card-shadow);
+    
     }
 
     .search-input:focus {
@@ -674,7 +345,8 @@
       padding: 20px;
       box-shadow: var(--card-shadow);
       transition: opacity 0.3s ease, transform 0.3s ease;
-      border: 3px solid #dbeafe;
+      border: 3px solid rgba(219, 234, 254, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .app-card:hover {
@@ -699,7 +371,7 @@
       margin-right: 15px;
       color: white;
       font-size: 20px;
-      border: 3px solid #dbeafe;
+      border: 3px solid rgba(219, 234, 254, 0.3);
       position: relative;
     }
 
@@ -805,6 +477,7 @@
       border-radius: 12px;
       box-shadow: var(--card-shadow);
       margin: 20px 0;
+      backdrop-filter: blur(10px);
     }
 
     footer {
@@ -869,7 +542,7 @@
 
     @media (max-width: 768px) {
       h1 {
-        font-size: 24px;
+        font-size: 44px;
       }
 
       .subtitle {
@@ -922,7 +595,7 @@
       }
 
       h1 {
-        font-size: 22px;
+        font-size: 42px;
       }
 
       .top-header {
@@ -947,6 +620,8 @@
   </style>
 </head>
 <body>
+  <div id="particles-js"></div>
+  
   <div class="container">
     <div class="top-header">
       <a href="https://ioscert.site/" class="home-link" title="Home">
@@ -966,7 +641,7 @@
     </div>
 
     <header>
-      <img src="https://i.imgur.com/BIbDCrO.png" alt="VIET NAM CERT Logo" class="logo">
+<img src="https://i.imgur.com/gyJ5hF1.png" alt="VIET NAM CERT Logo" class="logo">
       <h1 data-i18n="title">APPLE CERTIFICATE.</h1>
       <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
 
@@ -1500,10 +1175,7 @@
     <div id="mods-list" class="app-grid hidden">
       <div id="no-results" class="no-results hidden" data-i18n="no-results">Không tìm thấy ứng dụng</div>
 
-
-
-
-<!-- Mods Item: COIN MASTER 2 -->
+      <!-- Mods Item: COIN MASTER 2 -->
       <div class="app-card">
         <div class="app-header">
           <div class="app-icon">
@@ -1742,12 +1414,466 @@
 
     <footer>
       <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
-      <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền</p>
+      <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền. Design by ioscert.site</p>
     </footer>
   </div>
 
   <!-- Cloudflare Web Analytics -->
   <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7d14d39c4a3e419e80e4c4f718f3a28b"}'></script>
   <!-- End Cloudflare Web Analytics -->
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    // Cấu hình Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBYy6EFilwx2ZTzHWMjtL3g59uQb3q7vk",
+      authDomain: "ioscert.firebaseapp.com",
+      projectId: "ioscert",
+      storageBucket: "ioscert.firebasestorage.app",
+      messagingSenderId: "564732555427",
+      appId: "1:564732555427:web:331de00a9db74007250f16",
+      measurementId: "G-327870BB4V"
+    };
+
+    // Khởi tạo Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Object translations
+    const translations = {
+      vi: {
+        title: "APPLE CERTIFICATE.",
+        subtitle: "Chia sẻ chứng chỉ ESign iPhone/iPad và các file iPAs mod",
+        support: "Liên Hệ Hỗ Trợ 24/7",
+        website: "Website Bán Chứng Chỉ Tự Động",
+        dns: "DNS Chặn Thu Hồi và Quảng Cáo",
+        contact: "Liên hệ: ",
+        copyright: "Bản quyền © 2022 CHUNGCHIP12.COM. Bảo lưu mọi quyền.",
+        beijing: "Beijing",
+        "china-railway": "China Railway",
+        "dtt-technology": "Dtt Technology",
+        "tcl-household": "TCL Household",
+        "wuling-power": "Wuling Power",
+        "vietnamcert-01": "VietNamCert.01",
+        "national-science-library": "National Science Library",
+        "Nhân bản app": "Nhân bản và nhiều tính năng VIP ",
+        youtube: "Mở khoá tính năng Premium",
+        "mods-placeholder": "Mods Placeholder",
+        "download-suffix": "lượt cài đặt thành công",
+        "search-placeholder": "Tìm kiếm ứng dụng...",
+        "no-results": "Không tìm thấy ứng dụng"
+      },
+      en: {
+        title: "APPLE CERTIFICATE.",
+        subtitle: "Website share ESign/Certificate on iPhone/iPad With Anti-Revoke",
+        support: "Contact Support 24/7",
+        website: "Automatic Certificate Sales Website",
+        dns: "DNS for Anti-Revoke and Ads Block ",
+        contact: "Contact me: ",
+        copyright: "Copyright © 2022 CHUNGCHIP12.COM. All rights reserved.",
+        beijing: "Beijing",
+        "china-railway": "China Railway",
+        "dtt-technology": "Dtt Technology",
+        "tcl-household": "TCL Household",
+        "wuling-power": "Wuling Power",
+        "vietnamcert-01": "VietNamCert.01",
+        "national-science-library": "National Science Library",
+        "Nhân bản app": "Clone apps and unlock exclusive VIP features ",
+        youtube: "Unlock Premium Mods",
+        "mods-placeholder": "Mods Placeholder",
+        "download-suffix": "successful installations",
+        "search-placeholder": "Search for apps...",
+        "no-results": "No apps found"
+      }
+    };
+
+    // Hàm hiển thị số lượt tải
+    async function updateCounter(linkId, elementId) {
+      try {
+        const docRef = doc(db, "downloads", linkId);
+        const docSnap = await getDoc(docRef);
+        let count = 0;
+        if (docSnap.exists()) {
+          count = docSnap.data().count;
+        } else {
+          await setDoc(docRef, { count: 3007 });
+          count = 3007;
+        }
+        const counterElement = document.getElementById(elementId);
+        if (counterElement) {
+          const currentLang = localStorage.getItem('language') || 'vi';
+          counterElement.innerHTML = `<span style="font-weight: bold; color:#e63946;">${count}</span> ${translations[currentLang]['download-suffix']}`;
+        } else {
+          console.error(`Counter element not found: ${elementId}`);
+        }
+      } catch (error) {
+        console.error(`Error updating counter for ${linkId}:`, error);
+        const counterElement = document.getElementById(elementId);
+        if (counterElement) {
+          counterElement.textContent = `Lỗi: ${error.message}`;
+        }
+      }
+    }
+
+    // Hàm xử lý sự kiện click download
+    function setupDownloadButton(btnId, linkId, url) {
+      const btn = document.getElementById(btnId);
+      const counterElementId = `counter-${linkId}`;
+      btn.href = url;
+      btn.setAttribute('target', '_blank');
+      btn.setAttribute('rel', 'noopener noreferrer');
+      btn.addEventListener("click", async (e) => {
+        try {
+          const docRef = doc(db, "downloads", linkId);
+          await updateDoc(docRef, { count: increment(1) });
+          await updateCounter(linkId, counterElementId);
+        } catch (error) {
+          console.error(`Error on download click for ${linkId}:`, error);
+        }
+      });
+      updateCounter(linkId, counterElementId);
+    }
+
+    // Lưu cài đặt vào localStorage
+    function saveSettings(key, value) {
+      localStorage.setItem(key, value);
+    }
+
+    // Lấy cài đặt từ localStorage
+    function getSetting(key) {
+      return localStorage.getItem(key);
+    }
+
+    // Thiết lập ngôn ngữ
+    function setLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (key !== "esign" && key !== "cert" && key !== "mods" && !element.classList.contains('download-btn')) {
+          if (key === 'contact') {
+            const link = element.querySelector('a');
+            if (link) {
+              element.innerHTML = translations[lang][key] + link.outerHTML;
+            } else {
+              element.textContent = translations[lang][key] || element.textContent;
+            }
+          } else if (element.classList.contains('app-meta')) {
+            element.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('support-link')) {
+            element.innerHTML = `<i class="fas fa-headset"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('website-link')) {
+            element.innerHTML = `<i class="fas fa-globe"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('dns-link')) {
+            element.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[lang][key] || element.textContent}`;
+          } else {
+            element.textContent = translations[lang][key] || element.textContent;
+          }
+        }
+      });
+
+      const searchInput = document.getElementById('mods-search');
+      if (searchInput) {
+        searchInput.placeholder = translations[lang]['search-placeholder'];
+      }
+
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+      document.documentElement.lang = lang;
+      
+      saveSettings('language', lang);
+
+      document.querySelectorAll('.download-count span[id^="counter-"]').forEach(counter => {
+        const linkId = counter.id.replace('counter-', '');
+        updateCounter(linkId, counter.id);
+      });
+    }
+
+    // Thiết lập chế độ giao diện
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.querySelector('.theme-toggle i').className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+      
+      saveSettings('theme', newTheme);
+      updateParticles();
+    }
+
+    // Cập nhật particles theo chủ đề
+    function updateParticles() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      
+      if (window.pJSDom && window.pJSDom.length > 0) {
+        const pJS = window.pJSDom[0].pJS;
+        
+        if (currentTheme === 'dark') {
+          pJS.particles.color.value = "#ffffff";
+          pJS.particles.line_linked.color = "#ffffff";
+          pJS.particles.line_linked.opacity = 0.2;
+        } else {
+          pJS.particles.color.value = "#000000";
+          pJS.particles.line_linked.color = "#000000";
+          pJS.particles.line_linked.opacity = 0.2;
+        }
+        
+        pJS.fn.particlesRefresh();
+      }
+    }
+
+    // Áp dụng chế độ giao diện đã lưu
+    function applySavedTheme() {
+      const savedTheme = getSetting('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.querySelector('.theme-toggle i').className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    // Áp dụng ngôn ngữ đã lưu
+    function applySavedLanguage() {
+      const savedLang = getSetting('language') || 'vi';
+      setLanguage(savedLang);
+    }
+
+    // Hàm chuyển đổi tab
+    function showList(type) {
+      try {
+        const esignList = document.getElementById('esign-list');
+        const certList = document.getElementById('cert-list');
+        const modsList = document.getElementById('mods-list');
+        const searchContainer = document.getElementById('search-container');
+
+        if (!esignList || !certList || !modsList || !searchContainer) {
+          console.error('Error: One or more elements not found in DOM');
+          return;
+        }
+
+        esignList.classList.toggle('hidden', type !== 'esign');
+        certList.classList.toggle('hidden', type !== 'cert');
+        modsList.classList.toggle('hidden', type !== 'mods');
+        searchContainer.classList.toggle('hidden', type !== 'mods');
+
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`.tab-btn[data-tab="${type}"]`);
+        if (activeBtn) {
+          activeBtn.classList.add('active');
+        } else {
+          console.error(`Error: Tab button for ${type} not found`);
+        }
+
+        if (type === 'mods') {
+          const searchInput = document.getElementById('mods-search');
+          searchInput.value = '';
+          filterMods();
+        }
+      } catch (error) {
+        console.error('Error in showList:', error.message);
+      }
+    }
+
+    // Hàm lọc mods theo chuỗi tìm kiếm (tìm kiếm ở bất kỳ vị trí nào trong tiêu đề)
+    function filterMods() {
+      const input = document.getElementById('mods-search').value.toLowerCase().trim();
+      const modsList = document.getElementById('mods-list');
+      const cards = modsList.querySelectorAll('.app-card');
+      const noResults = document.getElementById('no-results');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = card.querySelector('.app-title').textContent.toLowerCase();
+        if (input === '' || title.includes(input)) {
+          // Hiển thị với animation fade-in và slide-up
+          if (card.style.display === 'none' || card.style.display === '') {
+            card.style.display = 'block';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 10); // Delay nhỏ để trigger transition
+          } else {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }
+          visibleCount++;
+        } else {
+          // Ẩn với animation fade-out và slide-down
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.display = 'none';
+          }, 300); // Thời gian transition
+        }
+      });
+
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    }
+
+    // Khởi tạo các nút download khi trang tải xong
+    window.addEventListener("load", () => {
+      const esignButtons = [
+        { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
+        { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
+        { btnId: 'download-esign-bmw', linkId: 'esign-bmw', url: 'https://link4sub.com/jh5D' },
+        { btnId: 'download-esign-beijing', linkId: 'esign-beijing', url: 'https://link4sub.com/K8V9' },
+        { btnId: 'download-esign-railway', linkId: 'esign-railway', url: 'https://link4sub.com/9WWn' },
+        { btnId: 'download-esign-dtt', linkId: 'esign-dtt', url: 'https://link4sub.com/y6nn' },
+        { btnId: 'download-esign-tcl', linkId: 'esign-tcl', url: 'https://link4sub.com/Xnjk' },
+        { btnId: 'download-esign-wuling', linkId: 'esign-wuling', url: 'https://link4sub.com/OKaz' },
+        { btnId: 'download-esign-vietnamcert', linkId: 'esign-vietnamcert', url: 'https://link4sub.com/bsZQ' },
+        { btnId: 'download-esign-nsl', linkId: 'esign-nsl', url: 'https://link4sub.com/2k3j' }
+      ];
+
+      const certButtons = [
+        { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
+        { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
+        { btnId: 'download-cert-bmw', linkId: 'cert-bmw', url: 'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file' },
+        { btnId: 'download-cert-beijing', linkId: 'cert-beijing', url: 'https://link4m.com/phPY35Qe' },
+        { btnId: 'download-cert-railway', linkId: 'cert-railway', url: 'https://link4m.com/tB8urR' },
+        { btnId: 'download-cert-dtt', linkId: 'cert-dtt', url: 'https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file' },
+        { btnId: 'download-cert-tcl', linkId: 'cert-tcl', url: 'https://link4m.com/kZuQ2sb' },
+        { btnId: 'download-cert-wuling', linkId: 'cert-wuling', url: 'https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file' },
+        { btnId: 'download-cert-vietnamcert', linkId: 'cert-vietnamcert', url: 'https://yeumoney.com/3GTBHW' },
+        { btnId: 'download-cert-nsl', linkId: 'cert-nsl', url: 'https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file' }
+      ];
+
+      const modsButtons = [
+        { btnId: 'download-mods-coin2', linkId: 'mods-coin2', url: 'https://link4m.com/TE058' },
+        { btnId: 'download-mods-capcutpro', linkId: 'mods-capcutpro', url: 'https://link4m.com/d2Yq2hs9' },
+        { btnId: 'download-mods-locket', linkId: 'mods-locket', url: 'https://link4m.com/Beevd' },
+        { btnId: 'download-mods-coin', linkId: 'mods-coin', url: 'https://link4m.com/UKWKXe' },
+        { btnId: 'download-mods-lqm-v2', linkId: 'mods-lqm-v2', url: 'https://link4m.com/UKWKXe' },
+        { btnId: 'download-mods-lqm-v1', linkId: 'mods-lqm-v1', url: 'https://is.gd/NNLH2v' },
+        { btnId: 'download-mods-key', linkId: 'mods-key', url: 'https://link4m.com/zvHS2' },
+        { btnId: 'download-mods-fb', linkId: 'mods-fb', url: 'https://link4m.com/56CAI48p' },
+        { btnId: 'download-mods-mess', linkId: 'mods-mess', url: 'https://link4m.com/hRIjYxr' },
+        { btnId: 'download-mods-yt', linkId: 'mods-yt', url: 'https://link4m.com/zDZwh7' }
+      ];
+
+      esignButtons.forEach(({ btnId, linkId, url }) => {
+        setupDownloadButton(btnId, linkId, url);
+      });
+
+      certButtons.forEach(({ btnId, linkId, url }) => {
+        setupDownloadButton(btnId, linkId, url);
+      });
+
+      modsButtons.forEach(({ btnId, linkId, url }) => {
+        setupDownloadButton(btnId, linkId, url);
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabType = btn.getAttribute('data-tab');
+          if (tabType) {
+            showList(tabType);
+          }
+        });
+      });
+
+      const searchInput = document.getElementById('mods-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', filterMods);
+      }
+    });
+
+    let lastScrollTop = 0;
+    const header = document.querySelector('.top-header');
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop && scrollTop > 200) {
+        header.classList.add('hidden');
+      } else if (scrollTop < lastScrollTop && scrollTop <= 200) {
+        header.classList.remove('hidden');
+      }
+      lastScrollTop = scrollTop;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      applySavedTheme();
+      applySavedLanguage();
+      
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+      });
+
+      document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
+    });
+  </script>
+  <script>
+    // Khởi tạo particles background
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      
+      particlesJS("particles-js", {
+        "particles": {
+          "number": {
+            "value": 150,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": currentTheme === 'dark' ? "#ffffff" : "#000000"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": currentTheme === 'dark' ? "#000000" : "#000000"
+            }
+          },
+          "opacity": {
+            "value": 0.3,
+            "random": true
+          },
+          "size": {
+            "value": 2,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 140,
+            "color": currentTheme === 'dark' ? "#ffffff" : "#000000",
+            "opacity": 0.2,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1.2,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "repulse"
+            },
+            "onclick": {
+              "enable": false
+            },
+            "resize": true
+          },
+          "modes": {
+            "repulse": {
+              "distance": 70,
+              "duration": 0.4
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    });
+  </script>
 </body>
 </html>
