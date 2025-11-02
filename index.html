@@ -646,9 +646,9 @@ background: #4461ee;
       <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
 
       <div class="social-icons">
-        <img src="https://i.imgur.com/zsy9xD9.png" class="social-icon" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
-        <img src="https://i.imgur.com/HTuuzNZ.png" class="social-icon" onclick="window.open('https://t.me/vietnamcert', '_blank')">
-        <img src="https://i.imgur.com/PNgQPOG.png" class="social-icon" onclick="window.open('https://t.me/p12certvn', '_blank')">
+        <img src="https://i.imgur.com/ymVow5f.png" class="social-icon" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
+        <img src="https://i.imgur.com/WM9zEpQ.png" class="social-icon" onclick="window.open('https://t.me/vietnamcert', '_blank')">
+        <img src="https://i.imgur.com/MbPA3iX.png" class="social-icon" onclick="window.open('https://t.me/p12certvn', '_blank')">
       </div>
 
       <div class="links-container">
@@ -685,6 +685,36 @@ background: #4461ee;
 
     <!-- ========== ESIGN LIST ========== -->
     <div id="esign-list" class="app-grid">
+
+ <!-- ESign Item: OLA CITY GLOBAL -->
+ <div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-signature"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        ESign 5.0.2
+        <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="OLA CITY GLOBAL LIMITED">
+        <i class="fas fa-map-marker-alt"></i> OLA CITY GLOBAL LIMITED
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-esign-ola">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-esign-ola" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End ESign Item: OLA CITY GLOBAL -->
+
+
+
       <!-- ESign Item: GLOBAL TAKEOFF, INC -->
       <div class="app-card">
         <div class="app-header">
@@ -695,7 +725,7 @@ background: #4461ee;
           <div>
             <div class="app-title">
               ESign 5.0.2
-              <span class="status-dot"></span>
+             
             </div>
             <div class="app-meta" data-i18n="GLOBAL TAKEOFF, INC">
               <i class="fas fa-map-marker-alt"></i> GLOBAL TAKEOFF, INC
@@ -722,7 +752,7 @@ background: #4461ee;
           <div>
             <div class="app-title">
               ESign 5.0.2
-              <span class="status-dot"></span>
+              
             </div>
             <div class="app-meta" data-i18n="China Zheshang Bank Co., Ltd">
               <i class="fas fa-map-marker-alt"></i> China Zheshang Bank Co., Ltd
@@ -929,6 +959,34 @@ background: #4461ee;
 
     <!-- ========== CERT LIST ========== -->
     <div id="cert-list" class="app-grid hidden">
+
+<!-- Cert Item: OLA CITY -->
+<div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-certificate"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        Certificate File
+        <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="OLA CITY GLOBAL LIMITED">
+        <i class="fas fa-map-marker-alt"></i> OLA CITY GLOBAL LIMITED
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-cert-ola">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-cert-ola" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End Cert Item: OLACITY -->
+
       <!-- Cert Item: GLOBAL TAKEOFF, INC -->
       <div class="app-card">
         <div class="app-header">
@@ -939,7 +997,7 @@ background: #4461ee;
           <div>
             <div class="app-title">
               Certificate File
-              <span class="status-dot"></span>
+           
             </div>
             <div class="app-meta" data-i18n="GLOBAL TAKEOFF, INC">
               <i class="fas fa-map-marker-alt"></i> GLOBAL TAKEOFF, INC
@@ -966,7 +1024,7 @@ background: #4461ee;
           <div>
             <div class="app-title">
               Certificate File
-              <span class="status-dot"></span>
+            
             </div>
             <div class="app-meta" data-i18n="China Zheshang Bank Co., Ltd">
               <i class="fas fa-map-marker-alt"></i> China Zheshang Bank Co., Ltd
@@ -1715,6 +1773,7 @@ background: #4461ee;
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
       const esignButtons = [
+      { btnId: 'download-esign-ola', linkId: 'esign-ola', url: 'https://link4sub.com/oXbA' },
         { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-bmw', linkId: 'esign-bmw', url: 'https://link4sub.com/jh5D' },
@@ -1728,6 +1787,7 @@ background: #4461ee;
       ];
 
       const certButtons = [
+      { btnId: 'download-cert-ola', linkId: 'cert-ola', url: 'https://is.gd/DAYunq' },
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
         { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
         { btnId: 'download-cert-bmw', linkId: 'cert-bmw', url: 'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file' },
