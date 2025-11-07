@@ -3,189 +3,374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ký iOS App với P12 - Hướng dẫn chi tiết</title>
+    <title>Ký iOS App Online - EsignApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #4cc9f0;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f0f4ff 0%, #eef2ff 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
+        
+        .navbar-brand {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
         .main-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin: 30px auto;
-            padding: 30px;
+            box-shadow: 0 10px 40px rgba(67, 97, 238, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .step-number {
-            background: #667eea;
-            color: white;
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+        
+        .file-upload-area.dragover {
+            border-color: var(--primary);
+            background: #e0f2fe;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: inline-flex;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            font-weight: bold;
+            margin-right: 15px;
         }
-        .file-upload-area {
-            border: 2px dashed #667eea;
-            border-radius: 10px;
+        
+        .step.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #e5e7eb;
+            margin: 0 10px;
+        }
+        
+        .app-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .app-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .app-option.selected {
+            border-color: var(--primary);
+            background: #f0f9ff;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        }
+        
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-radius: 15px;
             padding: 30px;
             text-align: center;
-            background: #f8f9ff;
-            transition: all 0.3s;
-        }
-        .file-upload-area:hover {
-            background: #eef2ff;
-            border-color: #764ba2;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
-            font-weight: 600;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
-            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#">
+                <i class="fas fa-mobile-alt me-2"></i>
+                EsignApp
+            </a>
+            <span class="badge gradient-bg text-white">iOS App Signing</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-10">
                 <!-- Header -->
-                <div class="text-center text-white mb-5">
-                    <h1 class="display-4 fw-bold mb-3">
-                        <i class="fas fa-mobile-alt me-3"></i>
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold mb-3 text-gray-800">
                         Ký iOS App Online
                     </h1>
-                    <p class="lead">Ký ứng dụng iOS với file P12 và mobileprovision của bạn</p>
+                    <p class="lead text-muted">
+                        Ký ứng dụng iOS với file P12 và mobileprovision của bạn. <br>
+                        Hỗ trợ Esign, GBox, Scarlet, Zsign và nhiều ứng dụng khác.
+                    </p>
+                </div>
+
+                <!-- Progress Steps -->
+                <div class="step-indicator justify-content-center">
+                    <div class="step active">1</div>
+                    <div class="step-line"></div>
+                    <div class="step">2</div>
+                    <div class="step-line"></div>
+                    <div class="step">3</div>
+                    <div class="step-line"></div>
+                    <div class="step">4</div>
                 </div>
 
                 <!-- Main Card -->
-                <div class="main-card">
-                    <!-- Hướng dẫn từng bước -->
-                    <div class="mb-4">
-                        <h4><i class="fas fa-info-circle me-2 text-primary"></i>Hướng dẫn sử dụng:</h4>
-                        <div class="ps-3">
-                            <p class="mb-2"><span class="step-number">1</span> Chuẩn bị file P12 và mobileprovision</p>
-                            <p class="mb-2"><span class="step-number">2</span> Chọn ứng dụng cần ký</p>
-                            <p class="mb-2"><span class="step-number">3</span> Upload file và nhập mật khẩu</p>
-                            <p class="mb-2"><span class="step-number">4</span> Nhấn "Ký Ứng Dụng" và chờ xử lý</p>
-                            <p class="mb-0"><span class="step-number">5</span> Bấm "Cài Đặt Ngay" để cài app lên iPhone</p>
+                <div class="main-card p-4 p-md-5 mb-4">
+                    <!-- Step 1: Chọn ứng dụng -->
+                    <div id="step1" class="step-content">
+                        <h4 class="fw-bold mb-4">
+                            <i class="fas fa-box me-2 text-primary"></i>
+                            Bước 1: Chọn ứng dụng cần ký
+                        </h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="app-option" data-app="Esign.ipa">
+                                    <img src="https://via.placeholder.com/60x60/4361ee/ffffff?text=E" class="app-icon" alt="Esign">
+                                    <h6 class="fw-bold mb-1">Esign</h6>
+                                    <small class="text-muted">App ký ứng dụng</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="app-option" data-app="GBox.ipa">
+                                    <img src="https://via.placeholder.com/60x60/4cc9f0/ffffff?text=G" class="app-icon" alt="GBox">
+                                    <h6 class="fw-bold mb-1">GBox</h6>
+                                    <small class="text-muted">Game platform</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="app-option" data-app="Scarlet.ipa">
+                                    <img src="https://via.placeholder.com/60x60/ef4444/ffffff?text=S" class="app-icon" alt="Scarlet">
+                                    <h6 class="fw-bold mb-1">Scarlet</h6>
+                                    <small class="text-muted">App installer</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="app-option" data-app="Zsign.ipa">
+                                    <img src="https://via.placeholder.com/60x60/22c55e/ffffff?text=Z" class="app-icon" alt="Zsign">
+                                    <h6 class="fw-bold mb-1">Zsign</h6>
+                                    <small class="text-muted">Signing tool</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary" onclick="nextStep(2)">
+                                Tiếp theo <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <hr>
-
-                    <!-- Form ký app -->
-                    <form id="signForm" enctype="multipart/form-data">
-                        <!-- Bước 1: Chọn ứng dụng -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold fs-5">
-                                <i class="fas fa-box me-2"></i>Bước 1: Chọn ứng dụng cần ký
-                            </label>
-                            <select class="form-select form-select-lg" name="ipa_name" required>
-                                <option value="Esign.ipa">📱 Esign - App ký ứng dụng</option>
-                                <option value="GBox.ipa">🎮 GBox - Game platform</option>
-                                <option value="Scarlet.ipa">🔴 Scarlet - App installer</option>
-                                <option value="Zsign.ipa">✍️ Zsign - Signing tool</option>
-                            </select>
-                            <div class="form-text">Chọn ứng dụng bạn muốn ký và cài đặt</div>
+                    <!-- Step 2: Upload file P12 -->
+                    <div id="step2" class="step-content" style="display: none;">
+                        <h4 class="fw-bold mb-4">
+                            <i class="fas fa-file-certificate me-2 text-primary"></i>
+                            Bước 2: Upload file chứng chỉ P12
+                        </h4>
+                        
+                        <div class="file-upload-area" id="p12UploadArea">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h5>Kéo thả file P12 vào đây</h5>
+                            <p class="text-muted mb-3">Hoặc click để chọn file</p>
+                            <input type="file" id="p12File" accept=".p12" style="display: none;">
+                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('p12File').click()">
+                                <i class="fas fa-folder-open me-2"></i>Chọn File P12
+                            </button>
+                            <div id="p12FileName" class="mt-3 text-success fw-bold"></div>
                         </div>
-
-                        <!-- Bước 2: Upload file P12 -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold fs-5">
-                                <i class="fas fa-file-certificate me-2"></i>Bước 2: Upload file chứng chỉ
-                            </label>
-                            <div class="file-upload-area">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                                <h5>Kéo thả file P12 vào đây hoặc click để chọn</h5>
-                                <p class="text-muted">Chọn file chứng chỉ .p12 của bạn</p>
-                                <input type="file" class="form-control d-none" id="p12File" name="p12" accept=".p12" required>
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('p12File').click()">
-                                    <i class="fas fa-folder-open me-2"></i>Chọn File P12
+                        
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100" onclick="prevStep(1)">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
                                 </button>
-                                <div id="p12FileName" class="mt-2 text-success fw-bold"></div>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary w-100" onclick="nextStep(3)">
+                                    Tiếp theo <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Bước 3: Upload mobileprovision -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold fs-5">
-                                <i class="fas fa-file-contract me-2"></i>Bước 3: Upload file provisioning
-                            </label>
-                            <div class="file-upload-area">
-                                <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
-                                <h5>Kéo thả file mobileprovision vào đây hoặc click để chọn</h5>
-                                <p class="text-muted">Chọn file .mobileprovision của bạn</p>
-                                <input type="file" class="form-control d-none" id="mobileprovisionFile" name="mobileprovision" accept=".mobileprovision" required>
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('mobileprovisionFile').click()">
-                                    <i class="fas fa-folder-open me-2"></i>Chọn File Mobileprovision
+                    <!-- Step 3: Upload mobileprovision -->
+                    <div id="step3" class="step-content" style="display: none;">
+                        <h4 class="fw-bold mb-4">
+                            <i class="fas fa-file-contract me-2 text-primary"></i>
+                            Bước 3: Upload file Mobileprovision
+                        </h4>
+                        
+                        <div class="file-upload-area" id="mobileprovisionUploadArea">
+                            <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                            <h5>Kéo thả file .mobileprovision vào đây</h5>
+                            <p class="text-muted mb-3">Hoặc click để chọn file</p>
+                            <input type="file" id="mobileprovisionFile" accept=".mobileprovision" style="display: none;">
+                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('mobileprovisionFile').click()">
+                                <i class="fas fa-folder-open me-2"></i>Chọn File Mobileprovision
+                            </button>
+                            <div id="mobileprovisionFileName" class="mt-3 text-success fw-bold"></div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100" onclick="prevStep(2)">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
                                 </button>
-                                <div id="mobileprovisionFileName" class="mt-2 text-success fw-bold"></div>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary w-100" onclick="nextStep(4)">
+                                    Tiếp theo <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Bước 4: Nhập mật khẩu -->
+                    <!-- Step 4: Nhập mật khẩu -->
+                    <div id="step4" class="step-content" style="display: none;">
+                        <h4 class="fw-bold mb-4">
+                            <i class="fas fa-lock me-2 text-primary"></i>
+                            Bước 4: Nhập mật khẩu P12
+                        </h4>
+                        
                         <div class="mb-4">
-                            <label class="form-label fw-bold fs-5">
-                                <i class="fas fa-lock me-2"></i>Bước 4: Nhập mật khẩu P12
-                            </label>
-                            <div class="input-group input-group-lg">
-                                <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu file P12..." required>
+                            <label class="form-label fw-semibold">Mật khẩu file P12</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="password" 
+                                       placeholder="Nhập mật khẩu file P12...">
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
-                            <div class="form-text">Mật khẩu này được đặt khi export file P12 từ Keychain Access</div>
+                            <div class="form-text">
+                                Mật khẩu này được đặt khi export file P12 từ Keychain Access
+                            </div>
                         </div>
-
-                        <!-- Nút submit -->
-                        <button type="submit" class="btn btn-primary w-100 py-3 fs-5">
-                            <i class="fas fa-signature me-2"></i>KÝ ỨNG DỤNG NGAY
-                        </button>
-                    </form>
-
-                    <!-- Kết quả -->
-                    <div id="resultSection" class="mt-4" style="display: none;">
-                        <div class="alert alert-success border-0">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle fa-2x me-3"></i>
-                                <div>
-                                    <h4 class="alert-heading mb-2">✅ Ký thành công!</h4>
-                                    <p class="mb-3">Ứng dụng đã được ký thành công. Nhấn nút bên dưới để cài đặt lên iPhone:</p>
+                        
+                        <!-- Thông tin đã chọn -->
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">Thông tin đã chọn:</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small><strong>Ứng dụng:</strong> <span id="selectedApp">Esign</span></small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small><strong>File P12:</strong> <span id="selectedP12">Chưa chọn</span></small>
                                 </div>
                             </div>
-                            
-                            <div class="text-center">
-                                <a href="#" id="installBtn" class="btn btn-success btn-lg px-5">
-                                    <i class="fas fa-download me-2"></i>CÀI ĐẶT NGAY
-                                </a>
-                                <p class="mt-3 small text-muted">
-                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                    <strong>Lưu ý:</strong> Link sẽ tự động hết hạn sau 15 phút
-                                </p>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100" onclick="prevStep(3)">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                </button>
                             </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary w-100" onclick="signApp()">
+                                    <i class="fas fa-signature me-2"></i>Ký Ứng Dụng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả -->
+                    <div id="resultSection" class="step-content" style="display: none;">
+                        <div class="result-card">
+                            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                            <h3 class="fw-bold text-success mb-3">Ký Thành Công!</h3>
+                            <p class="mb-4">Ứng dụng đã được ký thành công. Nhấn nút bên dưới để cài đặt lên iPhone.</p>
+                            
+                            <a href="#" id="installBtn" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-download me-2"></i>Cài Đặt Ngay
+                            </a>
+                            
+                            <p class="mt-3 small text-muted">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                Link sẽ tự động hết hạn sau 15 phút
+                            </p>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button class="btn btn-outline-primary" onclick="resetForm()">
+                                <i class="fas fa-redo me-2"></i>Ký Ứng Dụng Khác
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Thông tin bổ sung -->
-                <div class="main-card mt-4">
-                    <h5><i class="fas fa-question-circle me-2 text-primary"></i>Câu hỏi thường gặp</h5>
+                <!-- FAQ Section -->
+                <div class="main-card p-4 p-md-5">
+                    <h4 class="fw-bold mb-4">
+                        <i class="fas fa-question-circle me-2 text-primary"></i>
+                        Hướng dẫn sử dụng
+                    </h4>
+                    
                     <div class="accordion" id="faqAccordion">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
@@ -193,21 +378,29 @@
                                     Làm thế nào để lấy file P12 và mobileprovision?
                                 </button>
                             </h2>
-                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div id="faq1" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
-                                    Bạn cần có tài khoản Apple Developer ($99/năm). Export certificate từ Keychain Access trên Mac và download mobileprovision từ Apple Developer Portal.
+                                    <ol>
+                                        <li>Cần tài khoản Apple Developer ($99/năm)</li>
+                                        <li>Tạo Certificate trong Apple Developer Portal</li>
+                                        <li>Download file .cer và import vào Keychain Access trên Mac</li>
+                                        <li>Export thành file .p12 từ Keychain Access</li>
+                                        <li>Download mobileprovision từ Apple Developer Portal</li>
+                                    </ol>
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                                     Tại sao cần SSL cho website?
                                 </button>
                             </h2>
-                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div id="faq2" class="accordion-collapse collapse">
                                 <div class="accordion-body">
-                                    iOS yêu cầu HTTPS để download app OTA. Bạn có thể dùng Cloudflare Free SSL hoặc Let's Encrypt.
+                                    iOS yêu cầu HTTPS để download app OTA (Over-The-Air). 
+                                    Bạn có thể sử dụng Cloudflare Free SSL hoặc Let's Encrypt.
                                 </div>
                             </div>
                         </div>
@@ -217,39 +410,119 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 EsignApp. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    $(document).ready(function() {
-        // Hiển thị tên file khi chọn
-        $('#p12File').change(function() {
+        // Biến lưu trữ thông tin
+        let currentStep = 1;
+        let selectedApp = 'Esign.ipa';
+        let p12File = null;
+        let mobileprovisionFile = null;
+
+        // Hàm chuyển step
+        function nextStep(step) {
+            document.getElementById('step' + currentStep).style.display = 'none';
+            document.getElementById('step' + step).style.display = 'block';
+            
+            // Update step indicator
+            document.querySelectorAll('.step').forEach((s, index) => {
+                if (index + 1 <= step) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+            
+            currentStep = step;
+        }
+
+        function prevStep(step) {
+            nextStep(step);
+        }
+
+        // Chọn ứng dụng
+        document.querySelectorAll('.app-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.app-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                selectedApp = this.getAttribute('data-app');
+                document.getElementById('selectedApp').textContent = this.querySelector('h6').textContent;
+            });
+        });
+
+        // Xử lý upload file P12
+        document.getElementById('p12File').addEventListener('change', function(e) {
             if (this.files.length > 0) {
-                $('#p12FileName').html('<i class="fas fa-check me-2"></i>' + this.files[0].name);
+                p12File = this.files[0];
+                document.getElementById('p12FileName').innerHTML = 
+                    '<i class="fas fa-check me-2"></i>' + p12File.name;
+                document.getElementById('selectedP12').textContent = p12File.name;
             }
         });
 
-        $('#mobileprovisionFile').change(function() {
+        // Xử lý upload mobileprovision
+        document.getElementById('mobileprovisionFile').addEventListener('change', function(e) {
             if (this.files.length > 0) {
-                $('#mobileprovisionFileName').html('<i class="fas fa-check me-2"></i>' + this.files[0].name);
+                mobileprovisionFile = this.files[0];
+                document.getElementById('mobileprovisionFileName').innerHTML = 
+                    '<i class="fas fa-check me-2"></i>' + mobileprovisionFile.name;
             }
         });
+
+        // Drag and drop cho file upload
+        function setupDragDrop(uploadArea, fileInput) {
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        setupDragDrop(document.getElementById('p12UploadArea'), document.getElementById('p12File'));
+        setupDragDrop(document.getElementById('mobileprovisionUploadArea'), document.getElementById('mobileprovisionFile'));
 
         // Toggle password visibility
-        $('#togglePassword').click(function() {
-            const passwordField = $('input[name="password"]');
-            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
-            passwordField.attr('type', type);
-            $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
         });
 
-        // Xử lý form submit
-        $('#signForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
+        // Hàm ký app
+        async function signApp() {
+            const password = document.getElementById('password').value;
+
             // Validate
-            if (!formData.get('p12').name || !formData.get('mobileprovision').name) {
+            if (!p12File || !mobileprovisionFile) {
                 Swal.fire('Lỗi', 'Vui lòng chọn đầy đủ file P12 và mobileprovision', 'error');
+                return;
+            }
+
+            if (!password) {
+                Swal.fire('Lỗi', 'Vui lòng nhập mật khẩu P12', 'error');
                 return;
             }
 
@@ -267,50 +540,70 @@
                 showConfirmButton: false
             });
 
-            // Gửi request đến backend
-            $.ajax({
-                url: 'sign_app.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.close();
-                    
-                    if (response.success) {
-                        // Hiển thị kết quả thành công
-                        $('#installBtn').attr('href', response.download_url);
-                        $('#resultSection').show();
-                        
-                        // Cuộn đến kết quả
-                        $('html, body').animate({
-                            scrollTop: $('#resultSection').offset().top - 100
-                        }, 500);
-                        
-                        Swal.fire({
-                            title: 'Thành công!',
-                            text: 'Ứng dụng đã được ký thành công',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        Swal.fire('Lỗi!', response.message || 'Có lỗi xảy ra trong quá trình ký', 'error');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.close();
-                    Swal.fire('Lỗi kết nối!', 'Không thể kết nối đến server: ' + error, 'error');
+            // Tạo FormData
+            const formData = new FormData();
+            formData.append('p12', p12File);
+            formData.append('mobileprovision', mobileprovisionFile);
+            formData.append('password', password);
+            formData.append('ipa_name', selectedApp);
+
+            try {
+                // Gửi request đến backend server của bạn
+                // THAY ĐỔI URL NÀY THÀNH SERVER CỦA BẠN
+                const response = await fetch('https://your-server.com/sign_app.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                Swal.close();
+
+                if (result.success) {
+                    // Hiển thị kết quả thành công
+                    document.getElementById('installBtn').href = result.download_url;
+                    nextStep(5); // Chuyển đến step kết quả
+                } else {
+                    Swal.fire('Lỗi!', result.message || 'Có lỗi xảy ra', 'error');
+                }
+            } catch (error) {
+                Swal.close();
+                Swal.fire('Lỗi kết nối!', 'Không thể kết nối đến server: ' + error.message, 'error');
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            currentStep = 1;
+            selectedApp = 'Esign.ipa';
+            p12File = null;
+            mobileprovisionFile = null;
+            
+            // Reset UI
+            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+            document.getElementById('step1').style.display = 'block';
+            document.querySelectorAll('.app-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector('.app-option').classList.add('selected');
+            document.getElementById('p12FileName').innerHTML = '';
+            document.getElementById('mobileprovisionFileName').innerHTML = '';
+            document.getElementById('password').value = '';
+            document.getElementById('selectedApp').textContent = 'Esign';
+            document.getElementById('selectedP12').textContent = 'Chưa chọn';
+            
+            // Reset step indicator
+            document.querySelectorAll('.step').forEach((s, index) => {
+                if (index === 0) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
                 }
             });
-        });
+        }
 
         // Xử lý nút cài đặt
-        $('#installBtn').on('click', function(e) {
-            const installUrl = $(this).attr('href');
+        document.getElementById('installBtn').addEventListener('click', function(e) {
+            const installUrl = this.href;
             if (installUrl && installUrl.startsWith('itms-services://')) {
-                // Mở itms-services URL để cài đặt app
-                window.location.href = installUrl;
-                
                 Swal.fire({
                     title: 'Đang chuyển hướng...',
                     text: 'iOS sẽ mở và bắt đầu cài đặt ứng dụng',
@@ -320,7 +613,6 @@
                 });
             }
         });
-    });
     </script>
 </body>
 </html>
