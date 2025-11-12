@@ -1021,18 +1021,20 @@
                                 };
                                 
                                 try {
+                                    // Tạo share ID và lưu lên Firebase
                                     this.shareId = await this.firebaseService.saveSignedApp(appInfo);
+                                    console.log('✅ Đã tạo shareId:', this.shareId);
                                     
-                                    // FIX QUAN TRỌNG: Tạo URL đúng định dạng
-                                    const currentPath = window.location.pathname;
-                                    const baseUrl = window.location.origin + currentPath;
-                                    this.shareUrl = baseUrl + '?download=' + this.shareId;
+                                    // Tạo URL share - FIX QUAN TRỌNG
+                                    const currentUrl = new URL(window.location.href);
+                                    currentUrl.searchParams.set('download', this.shareId);
+                                    this.shareUrl = currentUrl.toString();
                                     
-                                    console.log('🔗 Đang cập nhật URL từ:', window.location.href);
-                                    console.log('🔗 Đến URL:', this.shareUrl);
+                                    console.log('🔗 Share URL được tạo:', this.shareUrl);
                                     
                                     // CẬP NHẬT URL TRÌNH DUYỆT
-                                    window.history.pushState({}, '', this.shareUrl);
+                                    window.history.replaceState({}, '', this.shareUrl);
+                                    console.log('✅ Đã cập nhật URL trình duyệt thành:', window.location.href);
                                     
                                     this.showStep3 = false;
                                     this.showStep4 = true;
@@ -1040,8 +1042,11 @@
                                     
                                     // Generate QR Code
                                     setTimeout(() => {
-                                        if (document.getElementById('qrcode')) {
-                                            new QRCode(document.getElementById('qrcode'), {
+                                        const qrElement = document.getElementById('qrcode');
+                                        if (qrElement) {
+                                            // Clear previous QR code
+                                            qrElement.innerHTML = '';
+                                            new QRCode(qrElement, {
                                                 width: 150,
                                                 height: 150,
                                                 colorDark: "#000000",
@@ -1051,19 +1056,18 @@
                                         }
                                     }, 100);
                                     
-                                    console.log('✅ Đã tạo share URL:', this.shareUrl);
-                                    console.log('✅ URL hiện tại sau update:', window.location.href);
-                                    
                                 } catch (firebaseError) {
-                                    console.error('Firebase error:', firebaseError);
+                                    console.error('❌ Firebase error:', firebaseError);
                                     // Vẫn hiển thị kết quả ngay cả khi Firebase lỗi
                                     this.showStep3 = false;
                                     this.showStep4 = true;
                                     this.uploading = false;
                                     
                                     setTimeout(() => {
-                                        if (document.getElementById('qrcode')) {
-                                            new QRCode(document.getElementById('qrcode'), {
+                                        const qrElement = document.getElementById('qrcode');
+                                        if (qrElement) {
+                                            qrElement.innerHTML = '';
+                                            new QRCode(qrElement, {
                                                 width: 150,
                                                 height: 150,
                                                 colorDark: "#000000",
@@ -1119,19 +1123,17 @@
                                 this.download = appInfo.downloadUrl;
                                 this.download_ipa = appInfo.downloadUrl;
                                 this.shareId = downloadId;
-                                
-                                // Tạo share URL
-                                const currentPath = window.location.pathname;
-                                const baseUrl = window.location.origin + currentPath;
-                                this.shareUrl = baseUrl + '?download=' + downloadId;
+                                this.shareUrl = window.location.href;
                                 
                                 this.showStep3 = false;
                                 this.showStep4 = true;
                                 
                                 // Generate QR Code
                                 setTimeout(() => {
-                                    if (document.getElementById('qrcode')) {
-                                        new QRCode(document.getElementById('qrcode'), {
+                                    const qrElement = document.getElementById('qrcode');
+                                    if (qrElement) {
+                                        qrElement.innerHTML = '';
+                                        new QRCode(qrElement, {
                                             width: 150,
                                             height: 150,
                                             colorDark: "#000000",
@@ -1159,20 +1161,33 @@
                 },
                 copyShareUrl() {
                     const shareInput = document.getElementById('shareUrl');
-                    if (shareInput) {
+                    if (shareInput && this.shareUrl) {
                         shareInput.select();
                         shareInput.setSelectionRange(0, 99999);
                         
                         try {
                             const successful = document.execCommand('copy');
                             if (successful) {
-                                alert('Đã copy link chia sẻ vào clipboard!');
+                                alert('✅ Đã copy link chia sẻ vào clipboard!');
+                                console.log('✅ Đã copy URL:', this.shareUrl);
                             } else {
-                                alert('Không thể copy link. Vui lòng sao chép thủ công.');
+                                // Fallback for mobile
+                                navigator.clipboard.writeText(this.shareUrl).then(() => {
+                                    alert('✅ Đã copy link chia sẻ vào clipboard!');
+                                }).catch(() => {
+                                    alert('📝 Vui lòng sao chép link thủ công: ' + this.shareUrl);
+                                });
                             }
                         } catch (err) {
-                            alert('Vui lòng sao chép link thủ công: ' + this.shareUrl);
+                            // Fallback for older browsers
+                            navigator.clipboard.writeText(this.shareUrl).then(() => {
+                                alert('✅ Đã copy link chia sẻ vào clipboard!');
+                            }).catch(() => {
+                                alert('📝 Vui lòng sao chép link thủ công: ' + this.shareUrl);
+                            });
                         }
+                    } else {
+                        alert('❌ Chưa có link chia sẻ. Vui lòng thử lại sau.');
                     }
                 },
                 showError(message) {
@@ -1198,7 +1213,7 @@
                     
                     // Xóa query parameter khi quay lại
                     const baseUrl = window.location.origin + window.location.pathname;
-                    window.history.pushState({}, '', baseUrl);
+                    window.history.replaceState({}, '', baseUrl);
                     
                     this.showStep1 = true;
                     this.showStep2 = false;
@@ -1221,6 +1236,7 @@
                     this.pwdCss = 'invalid';
                     this.name = '';
                     this.identifier = '';
+                    this.shareUrl = '';
                     
                     this.hideError();
                 }
