@@ -2,19 +2,17 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Ký IPAs Trực Tuyến - An Toàn - Tự Động</title>
+    <title>IPASign - Ký file IPA trực tuyến không cần macOS</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
-    <!-- External Libraries -->
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -25,7 +23,7 @@
                 <div class="header-content">
                     <a href="#" class="logo">
                         <i class="fas fa-mobile-alt logo-icon"></i>
-                        IOSCERT.SITE - GIẢI PHÁP CHO THIẾT BỊ APPLE
+                        IPASign
                     </a>
                     <a href="https://chungchip12.com" target="_blank" class="cert-link">
                         <i class="fas fa-certificate"></i>
@@ -51,7 +49,7 @@
                             <div class="grid">
                                 <!-- IPA File -->
                                 <div class="form-group">
-                                    <label class="form-label">File IPA muốn cài đặt</label>
+                                    <label class="form-label">File IPA</label>
                                     <div class="file-input-container">
                                         <input type="file" @change="getFile($event)" ref="ipa" required accept=".ipa" class="file-input" id="ipa">
                                         <label for="ipa" class="file-input-label" :class="ipaCss">
@@ -63,7 +61,7 @@
                                 
                                 <!-- P12 File -->
                                 <div class="form-group">
-                                    <label class="form-label">File .P12</label>
+                                    <label class="form-label">File chứng chỉ (.p12)</label>
                                     <div class="file-input-container">
                                         <input type="file" @change="getFile($event)" ref="p12" required accept=".p12" class="file-input" id="p12">
                                         <label for="p12" class="file-input-label" :class="p12Css">
@@ -75,7 +73,7 @@
                                 
                                 <!-- Mobile Provision File -->
                                 <div class="form-group">
-                                    <label class="form-label">File .MobileProvision</label>
+                                    <label class="form-label">File Mobile Provision</label>
                                     <div class="file-input-container">
                                         <input type="file" ref="mob" @change="getFile($event)" required accept=".mobileprovision" class="file-input" id="mobileprovision">
                                         <label for="mobileprovision" class="file-input-label" :class="mobCss">
@@ -120,7 +118,6 @@
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 Bước 2: Đang tải file lên
                             </h2>
-                            <p>Tốc độ nhanh hay chậm phụ thuộc vào tốc độ mạng và dung lượng IPA của bạn</p>
                         </div>
                         <div class="card-body">
                             <div class="progress-container">
@@ -204,7 +201,6 @@
         </footer>
     </div>
 
-    <!-- Custom JavaScript -->
     <script src="js/app.js"></script>
 </body>
 </html>
