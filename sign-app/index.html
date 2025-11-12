@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>IOSCert - Ký file IPA trực tuyến chuyên nghiệp</title>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #1f2937;
+            --dark: #0f1720;
+            --light: #f1f5f9;
+            --gray: #374151;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark), #1e293b);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #0ea5e9, var(--primary));
+            padding: 1.2rem 2rem;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-file-label {
+            background: var(--gray);
+            color: var(--light);
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .custom-file-label:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .custom-file-label::after {
+            content: 'Chọn file';
+            background: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .custom-file-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .progress {
+            background: var(--gray);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+            margin: 1.5rem 0;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            background: linear-gradient(90deg, var(--primary), #0ea5e9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .alert {
+            background: var(--primary);
+            color: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        input.form-control {
+            background: var(--gray);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            color: var(--light);
+            padding: 0.8rem 1.2rem;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        input.form-control:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            border-color: var(--primary);
+        }
+
+        .is-valid {
+            border-color: var(--success) !important;
+        }
+
+        .is-invalid {
+            border-color: var(--danger) !important;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-sm-6, .col-sm-12 {
+            padding: 0 10px;
+        }
+
+        .col-sm-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .col-sm-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 3rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .d-block {
+            display: block;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .fa-spin {
+            animation: fa-spin 2s infinite linear;
+        }
+
+        @keyframes fa-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+
+        #qrcode {
+            margin: 1rem auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gray);
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .step.active .step-circle {
+            background: var(--primary);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+
+        .step.active .step-label {
+            color: var(--light);
+        }
+
+        .download-link {
+            background: var(--gray);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            word-break: break-all;
+            margin: 1rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .download-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .download-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .col-sm-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .step-label {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<div id="app">
+    <div class="container">
+        <nav class="navbar">
+            <a href="#" target="_self" class="navbar-brand">IOSCert.site</a>
+        </nav>
+
+        <div class="mt-5">
+            <transition name="fade">
+                <div v-show="show" role="alert" aria-live="polite" aria-atomic="true" class="alert">
+                    Mua chứng chỉ ký IPA tại: <strong>CHUNGCHIP12.COM</strong>
+                </div>
+            </transition>
+
+            <div class="card">
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step" :class="{active: showStep1}">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Chọn file</div>
+                    </div>
+                    <div class="step" :class="{active: showStep2}">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Chuẩn bị</div>
+                    </div>
+                    <div class="step" :class="{active: showStep3}">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Xử lý</div>
+                    </div>
+                    <div class="step" :class="{active: showStep4}">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Cài đặt</div>
+                    </div>
+                </div>
+
+                <!-- Step 1: File Selection -->
+                <div class="card-body" v-show="showStep1">
+                    <h4 class="card-title">Bước 1: Chọn file</h4>
+                    
+                    <div class="form-group">
+                        <div class="custom-file b-form-file" v-bind:class="ipaCss">
+                            <input type="file" @change="getFile($event)" ref="ipa" required accept=".ipa" class="custom-file-input" id="ipa">
+                            <label class="custom-file-label" for="ipa">
+                                <span class="d-block form-file-text">{{ ipaText }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="custom-file b-form-file" v-bind:class="p12Css">
+                                    <input type="file" @change="getFile($event)" ref="p12" required accept=".p12" class="custom-file-input" id="p12">
+                                    <label class="custom-file-label" for="p12">
+                                        <span class="d-block form-file-text">{{ p12Text }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="form-control" v-bind:class="pwdCss" id="password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-file b-form-file" v-bind:class="mobCss">
+                            <input type="file" ref="mob" @change="getFile($event)" required accept=".mobileprovision" class="custom-file-input" id="mobileprovision">
+                            <label class="custom-file-label" for="mobileprovision">
+                                <span class="d-block form-file-text">{{ mobText }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" v-model="identifier" ref="identifier" placeholder="Nhập BundleID mới" class="form-control" id="identifier">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" v-model="name" ref="name" placeholder="Nhập tên App mới" class="form-control" id="name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" @click="upload">
+                        <svg style="height: 20px;" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="signature" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                            <path fill="currentColor" d="M623.2 192c-51.8 3.5-125.7 54.7-163.1 71.5-29.1 13.1-54.2 24.4-76.1 24.4-22.6 0-26-16.2-21.3-51.9 1.1-8 11.7-79.2-42.7-76.1-25.1 1.5-64.3 24.8-169.5 126L192 182.2c30.4-75.9-53.2-151.5-129.7-102.8L7.4 116.3C0 121-2.2 130.9 2.5 138.4l17.2 27c4.7 7.5 14.6 9.7 22.1 4.9l58-38.9c18.4-11.7 40.7 7.2 32.7 27.1L34.3 404.1C27.5 421 37.1 441.5 54.5 443.8c16.4 2.1 31.9-6.9 36.7-23.3l65.2-211.3c7.3-23.8 25.5-43.2 49.4-50.7l135.7-41.2c23.8-7.3 49.7-1.1 68.5 16.9 21.1 20.5 28.6 50.3 21.1 78.8l-13.3 46.4c-2.7 9.4-1.8 19.4 2.5 28.2 4.3 8.8 11.6 15.7 20.5 19.4 13.1 5.4 54.7 21.3 131-5.6 69.8-24.7 127.3-47.6 132.6-63.6 5.6-16.7-11.4-35.9-48.7-46.2z"></path>
+                        </svg>
+                        Ký ngay!
+                    </button>
+                </div>
+
+                <!-- Step 2: Preparation -->
+                <div class="card-body" v-show="showStep2">
+                    <h4 class="card-title">Bước 2: Chuẩn bị</h4>
+                    <p class="text-center">Đang tải file lên máy chủ...</p>
+                    <div class="progress">
+                        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progressBar }}" class="progress-bar" v-bind:style="{'width': progressBar + '%'}"><strong>{{ progressBar }}%</strong></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Processing -->
+                <div class="card-body" v-show="showStep3">
+                    <h4 class="card-title">Bước 3: Xử lý</h4>
+                    <div class="text-center">
+                        <svg style="height: 40px; margin-bottom: 1rem;" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cog" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-cog fa-spin">
+                            <path fill="currentColor" d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path>
+                        </svg>
+                        <p>Đang xử lý file của bạn, vui lòng chờ...</p>
+                        <p class="text-center">{{ statusText }}</p>
+                    </div>
+                </div>
+
+                <!-- Step 4: Installation -->
+                <div class="card-body" v-show="showStep4">
+                    <h4 class="card-title">Bước 4: Cài đặt ứng dụng</h4>
+                    <div class="row">
+                        <div class="col-sm-6 text-center">
+                            <h6>Quét mã QR này bằng camera</h6>
+                            <div id="qrcode"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6>Sao chép & gửi link cho tester</h6>
+                            <div class="download-link">
+                                <a :href="realDownloadUrl" @click="handleDownloadClick" target="_blank" rel="noopener noreferrer">{{displayDownloadUrl}}</a>
+                            </div>
+                            <p class="text-center"><small>Nhấn vào link để tải ứng dụng đã ký</small></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn mt-3 btn-primary" @click="index">Bắt đầu lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Giải pháp CORS đơn giản - chỉ dùng 1 file HTML
+new Vue({
+  el: '#app',
+  data: {
+    show: true,
+    showStep1: true,
+    showStep2: false,
+    showStep3: false,
+    showStep4: false,
+    progressBar: 0,
+    ipa: null,
+    ipaCss: 'is-invalid',
+    ipaText: 'Chọn file .ipa...',
+    p12: null,
+    p12Css: 'is-invalid',
+    p12Text: 'Chọn file .p12...',
+    mobileprovision: null,
+    mobCss: 'is-invalid',
+    mobText: 'Chọn file .mobileprovision...',
+    password: '',
+    pwdCss: 'is-invalid',
+    name: '',
+    identifier: '',
+    jobId: '',
+    statusText: '',
+    realDownloadUrl: '',
+    displayDownloadUrl: ''
+  },
+  methods: {
+    getFile(e) {
+      const file = e.target.files[0] || null;
+      if (e.target.accept === '.ipa') {
+        this.ipa = file;
+        this.ipaCss = file ? 'is-valid' : 'is-invalid';
+        this.ipaText = file ? file.name : 'Chọn file .ipa...';
+      } else if (e.target.accept === '.p12') {
+        this.p12 = file;
+        this.p12Css = file ? 'is-valid' : 'is-invalid';
+        this.p12Text = file ? file.name : 'Chọn file .p12...';
+      } else if (e.target.accept === '.mobileprovision') {
+        this.mobileprovision = file;
+        this.mobCss = file ? 'is-valid' : 'is-invalid';
+        this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
+      }
+    },
+
+    // Giải pháp đơn giản: Sử dụng fetch với mode 'no-cors' và JSONP alternative
+    async upload() {
+      if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+        return;
+      }
+
+      this.showStep1 = false;
+      this.showStep2 = true;
+      this.progressBar = 0;
+      
+      const fd = new FormData();
+      fd.append('ipa', this.ipa);
+      fd.append('p12', this.p12);
+      fd.append('mp', this.mobileprovision);
+      fd.append('password', this.password);
+      fd.append('app_name', this.name);
+      fd.append('bundle_id', this.identifier);
+      
+      try {
+        // Giải pháp 1: Sử dụng XMLHttpRequest trực tiếp (bypass CORS)
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            this.progressBar = Math.round((e.loaded / e.total) * 100);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              this.jobId = response.task_id;
+              this.showStep2 = false;
+              this.showStep3 = true;
+              this.pollStatus();
+            } catch (e) {
+              this.handleError('Lỗi phân tích phản hồi từ server');
+            }
+          } else {
+            this.handleError(`Lỗi server: ${xhr.status}`);
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          this.handleError('Lỗi kết nối mạng');
+        });
+
+        // Gửi request trực tiếp đến endpoint
+        xhr.open('POST', 'https://sign.ipasign.cc/sign');
+        xhr.send(fd);
+        
+      } catch (err) {
+        this.handleError('Lỗi không xác định: ' + err.message);
+      }
+    },
+
+    // Poll status sử dụng JSONP technique
+    pollStatus() {
+      this.statusText = 'Đang chờ xử lý...';
+      let attempts = 0;
+      const maxAttempts = 60; // 3 phút
+      
+      const checkStatus = () => {
+        if (attempts >= maxAttempts) {
+          this.handleError('Thời gian chờ quá lâu. Vui lòng thử lại.');
+          return;
+        }
+        
+        attempts++;
+        
+        // Tạo script tag để bypass CORS (JSONP technique)
+        const script = document.createElement('script');
+        const callbackName = 'statusCallback_' + Date.now();
+        
+        window[callbackName] = (data) => {
+          document.head.removeChild(script);
+          delete window[callbackName];
+          
+          this.statusText = data.status === 'PENDING' ? 'Đang xử lý...' : data.status;
+          
+          if (data.status === 'SUCCESS') {
+            this.realDownloadUrl = `https://ipa.ipasign.cc/download/${this.jobId}`;
+            this.displayDownloadUrl = `https://ioscert.site/app/${this.jobId}/install`;
+            
+            this.showStep3 = false;
+            this.showStep4 = true;
+            
+            new QRCode(document.getElementById('qrcode'), {
+              width: 150,
+              height: 150,
+              colorDark: '#3b82f6',
+              colorLight: '#1f2937',
+              correctLevel: QRCode.CorrectLevel.H
+            }).makeCode(this.realDownloadUrl);
+            
+          } else if (data.status === 'FAILURE') {
+            this.handleError('Ký IPA thất bại: ' + (data.msg || 'Lỗi không xác định'));
+          } else {
+            // Tiếp tục polling
+            setTimeout(checkStatus, 3000);
+          }
+        };
+        
+        // Gửi request JSONP
+        script.src = `https://sign.ipasign.cc/status/${this.jobId}?callback=${callbackName}`;
+        document.head.appendChild(script);
+        
+      };
+      
+      // Bắt đầu polling
+      checkStatus();
+    },
+
+    // Giải pháp thay thế nếu JSONP không hoạt động
+    async pollStatusAlternative() {
+      this.statusText = 'Đang chờ xử lý...';
+      const timer = setInterval(async () => {
+        try {
+          // Sử dụng proxy public miễn phí
+          const proxyUrl = 'https://api.allorigins.win/raw?url=';
+          const statusUrl = encodeURIComponent(`https://sign.ipasign.cc/status/${this.jobId}`);
+          
+          const response = await fetch(proxyUrl + statusUrl);
+          const data = await response.json();
+          
+          this.statusText = data.status === 'PENDING' ? 'Đang xử lý...' : data.status;
+          
+          if (data.status === 'SUCCESS') {
+            this.realDownloadUrl = `https://ipa.ipasign.cc/download/${this.jobId}`;
+            this.displayDownloadUrl = `https://ioscert.site/app/${this.jobId}/install`;
+            
+            clearInterval(timer);
+            this.showStep3 = false;
+            this.showStep4 = true;
+            
+            new QRCode(document.getElementById('qrcode'), {
+              width: 150,
+              height: 150,
+              colorDark: '#3b82f6',
+              colorLight: '#1f2937',
+              correctLevel: QRCode.CorrectLevel.H
+            }).makeCode(this.realDownloadUrl);
+            
+          } else if (data.status === 'FAILURE') {
+            clearInterval(timer);
+            this.handleError('Ký IPA thất bại: ' + (data.msg || 'Lỗi không xác định'));
+          }
+        } catch (err) {
+          console.log('Đang thử lại...');
+        }
+      }, 3000);
+    },
+
+    handleError(message) {
+      alert(message);
+      this.showStep1 = true;
+      this.showStep2 = false;
+      this.showStep3 = false;
+    },
+    
+    handleDownloadClick(e) {
+      console.log('Download initiated for job:', this.jobId);
+    },
+    
+    close() { this.show = false; },
+    index() { window.location.reload(); }
+  },
+  watch: {
+    password(val) { 
+      this.pwdCss = val.length ? 'is-valid' : 'is-invalid'; 
+    }
+  },
+  
+  mounted() {
+    // Thử phương pháp pollStatusAlternative đầu tiên
+    this.pollStatus = this.pollStatusAlternative;
+  }
+});
+</script>
+</body>
+</html>
