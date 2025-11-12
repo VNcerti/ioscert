@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
+        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
-   
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
-   
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-   
+    
     <style>
         :root {
             --primary: #4361ee;
@@ -38,13 +39,13 @@
             --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             --transition: all 0.3s ease;
         }
-       
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-       
+        
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0f1720, #1e293b);
@@ -52,13 +53,13 @@
             min-height: 100vh;
             line-height: 1.6;
         }
-       
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-       
+        
         /* Header */
         .header {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
@@ -67,7 +68,7 @@
             position: relative;
             overflow: hidden;
         }
-       
+        
         .header::before {
             content: '';
             position: absolute;
@@ -78,7 +79,7 @@
             background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgZD0iTTI1IDI1aDUwdjUwaC01MHoiLz48L3N2Zz4=');
             opacity: 0.1;
         }
-       
+        
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -86,7 +87,7 @@
             position: relative;
             z-index: 1;
         }
-       
+        
         .logo {
             display: flex;
             align-items: center;
@@ -96,11 +97,11 @@
             color: white;
             text-decoration: none;
         }
-       
+        
         .logo-icon {
             font-size: 2rem;
         }
-       
+        
         .cert-link {
             background: rgba(255, 255, 255, 0.15);
             padding: 10px 20px;
@@ -114,17 +115,17 @@
             gap: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-       
+        
         .cert-link:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
         }
-       
+        
         /* Main Content */
         .main-content {
             padding: 3rem 0;
         }
-       
+        
         .card {
             background: var(--dark-light);
             border-radius: var(--border-radius);
@@ -134,18 +135,18 @@
             transition: var(--transition);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-       
+        
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
-       
+        
         .card-header {
             background: rgba(0, 0, 0, 0.2);
             padding: 1.5rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-       
+        
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -154,33 +155,33 @@
             align-items: center;
             gap: 10px;
         }
-       
+        
         .card-title i {
             color: var(--primary);
         }
-       
+        
         .card-body {
             padding: 2rem;
         }
-       
+        
         /* Form Elements */
         .form-group {
             margin-bottom: 1.5rem;
         }
-       
+        
         .form-label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.8);
         }
-       
+        
         .file-input-container {
             position: relative;
             display: flex;
             align-items: center;
         }
-       
+        
         .file-input {
             position: absolute;
             opacity: 0;
@@ -188,7 +189,7 @@
             height: 0.1px;
             overflow: hidden;
         }
-       
+        
         .file-input-label {
             display: flex;
             align-items: center;
@@ -201,32 +202,32 @@
             transition: var(--transition);
             width: 100%;
         }
-       
+        
         .file-input-label:hover {
             border-color: var(--primary);
             background: rgba(67, 97, 238, 0.05);
         }
-       
+        
         .file-input-label.valid {
             border-color: var(--success);
             background: rgba(6, 214, 160, 0.05);
         }
-       
+        
         .file-input-label.invalid {
             border-color: var(--danger);
             background: rgba(239, 71, 111, 0.05);
         }
-       
+        
         .file-name {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
         }
-       
+        
         .file-icon {
             color: var(--primary);
             font-size: 1.2rem;
         }
-       
+        
         .text-input {
             width: 100%;
             background: rgba(255, 255, 255, 0.05);
@@ -237,27 +238,27 @@
             font-size: 1rem;
             transition: var(--transition);
         }
-       
+        
         .text-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
-       
+        
         .text-input.valid {
             border-color: var(--success);
         }
-       
+        
         .text-input.invalid {
             border-color: var(--danger);
         }
-       
+        
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
         }
-       
+        
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -276,22 +277,22 @@
             text-decoration: none;
             width: 100%;
         }
-       
+        
         .btn:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 7px 20px rgba(67, 97, 238, 0.3);
         }
-       
+        
         .btn i {
             font-size: 1.1rem;
         }
-       
+        
         /* Progress Bar */
         .progress-container {
             margin: 2rem 0;
         }
-       
+        
         .progress-label {
             display: flex;
             justify-content: space-between;
@@ -299,14 +300,14 @@
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.7);
         }
-       
+        
         .progress-bar {
             height: 12px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
         }
-       
+        
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
@@ -315,7 +316,7 @@
             position: relative;
             overflow: hidden;
         }
-       
+        
         .progress-fill::after {
             content: '';
             position: absolute;
@@ -336,35 +337,39 @@
             background-size: 50px 50px;
             animation: move 2s linear infinite;
         }
-       
+        
         @keyframes move {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
         }
-       
+        
         /* Processing */
         .processing-container {
             text-align: center;
             padding: 2rem;
         }
-       
+        
         .spinner {
             font-size: 3rem;
             color: var(--primary);
             margin-bottom: 1rem;
             animation: spin 2s linear infinite;
         }
-       
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-       
+        
         .processing-text {
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
-       
+        
         .log-container {
             background: rgba(0, 0, 0, 0.2);
             border-radius: var(--border-radius);
@@ -376,49 +381,49 @@
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.7);
         }
-       
+        
         /* Result */
         .result-container {
             text-align: center;
             padding: 2rem;
         }
-       
+        
         .success-icon {
             font-size: 4rem;
             color: var(--success);
             margin-bottom: 1rem;
         }
-       
+        
         .result-title {
             font-size: 1.8rem;
             margin-bottom: 1rem;
             color: white;
         }
-       
+        
         .result-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin: 2rem 0;
         }
-       
+        
         .qr-container, .link-container {
             background: rgba(0, 0, 0, 0.2);
             border-radius: var(--border-radius);
             padding: 1.5rem;
         }
-       
+        
         .qr-title, .link-title {
             font-size: 1.1rem;
             margin-bottom: 1rem;
             color: rgba(255, 255, 255, 0.8);
         }
-       
+        
         .qr-code {
             display: flex;
             justify-content: center;
         }
-       
+        
         .download-link {
             display: block;
             background: rgba(255, 255, 255, 0.05);
@@ -429,11 +434,22 @@
             word-break: break-all;
             transition: var(--transition);
         }
-       
+        
         .download-link:hover {
             background: rgba(67, 97, 238, 0.1);
         }
-       
+        
+        .share-url {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .share-url a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
         /* Footer */
         .footer {
             text-align: center;
@@ -443,25 +459,43 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 3rem;
         }
-       
+        
         /* Animations */
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
-        .fade-enter, .fade-leave-to { opacity: 0; }
-       
-        .slide-enter-active, .slide-leave-active { transition: transform 0.5s, opacity 0.5s; }
-        .slide-enter, .slide-leave-to { transform: translateY(20px); opacity: 0; }
-       
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+        
+        .slide-enter-active, .slide-leave-active {
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        .slide-enter, .slide-leave-to {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content { flex-direction: column; gap: 1rem; }
-            .result-content { grid-template-columns: 1fr; }
-            .grid { grid-template-columns: 1fr; }
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .result-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-   
+    
     <div id="app">
         <!-- Header -->
         <header class="header">
@@ -478,18 +512,22 @@
                 </div>
             </div>
         </header>
-       
+        
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
-                <!-- Step 1 -->
+                <!-- Step 1: File Selection -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep1">
                         <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-file-upload"></i> Bước 1: Chọn file cần ký</h2>
+                            <h2 class="card-title">
+                                <i class="fas fa-file-upload"></i>
+                                Bước 1: Chọn file cần ký
+                            </h2>
                         </div>
                         <div class="card-body">
                             <div class="grid">
+                                <!-- IPA File -->
                                 <div class="form-group">
                                     <label class="form-label">File IPA</label>
                                     <div class="file-input-container">
@@ -500,6 +538,8 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                <!-- P12 File -->
                                 <div class="form-group">
                                     <label class="form-label">File chứng chỉ (.p12)</label>
                                     <div class="file-input-container">
@@ -510,6 +550,8 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                <!-- Mobile Provision File -->
                                 <div class="form-group">
                                     <label class="form-label">File Mobile Provision</label>
                                     <div class="file-input-container">
@@ -520,29 +562,42 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                <!-- Password -->
                                 <div class="form-group">
                                     <label class="form-label">Mật khẩu file .p12</label>
                                     <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss">
                                 </div>
+                                
+                                <!-- Bundle ID -->
                                 <div class="form-group">
                                     <label class="form-label">Bundle ID mới (tùy chọn)</label>
                                     <input type="text" v-model="identifier" ref="identifier" placeholder="Nhập BundleID mới" class="text-input">
                                 </div>
+                                
+                                <!-- App Name -->
                                 <div class="form-group">
                                     <label class="form-label">Tên App mới (tùy chọn)</label>
                                     <input type="text" v-model="name" ref="name" placeholder="Nhập tên App mới" class="text-input">
                                 </div>
                             </div>
-                            <button class="btn" @click="upload"><i class="fas fa-signature"></i> Ký ngay!</button>
+                            
+                            <button class="btn" @click="upload">
+                                <i class="fas fa-signature"></i>
+                                Ký ngay!
+                            </button>
                         </div>
                     </div>
                 </transition>
-               
-                <!-- Step 2 -->
+                
+                <!-- Step 2: Upload Progress -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep2">
                         <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Bước 2: Đang tải file lên</h2>
+                            <h2 class="card-title">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Bước 2: Đang tải file lên
+                            </h2>
                         </div>
                         <div class="card-body">
                             <div class="progress-container">
@@ -557,62 +612,82 @@
                         </div>
                     </div>
                 </transition>
-               
-                <!-- Step 3 -->
+                
+                <!-- Step 3: Processing -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep3">
                         <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-cog"></i> Bước 3: Đang xử lý</h2>
+                            <h2 class="card-title">
+                                <i class="fas fa-cog"></i>
+                                Bước 3: Đang xử lý
+                            </h2>
                         </div>
                         <div class="card-body">
                             <div class="processing-container">
                                 <i class="fas fa-cog spinner"></i>
                                 <p class="processing-text">Đang xử lý file của bạn, vui lòng chờ...</p>
                                 <p>Trạng thái: {{ statusText }}</p>
-                                <div class="log-container" v-if="logText">{{ logText }}</div>
+                                
+                                <div class="log-container" v-if="logText">
+                                    {{ logText }}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </transition>
-               
-                <!-- Step 4 -->
+                
+                <!-- Step 4: Result -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep4">
                         <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-check-circle"></i> Bước 4: Hoàn tất</h2>
+                            <h2 class="card-title">
+                                <i class="fas fa-check-circle"></i>
+                                Bước 4: Hoàn tất
+                            </h2>
                         </div>
                         <div class="card-body">
                             <div class="result-container">
                                 <i class="fas fa-check-circle success-icon"></i>
                                 <h3 class="result-title">Ký IPA thành công!</h3>
+                                
                                 <div class="result-content">
                                     <div class="qr-container">
                                         <p class="qr-title">Quét mã QR để cài đặt</p>
                                         <div class="qr-code" id="qrcode"></div>
                                     </div>
+                                    
                                     <div class="link-container">
                                         <p class="link-title">Hoặc sao chép link</p>
                                         <a :href="download" target="_blank" class="download-link">{{ download }}</a>
                                     </div>
                                 </div>
-                                <button class="btn" @click="index"><i class="fas fa-redo"></i> Bắt đầu lại</button>
+                                
+                                <div class="share-url" v-if="shareUrl">
+                                    <p>Chia sẻ kết quả: <a :href="shareUrl" target="_blank">{{ shareUrl }}</a></p>
+                                    <p><small>URL hiện tại: {{ currentUrl }}</small></p>
+                                </div>
+                                
+                                <button class="btn" @click="index">
+                                    <i class="fas fa-redo"></i>
+                                    Bắt đầu lại
+                                </button>
                             </div>
                         </div>
                     </div>
                 </transition>
             </div>
         </main>
-       
+        
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <p>© 2025 IOSCERT - Công cụ ký IPA trực tuyến miễn phí</p>
+                <p>© 2023 IPASign - Công cụ ký IPA trực tuyến</p>
             </div>
         </footer>
     </div>
 
     <script>
-        // Firebase Config
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBCv_8gkQi2YPbXp0PyLZIp73NcNWMuZJ8",
             authDomain: "ios-cert-check-p12.firebaseapp.com",
@@ -622,17 +697,65 @@
             appId: "1:39487670631:web:2362f3c305647d7acc87c2",
             measurementId: "G-47VMZZPJWX"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        // Tạo ID 6 ký tự
-        function generateShortId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+        // Firebase Service Class
+        class FirebaseCertificateService {
+            constructor() {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                this.db = firebase.firestore();
+                this.collectionName = 'signed_apps';
             }
-            return result;
+
+            // Tạo ID ngắn 6 ký tự
+            generateShortId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            // Lưu thông tin ký IPA
+            async saveSignedApp(downloadUrl, appName = '') {
+                const shortId = this.generateShortId();
+                const certificateData = {
+                    downloadUrl: downloadUrl,
+                    appName: appName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 ngày
+                };
+
+                try {
+                    console.log('📝 Đang lưu dữ liệu với ID:', shortId);
+                    await this.db.collection(this.collectionName).doc(shortId).set(certificateData);
+                    console.log('✅ Lưu dữ liệu thành công');
+                    return shortId;
+                } catch (error) {
+                    console.error('❌ Lỗi khi lưu dữ liệu:', error);
+                    throw error;
+                }
+            }
+
+            // Lấy thông tin ký IPA theo ID
+            async getSignedApp(orderId) {
+                try {
+                    console.log('🔍 Đang tìm kiếm với ID:', orderId);
+                    const doc = await this.db.collection(this.collectionName).doc(orderId).get();
+                    if (doc.exists) {
+                        console.log('✅ Tìm thấy dữ liệu');
+                        return doc.data();
+                    } else {
+                        console.log('❌ Không tìm thấy dữ liệu');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('❌ Lỗi khi lấy dữ liệu:', error);
+                    throw error;
+                }
+            }
         }
 
         new Vue({
@@ -643,113 +766,221 @@
                 showStep3: false,
                 showStep4: false,
                 progressBar: 0,
-                ipa: null, ipaCss: 'invalid', ipaText: 'Chọn file .ipa...',
-                p12: null, p12Css: 'invalid', p12Text: 'Chọn file .p12...',
-                mobileprovision: null, mobCss: 'invalid', mobText: 'Chọn file .mobileprovision...',
-                password: '', pwdCss: 'invalid',
-                name: '', identifier: '',
-                jobId: '', statusText: '', logText: '', download: '', shortId: ''
+                ipa: null,
+                ipaCss: 'invalid',
+                ipaText: 'Chọn file .ipa...',
+                p12: null,
+                p12Css: 'invalid',
+                p12Text: 'Chọn file .p12...',
+                mobileprovision: null,
+                mobCss: 'invalid',
+                mobText: 'Chọn file .mobileprovision...',
+                password: '',
+                pwdCss: 'invalid',
+                name: '',
+                identifier: '',
+                jobId: '',
+                statusText: '',
+                logText: '',
+                download: '',
+                download_ipa: '',
+                shareUrl: '',
+                currentUrl: window.location.href,
+                firebaseService: null
+            },
+            created() {
+                console.log('🚀 Ứng dụng khởi động');
+                console.log('📍 URL hiện tại:', this.currentUrl);
+                
+                // Khởi tạo Firebase Service
+                this.firebaseService = new FirebaseCertificateService();
+                
+                // Kiểm tra URL khi tải trang
+                this.checkUrlParams();
             },
             methods: {
+                // Kiểm tra URL parameters
+                async checkUrlParams() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const downloadId = urlParams.get('download');
+                    
+                    console.log('🔍 Kiểm tra URL parameters:', downloadId);
+                    
+                    if (downloadId && downloadId.length === 6) {
+                        console.log('📥 Đang tải kết quả với ID:', downloadId);
+                        try {
+                            const signedApp = await this.firebaseService.getSignedApp(downloadId);
+                            if (signedApp) {
+                                console.log('✅ Tìm thấy kết quả, hiển thị bước 4');
+                                this.download = signedApp.downloadUrl;
+                                this.download_ipa = signedApp.downloadUrl;
+                                this.shareUrl = window.location.href;
+                                this.showStep1 = false;
+                                this.showStep4 = true;
+                                
+                                // Tạo QR Code
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById('qrcode'), {
+                                        width: 150,
+                                        height: 150,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                        correctLevel: QRCode.CorrectLevel.H
+                                    }).makeCode(this.download);
+                                }, 100);
+                            } else {
+                                console.log('❌ Không tìm thấy kết quả với ID:', downloadId);
+                            }
+                        } catch (error) {
+                            console.error('❌ Lỗi khi tải kết quả:', error);
+                        }
+                    } else {
+                        console.log('ℹ️ Không có download ID trong URL');
+                    }
+                },
+                
                 getFile(e) {
                     const file = e.target.files[0] || null;
                     if (e.target.accept === '.ipa') {
-                        this.ipa = file; this.ipaCss = file ? 'valid' : 'invalid'; this.ipaText = file ? file.name : 'Chọn file .ipa...';
+                        this.ipa = file;
+                        this.ipaCss = file ? 'valid' : 'invalid';
+                        this.ipaText = file ? file.name : 'Chọn file .ipa...';
                     } else if (e.target.accept === '.p12') {
-                        this.p12 = file; this.p12Css = file ? 'valid' : 'invalid'; this.p12Text = file ? file.name : 'Chọn file .p12...';
+                        this.p12 = file;
+                        this.p12Css = file ? 'valid' : 'invalid';
+                        this.p12Text = file ? file.name : 'Chọn file .p12...';
                     } else if (e.target.accept === '.mobileprovision') {
-                        this.mobileprovision = file; this.mobCss = file ? 'valid' : 'invalid'; this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
+                        this.mobileprovision = file;
+                        this.mobCss = file ? 'valid' : 'invalid';
+                        this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
                     }
                 },
                 async upload() {
+                    // Validate required fields
                     if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
-                        alert('Vui lòng điền đầy đủ thông tin bắt buộc!'); return;
+                        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                        return;
                     }
-                    this.showStep1 = false; this.showStep2 = true; this.progressBar = 0;
+                    
+                    this.showStep1 = false;
+                    this.showStep2 = true;
+                    this.progressBar = 0;
+                    
                     const fd = new FormData();
-                    fd.append('ipa', this.ipa); fd.append('p12', this.p12); fd.append('mp', this.mobileprovision);
-                    fd.append('password', this.password); fd.append('app_name', this.name); fd.append('bundle_id', this.identifier);
+                    fd.append('ipa', this.ipa);
+                    fd.append('p12', this.p12);
+                    fd.append('mp', this.mobileprovision);
+                    fd.append('password', this.password);
+                    fd.append('app_name', this.name);
+                    fd.append('bundle_id', this.identifier);
+                    
                     try {
                         const resp = await axios.post(SignUrl, fd, {
                             headers: { 'Content-Type': 'multipart/form-data' },
-                            onUploadProgress: e => { if (e.lengthComputable) this.progressBar = Math.round(e.loaded / e.total * 100); }
+                            onUploadProgress: e => {
+                                if (e.lengthComputable) this.progressBar = Math.round(e.loaded / e.total * 100);
+                            }
                         });
+                        
                         this.jobId = resp.data.task_id;
-                        this.showStep2 = false; this.showStep3 = true;
+                        this.showStep2 = false;
+                        this.showStep3 = true;
                         this.pollStatus();
                     } catch (err) {
-                        alert(err.response?.data?.error || 'Gửi file thất bại.');
-                        this.showStep1 = true; this.showStep2 = false;
+                        alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
+                        this.showStep1 = true;
+                        this.showStep2 = false;
                     }
                 },
                 async pollStatus() {
-                    this.statusText = 'Đang chờ'; this.logText = '';
+                    this.statusText = 'Đang chờ';
+                    this.logText = '';
                     const timer = setInterval(async () => {
                         try {
                             const res = await axios.get(`${StatusUrl}/${this.jobId}`);
                             const d = res.data;
-                            this.statusText = d.status; this.logText = d.msg || '';
+                            this.statusText = d.status;
+                            this.logText = d.msg || '';
+                            
                             if (d.status === 'SUCCESS') {
-                                clearInterval(timer);
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
-
-                                // Lưu vào Firestore + tạo shortId
-                                this.shortId = generateShortId();
-                                await db.collection('signed_apps').doc(this.shortId).set({
-                                    download_url: base,
-                                    created_at: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-
-                                // Cập nhật URL
-                                const newUrl = `${window.location.origin}${window.location.pathname}?download=${this.shortId}`;
-                                window.history.pushState({}, '', newUrl);
-
-                                this.showStep3 = false; this.showStep4 = true;
+                                this.download_ipa = base;
+                                clearInterval(timer);
+                                
+                                console.log('✅ Ký IPA thành công, đang lưu kết quả...');
+                                
+                                // Lưu thông tin lên Firebase và tạo URL chia sẻ
+                                try {
+                                    const shortId = await this.firebaseService.saveSignedApp(base, this.name);
+                                    console.log('📝 Đã lưu với ID:', shortId);
+                                    
+                                    // Tạo URL với query parameter
+                                    const newUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                                    this.shareUrl = newUrl;
+                                    this.currentUrl = newUrl;
+                                    
+                                    console.log('🔗 URL mới:', newUrl);
+                                    
+                                    // Cập nhật URL trình duyệt
+                                    try {
+                                        window.history.pushState({}, '', newUrl);
+                                        console.log('✅ Đã cập nhật URL trình duyệt');
+                                    } catch (pushStateError) {
+                                        console.error('❌ Lỗi khi cập nhật URL:', pushStateError);
+                                        // Fallback: sử dụng hash nếu pushState không hoạt động
+                                        window.location.hash = `download=${shortId}`;
+                                        console.log('🔄 Sử dụng hash fallback');
+                                    }
+                                    
+                                } catch (error) {
+                                    console.error('❌ Lỗi khi lưu kết quả:', error);
+                                    // Vẫn hiển thị kết quả ngay cả khi lưu Firebase thất bại
+                                }
+                                
+                                this.showStep3 = false;
+                                this.showStep4 = true;
+                                
+                                // Generate QR Code
                                 setTimeout(() => {
                                     new QRCode(document.getElementById('qrcode'), {
-                                        width: 150, height: 150,
-                                        colorDark: "#000000", colorLight: "#ffffff",
+                                        width: 150,
+                                        height: 150,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
                                         correctLevel: QRCode.CorrectLevel.H
                                     }).makeCode(this.download);
                                 }, 100);
+                                
                             } else if (d.status === 'FAILURE') {
-                                clearInterval(timer); alert('Ký IPA thất bại'); this.index();
+                                clearInterval(timer);
+                                alert('Ký IPA thất bại');
+                                this.index();
                             }
                         } catch (err) {
-                            clearInterval(timer); alert('Lỗi kết nối server.'); this.index();
+                            clearInterval(timer);
+                            alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
+                            this.index();
                         }
                     }, 3000);
                 },
-                index() {
+                index() { 
+                    console.log('🔄 Bắt đầu lại');
+                    // Quay về URL gốc không có query parameters
                     const baseUrl = `${window.location.origin}${window.location.pathname}`;
-                    window.history.pushState({}, '', baseUrl);
-                    window.location.reload();
-                },
-                async checkUrlParam() {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const id = urlParams.get('download');
-                    if (id && id.length === 6) {
-                        try {
-                            const doc = await db.collection('signed_apps').doc(id).get();
-                            if (doc.exists) {
-                                this.download = doc.data().download_url;
-                                this.showStep1 = this.showStep2 = this.showStep3 = false;
-                                this.showStep4 = true;
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
-                                        width: 150, height: 150,
-                                        colorDark: "#000000", colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
-                                }, 100);
-                            }
-                        } catch (err) { console.error(err); }
+                    try {
+                        window.history.pushState({}, '', baseUrl);
+                    } catch (e) {
+                        console.error('Lỗi khi reset URL:', e);
                     }
+                    window.location.reload(); 
                 }
             },
-            watch: { password(val) { this.pwdCss = val.length ? 'valid' : 'invalid'; } },
-            mounted() { this.checkUrlParam(); }
+            watch: {
+                password(val) { 
+                    this.pwdCss = val.length ? 'valid' : 'invalid'; 
+                }
+            }
         });
     </script>
 </body>
