@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -1023,7 +1022,14 @@
                                 
                                 try {
                                     this.shareId = await this.firebaseService.saveSignedApp(appInfo);
-                                    this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.shareId}`;
+                                    
+                                    // FIX QUAN TRỌNG: Tạo URL đúng định dạng
+                                    const currentPath = window.location.pathname;
+                                    const baseUrl = window.location.origin + currentPath;
+                                    this.shareUrl = baseUrl + '?download=' + this.shareId;
+                                    
+                                    console.log('🔗 Đang cập nhật URL từ:', window.location.href);
+                                    console.log('🔗 Đến URL:', this.shareUrl);
                                     
                                     // CẬP NHẬT URL TRÌNH DUYỆT
                                     window.history.pushState({}, '', this.shareUrl);
@@ -1044,6 +1050,10 @@
                                             }).makeCode(this.download);
                                         }
                                     }, 100);
+                                    
+                                    console.log('✅ Đã tạo share URL:', this.shareUrl);
+                                    console.log('✅ URL hiện tại sau update:', window.location.href);
+                                    
                                 } catch (firebaseError) {
                                     console.error('Firebase error:', firebaseError);
                                     // Vẫn hiển thị kết quả ngay cả khi Firebase lỗi
@@ -1088,6 +1098,8 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const downloadId = urlParams.get('download');
                     
+                    console.log('🔍 Kiểm tra URL share, downloadId:', downloadId);
+                    
                     if (downloadId && downloadId.length === 8) {
                         console.log('🔍 Đang tải signed app với ID:', downloadId);
                         
@@ -1107,7 +1119,11 @@
                                 this.download = appInfo.downloadUrl;
                                 this.download_ipa = appInfo.downloadUrl;
                                 this.shareId = downloadId;
-                                this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${downloadId}`;
+                                
+                                // Tạo share URL
+                                const currentPath = window.location.pathname;
+                                const baseUrl = window.location.origin + currentPath;
+                                this.shareUrl = baseUrl + '?download=' + downloadId;
                                 
                                 this.showStep3 = false;
                                 this.showStep4 = true;
@@ -1124,6 +1140,8 @@
                                         }).makeCode(this.download);
                                     }
                                 }, 100);
+                                
+                                console.log('✅ Đã load từ share URL:', this.shareUrl);
                             } else {
                                 console.log('❌ Không tìm thấy signed app hoặc đã hết hạn');
                                 this.showStep1 = true;
@@ -1179,7 +1197,7 @@
                     }
                     
                     // Xóa query parameter khi quay lại
-                    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+                    const baseUrl = window.location.origin + window.location.pathname;
                     window.history.pushState({}, '', baseUrl);
                     
                     this.showStep1 = true;
@@ -1221,6 +1239,11 @@
                     console.error('❌ Firebase initialization error:', error);
                 }
                 
+                // Debug: Kiểm tra URL hiện tại
+                console.log('🔗 URL hiện tại khi load:', window.location.href);
+                console.log('🔗 Pathname:', window.location.pathname);
+                console.log('🔗 Origin:', window.location.origin);
+                
                 // Kiểm tra URL khi load trang
                 this.loadSharedApp();
                 
@@ -1233,7 +1256,7 @@
 
                 // Xử lý popstate (khi người dùng nhấn back/forward)
                 window.addEventListener('popstate', () => {
-                    console.log('🔄 URL đã thay đổi');
+                    console.log('🔄 URL đã thay đổi:', window.location.href);
                     this.loadSharedApp();
                 });
             },
