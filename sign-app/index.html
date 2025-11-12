@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
+        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -1008,6 +1009,8 @@
                                 this.download = base;
                                 this.download_ipa = base;
                                 
+                                console.log('✅ Ký IPA thành công, download URL:', this.download);
+                                
                                 // Lưu thông tin lên Firebase và tạo share URL
                                 if (!this.firebaseService) {
                                     this.firebaseService = new FirebaseSignService();
@@ -1022,15 +1025,16 @@
                                 
                                 try {
                                     // Tạo share ID và lưu lên Firebase
+                                    console.log('💾 Đang lưu thông tin lên Firebase...');
                                     this.shareId = await this.firebaseService.saveSignedApp(appInfo);
                                     console.log('✅ Đã tạo shareId:', this.shareId);
                                     
                                     // Tạo URL share - FIX QUAN TRỌNG
-                                    const currentUrl = new URL(window.location.href);
-                                    currentUrl.searchParams.set('download', this.shareId);
-                                    this.shareUrl = currentUrl.toString();
+                                    const baseUrl = window.location.origin + window.location.pathname;
+                                    this.shareUrl = baseUrl + '?download=' + this.shareId;
                                     
                                     console.log('🔗 Share URL được tạo:', this.shareUrl);
+                                    console.log('🔗 URL hiện tại trước khi update:', window.location.href);
                                     
                                     // CẬP NHẬT URL TRÌNH DUYỆT
                                     window.history.replaceState({}, '', this.shareUrl);
@@ -1053,12 +1057,17 @@
                                                 colorLight: "#ffffff",
                                                 correctLevel: QRCode.CorrectLevel.H
                                             }).makeCode(this.download);
+                                            console.log('✅ Đã tạo QR code');
                                         }
                                     }, 100);
                                     
                                 } catch (firebaseError) {
                                     console.error('❌ Firebase error:', firebaseError);
                                     // Vẫn hiển thị kết quả ngay cả khi Firebase lỗi
+                                    // Tạo URL tạm thời không có Firebase
+                                    const baseUrl = window.location.origin + window.location.pathname;
+                                    this.shareUrl = baseUrl + '?job=' + this.jobId;
+                                    
                                     this.showStep3 = false;
                                     this.showStep4 = true;
                                     this.uploading = false;
@@ -1160,34 +1169,49 @@
                     }
                 },
                 copyShareUrl() {
+                    console.log('📋 Đang thử copy shareUrl:', this.shareUrl);
+                    
+                    if (!this.shareUrl) {
+                        console.error('❌ shareUrl là empty');
+                        alert('❌ Chưa có link chia sẻ. Vui lòng thử lại sau.');
+                        return;
+                    }
+                    
+                    // Sử dụng input có sẵn trong template
                     const shareInput = document.getElementById('shareUrl');
-                    if (shareInput && this.shareUrl) {
+                    if (shareInput) {
                         shareInput.select();
                         shareInput.setSelectionRange(0, 99999);
+                        
+                        console.log('📋 Đang copy:', this.shareUrl);
                         
                         try {
                             const successful = document.execCommand('copy');
                             if (successful) {
+                                console.log('✅ Copy thành công với execCommand');
                                 alert('✅ Đã copy link chia sẻ vào clipboard!');
-                                console.log('✅ Đã copy URL:', this.shareUrl);
                             } else {
-                                // Fallback for mobile
-                                navigator.clipboard.writeText(this.shareUrl).then(() => {
-                                    alert('✅ Đã copy link chia sẻ vào clipboard!');
-                                }).catch(() => {
-                                    alert('📝 Vui lòng sao chép link thủ công: ' + this.shareUrl);
-                                });
+                                throw new Error('execCommand failed');
                             }
                         } catch (err) {
-                            // Fallback for older browsers
-                            navigator.clipboard.writeText(this.shareUrl).then(() => {
-                                alert('✅ Đã copy link chia sẻ vào clipboard!');
-                            }).catch(() => {
-                                alert('📝 Vui lòng sao chép link thủ công: ' + this.shareUrl);
-                            });
+                            console.log('🔄 Thử dùng Clipboard API');
+                            // Fallback với Clipboard API
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                                navigator.clipboard.writeText(this.shareUrl).then(() => {
+                                    console.log('✅ Copy thành công với Clipboard API');
+                                    alert('✅ Đã copy link chia sẻ vào clipboard!');
+                                }).catch((clipboardErr) => {
+                                    console.error('❌ Lỗi copy cả hai phương pháp:', clipboardErr);
+                                    // Fallback cuối cùng - hiển thị để copy thủ công
+                                    alert('📝 Vui lòng sao chép link thủ công:\n\n' + this.shareUrl);
+                                });
+                            } else {
+                                // Fallback cuối cùng
+                                alert('📝 Vui lòng sao chép link thủ công:\n\n' + this.shareUrl);
+                            }
                         }
                     } else {
-                        alert('❌ Chưa có link chia sẻ. Vui lòng thử lại sau.');
+                        alert('❌ Không tìm thấy ô input để copy.');
                     }
                 },
                 showError(message) {
@@ -1259,6 +1283,7 @@
                 console.log('🔗 URL hiện tại khi load:', window.location.href);
                 console.log('🔗 Pathname:', window.location.pathname);
                 console.log('🔗 Origin:', window.location.origin);
+                console.log('🔗 Search params:', window.location.search);
                 
                 // Kiểm tra URL khi load trang
                 this.loadSharedApp();
