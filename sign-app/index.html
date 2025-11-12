@@ -554,7 +554,7 @@
                 <div class="header-content">
                     <a href="#" class="logo">
                         <i class="fas fa-mobile-alt logo-icon"></i>
-                        CHỨNG CHỈ P12
+                        IPASign
                     </a>
                     <a href="https://chungchip12.com" target="_blank" class="cert-link">
                         <i class="fas fa-certificate"></i>
@@ -750,7 +750,7 @@
     </div>
 
     <script>
-        // Firebase configuration
+        // Firebase configuration - THAY THẾ BẰNG CẤU HÌNH CỦA BẠN
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -791,7 +791,8 @@
                 download: '',
                 download_ipa: '',
                 shareLink: '',
-                downloadCode: ''
+                downloadCode: '',
+                pollTimer: null
             },
             mounted() {
                 // Check if there's a download code in the URL
@@ -859,18 +860,30 @@
                 pollStatus() {
                     this.statusText = 'Đang chờ';
                     this.logText = '';
-                    const timer = setInterval(async () => {
+                    
+                    // Clear any existing timer
+                    if (this.pollTimer) {
+                        clearInterval(this.pollTimer);
+                    }
+                    
+                    this.pollTimer = setInterval(async () => {
                         try {
                             const res = await axios.get(`${StatusUrl}/${this.jobId}`);
                             const d = res.data;
                             this.statusText = d.status;
                             this.logText = d.msg || '';
                             
+                            console.log('Polling status:', d.status); // Debug log
+                            
                             if (d.status === 'SUCCESS') {
+                                console.log('SUCCESS detected, moving to step 4'); // Debug log
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
                                 this.download_ipa = base;
-                                clearInterval(timer);
+                                
+                                // Clear the polling timer
+                                clearInterval(this.pollTimer);
+                                this.pollTimer = null;
                                 
                                 // Generate a unique code for sharing
                                 this.downloadCode = this.generateCode();
@@ -879,6 +892,7 @@
                                 // Save to Firestore
                                 await this.saveToFirestore();
                                 
+                                // Show step 4
                                 this.showStep3 = false;
                                 this.showStep4 = true;
                                 
@@ -887,7 +901,11 @@
                                 
                                 // Generate QR Code
                                 setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
+                                    // Clear any existing QR code
+                                    const qrContainer = document.getElementById('qrcode');
+                                    qrContainer.innerHTML = '';
+                                    
+                                    new QRCode(qrContainer, {
                                         width: 150,
                                         height: 150,
                                         colorDark: "#000000",
@@ -897,12 +915,16 @@
                                 }, 100);
                                 
                             } else if (d.status === 'FAILURE') {
-                                clearInterval(timer);
-                                alert('Ký IPA thất bại');
+                                console.log('FAILURE detected'); // Debug log
+                                clearInterval(this.pollTimer);
+                                this.pollTimer = null;
+                                alert('Ký IPA thất bại: ' + (d.msg || 'Không rõ lý do'));
                                 this.index();
                             }
                         } catch (err) {
-                            clearInterval(timer);
+                            console.error('Polling error:', err); // Debug log
+                            clearInterval(this.pollTimer);
+                            this.pollTimer = null;
                             alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
                             this.index();
                         }
@@ -949,7 +971,11 @@
                             
                             // Generate QR Code
                             setTimeout(() => {
-                                new QRCode(document.getElementById('qrcode'), {
+                                // Clear any existing QR code
+                                const qrContainer = document.getElementById('qrcode');
+                                qrContainer.innerHTML = '';
+                                
+                                new QRCode(qrContainer, {
                                     width: 150,
                                     height: 150,
                                     colorDark: "#000000",
@@ -959,9 +985,13 @@
                             }, 100);
                         } else {
                             console.log('No such document!');
+                            alert('Liên kết không tồn tại hoặc đã hết hạn.');
+                            this.index();
                         }
                     } catch (error) {
                         console.error('Error getting document:', error);
+                        alert('Có lỗi xảy ra khi tải dữ liệu.');
+                        this.index();
                     }
                 },
                 copyShareLink() {
@@ -980,6 +1010,12 @@
                     window.open(this.download, '_blank');
                 },
                 index() { 
+                    // Clear any polling timer
+                    if (this.pollTimer) {
+                        clearInterval(this.pollTimer);
+                        this.pollTimer = null;
+                    }
+                    
                     // Reset to step 1 and clear URL parameters
                     window.history.pushState({}, '', window.location.pathname);
                     window.location.reload(); 
@@ -988,6 +1024,12 @@
             watch: {
                 password(val) { 
                     this.pwdCss = val.length ? 'valid' : 'invalid'; 
+                }
+            },
+            beforeDestroy() {
+                // Clean up polling timer when component is destroyed
+                if (this.pollTimer) {
+                    clearInterval(this.pollTimer);
                 }
             }
         });
