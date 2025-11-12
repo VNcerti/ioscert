@@ -5,23 +5,23 @@
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
-   
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
-   
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
+    
     <style>
         :root {
             --primary: #4361ee;
@@ -38,15 +38,463 @@
             --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             --transition: all 0.3s ease;
         }
-        /* [Giữ nguyên toàn bộ CSS cũ của bạn ở đây - đã bỏ bớt để ngắn gọn] */
-        /* ... (copy toàn bộ <style> từ code gốc của bạn vào đây) ... */
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f1720, #1e293b); color: var(--light); min-height: 100vh; line-height: 1.6; }
-        /* ... toàn bộ CSS còn lại ... */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1720, #1e293b);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgZD0iTTI1IDI1aDUwdjUwaC01MHoiLz48L3N2Zz4=');
+            opacity: 0.1;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        .cert-link {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cert-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+        
+        .card {
+            background: var(--dark-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--primary);
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .file-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 0.1px;
+            height: 0.1px;
+            overflow: hidden;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .file-input-label:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .file-input-label.valid {
+            border-color: var(--success);
+            background: rgba(6, 214, 160, 0.05);
+        }
+        
+        .file-input-label.invalid {
+            border-color: var(--danger);
+            background: rgba(239, 71, 111, 0.05);
+        }
+        
+        .file-name {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+        
+        .file-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .text-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .text-input.valid {
+            border-color: var(--success);
+        }
+        
+        .text-input.invalid {
+            border-color: var(--danger);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn i {
+            font-size: 1.1rem;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin: 2rem 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 50px 50px;
+            animation: move 2s linear infinite;
+        }
+        
+        @keyframes move {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+        
+        /* Processing */
+        .processing-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-text {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Result */
+        .result-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .result-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .qr-container, .link-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+        
+        .qr-title, .link-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .qr-code {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .download-link {
+            display: block;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            word-break: break-all;
+            transition: var(--transition);
+        }
+        
+        .download-link:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .share-url {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .share-url a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+        }
+        
+        /* Animations */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+        
+        .slide-enter-active, .slide-leave-active {
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        .slide-enter, .slide-leave-to {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .result-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-   
+    
     <div id="app">
         <!-- Header -->
         <header class="header">
@@ -63,7 +511,7 @@
                 </div>
             </div>
         </header>
-       
+        
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
@@ -89,7 +537,7 @@
                                         </label>
                                     </div>
                                 </div>
-                               
+                                
                                 <!-- P12 File -->
                                 <div class="form-group">
                                     <label class="form-label">File chứng chỉ (.p12)</label>
@@ -101,7 +549,7 @@
                                         </label>
                                     </div>
                                 </div>
-                               
+                                
                                 <!-- Mobile Provision File -->
                                 <div class="form-group">
                                     <label class="form-label">File Mobile Provision</label>
@@ -113,26 +561,26 @@
                                         </label>
                                     </div>
                                 </div>
-                               
+                                
                                 <!-- Password -->
                                 <div class="form-group">
                                     <label class="form-label">Mật khẩu file .p12</label>
                                     <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss">
                                 </div>
-                               
+                                
                                 <!-- Bundle ID -->
                                 <div class="form-group">
                                     <label class="form-label">Bundle ID mới (tùy chọn)</label>
                                     <input type="text" v-model="identifier" ref="identifier" placeholder="Nhập BundleID mới" class="text-input">
                                 </div>
-                               
+                                
                                 <!-- App Name -->
                                 <div class="form-group">
                                     <label class="form-label">Tên App mới (tùy chọn)</label>
                                     <input type="text" v-model="name" ref="name" placeholder="Nhập tên App mới" class="text-input">
                                 </div>
                             </div>
-                           
+                            
                             <button class="btn" @click="upload">
                                 <i class="fas fa-signature"></i>
                                 Ký ngay!
@@ -140,7 +588,7 @@
                         </div>
                     </div>
                 </transition>
-               
+                
                 <!-- Step 2: Upload Progress -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep2">
@@ -163,7 +611,7 @@
                         </div>
                     </div>
                 </transition>
-               
+                
                 <!-- Step 3: Processing -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep3">
@@ -178,7 +626,7 @@
                                 <i class="fas fa-cog spinner"></i>
                                 <p class="processing-text">Đang xử lý file của bạn, vui lòng chờ...</p>
                                 <p>Trạng thái: {{ statusText }}</p>
-                               
+                                
                                 <div class="log-container" v-if="logText">
                                     {{ logText }}
                                 </div>
@@ -186,7 +634,7 @@
                         </div>
                     </div>
                 </transition>
-               
+                
                 <!-- Step 4: Result -->
                 <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep4">
@@ -200,19 +648,23 @@
                             <div class="result-container">
                                 <i class="fas fa-check-circle success-icon"></i>
                                 <h3 class="result-title">Ký IPA thành công!</h3>
-                               
+                                
                                 <div class="result-content">
                                     <div class="qr-container">
                                         <p class="qr-title">Quét mã QR để cài đặt</p>
                                         <div class="qr-code" id="qrcode"></div>
                                     </div>
-                                   
+                                    
                                     <div class="link-container">
                                         <p class="link-title">Hoặc sao chép link</p>
                                         <a :href="download" target="_blank" class="download-link">{{ download }}</a>
                                     </div>
                                 </div>
-                               
+                                
+                                <div class="share-url" v-if="shareUrl">
+                                    <p>Chia sẻ kết quả: <a :href="shareUrl" target="_blank">{{ shareUrl }}</a></p>
+                                </div>
+                                
                                 <button class="btn" @click="index">
                                     <i class="fas fa-redo"></i>
                                     Bắt đầu lại
@@ -223,17 +675,17 @@
                 </transition>
             </div>
         </main>
-       
+        
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <p>© 2025 IOSCERT - Công cụ ký IPA trực tuyến miễn phí</p>
+                <p>© 2023 IPASign - Công cụ ký IPA trực tuyến</p>
             </div>
         </footer>
     </div>
 
     <script>
-        // Firebase Config
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBCv_8gkQi2YPbXp0PyLZIp73NcNWMuZJ8",
             authDomain: "ios-cert-check-p12.firebaseapp.com",
@@ -243,17 +695,60 @@
             appId: "1:39487670631:web:2362f3c305647d7acc87c2",
             measurementId: "G-47VMZZPJWX"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        // Hàm tạo ID 6 ký tự
-        function generateShortId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+        // Firebase Service Class
+        class FirebaseCertificateService {
+            constructor() {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                this.db = firebase.firestore();
+                this.collectionName = 'signed_apps';
             }
-            return result;
+
+            // Tạo ID ngắn 6 ký tự
+            generateShortId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            // Lưu thông tin ký IPA
+            async saveSignedApp(downloadUrl, appName = '') {
+                const shortId = this.generateShortId();
+                const certificateData = {
+                    downloadUrl: downloadUrl,
+                    appName: appName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 ngày
+                };
+
+                try {
+                    await this.db.collection(this.collectionName).doc(shortId).set(certificateData);
+                    return shortId;
+                } catch (error) {
+                    console.error('Lỗi khi lưu dữ liệu:', error);
+                    throw error;
+                }
+            }
+
+            // Lấy thông tin ký IPA theo ID
+            async getSignedApp(orderId) {
+                try {
+                    const doc = await this.db.collection(this.collectionName).doc(orderId).get();
+                    if (doc.exists) {
+                        return doc.data();
+                    } else {
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi lấy dữ liệu:', error);
+                    throw error;
+                }
+            }
         }
 
         new Vue({
@@ -281,9 +776,53 @@
                 statusText: '',
                 logText: '',
                 download: '',
-                shortId: ''
+                download_ipa: '',
+                shareUrl: '',
+                firebaseService: null
+            },
+            created() {
+                // Khởi tạo Firebase Service
+                this.firebaseService = new FirebaseCertificateService();
+                
+                // Kiểm tra URL khi tải trang
+                this.checkUrlParams();
             },
             methods: {
+                // Kiểm tra URL parameters
+                async checkUrlParams() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const downloadId = urlParams.get('download');
+                    
+                    if (downloadId && downloadId.length === 6) {
+                        console.log('🔍 Đang tải kết quả với ID:', downloadId);
+                        try {
+                            const signedApp = await this.firebaseService.getSignedApp(downloadId);
+                            if (signedApp) {
+                                this.download = signedApp.downloadUrl;
+                                this.download_ipa = signedApp.downloadUrl;
+                                this.shareUrl = window.location.href;
+                                this.showStep1 = false;
+                                this.showStep4 = true;
+                                
+                                // Tạo QR Code
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById('qrcode'), {
+                                        width: 150,
+                                        height: 150,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                        correctLevel: QRCode.CorrectLevel.H
+                                    }).makeCode(this.download);
+                                }, 100);
+                            } else {
+                                console.log('Không tìm thấy kết quả với ID:', downloadId);
+                            }
+                        } catch (error) {
+                            console.error('Lỗi khi tải kết quả:', error);
+                        }
+                    }
+                },
+                
                 getFile(e) {
                     const file = e.target.files[0] || null;
                     if (e.target.accept === '.ipa') {
@@ -301,15 +840,16 @@
                     }
                 },
                 async upload() {
+                    // Validate required fields
                     if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
                         alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
                         return;
                     }
-                   
+                    
                     this.showStep1 = false;
                     this.showStep2 = true;
                     this.progressBar = 0;
-                   
+                    
                     const fd = new FormData();
                     fd.append('ipa', this.ipa);
                     fd.append('p12', this.p12);
@@ -317,7 +857,7 @@
                     fd.append('password', this.password);
                     fd.append('app_name', this.name);
                     fd.append('bundle_id', this.identifier);
-                   
+                    
                     try {
                         const resp = await axios.post(SignUrl, fd, {
                             headers: { 'Content-Type': 'multipart/form-data' },
@@ -325,7 +865,7 @@
                                 if (e.lengthComputable) this.progressBar = Math.round(e.loaded / e.total * 100);
                             }
                         });
-                       
+                        
                         this.jobId = resp.data.task_id;
                         this.showStep2 = false;
                         this.showStep3 = true;
@@ -336,7 +876,7 @@
                         this.showStep2 = false;
                     }
                 },
-                async pollStatus() {
+                pollStatus() {
                     this.statusText = 'Đang chờ';
                     this.logText = '';
                     const timer = setInterval(async () => {
@@ -345,27 +885,30 @@
                             const d = res.data;
                             this.statusText = d.status;
                             this.logText = d.msg || '';
-                           
+                            
                             if (d.status === 'SUCCESS') {
-                                clearInterval(timer);
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
-
-                                // Tạo shortId và lưu vào Firestore
-                                this.shortId = generateShortId();
-                                await db.collection('signed_apps').doc(this.shortId).set({
-                                    download_url: base,
-                                    created_at: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-
-                                // Cập nhật URL có ?download=ABC123
-                                const newUrl = `${window.location.origin}${window.location.pathname}?download=${this.shortId}`;
-                                window.history.pushState({}, '', newUrl);
-
-                                // Hiển thị bước 4
+                                this.download_ipa = base;
+                                clearInterval(timer);
+                                
+                                // Lưu thông tin lên Firebase và tạo URL chia sẻ
+                                try {
+                                    const shortId = await this.firebaseService.saveSignedApp(base, this.name);
+                                    // Tạo URL với query parameter
+                                    const newUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                                    this.shareUrl = newUrl;
+                                    
+                                    // Cập nhật URL trình duyệt
+                                    window.history.pushState({}, '', newUrl);
+                                } catch (error) {
+                                    console.error('Lỗi khi lưu kết quả:', error);
+                                }
+                                
                                 this.showStep3 = false;
                                 this.showStep4 = true;
-                               
+                                
+                                // Generate QR Code
                                 setTimeout(() => {
                                     new QRCode(document.getElementById('qrcode'), {
                                         width: 150,
@@ -375,7 +918,7 @@
                                         correctLevel: QRCode.CorrectLevel.H
                                     }).makeCode(this.download);
                                 }, 100);
-                               
+                                
                             } else if (d.status === 'FAILURE') {
                                 clearInterval(timer);
                                 alert('Ký IPA thất bại');
@@ -388,51 +931,17 @@
                         }
                     }, 3000);
                 },
-                index() {
-                    // Xóa query parameter khi bắt đầu lại
+                index() { 
+                    // Quay về URL gốc không có query parameters
                     const baseUrl = `${window.location.origin}${window.location.pathname}`;
                     window.history.pushState({}, '', baseUrl);
-                    window.location.reload();
-                },
-                // Kiểm tra URL khi load trang
-                async checkUrlParam() {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const downloadId = urlParams.get('download');
-
-                    if (downloadId && downloadId.length === 6) {
-                        try {
-                            const doc = await db.collection('signed_apps').doc(downloadId).get();
-                            if (doc.exists) {
-                                const data = doc.data();
-                                this.download = data.download_url;
-
-                                // Nhảy thẳng bước 4
-                                this.showStep1 = this.showStep2 = this.showStep3 = false;
-                                this.showStep4 = true;
-
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
-                                        width: 150,
-                                        height: 150,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
-                                }, 100);
-                            }
-                        } catch (err) {
-                            console.error("Lỗi tải dữ liệu từ Firestore:", err);
-                        }
-                    }
+                    window.location.reload(); 
                 }
             },
             watch: {
-                password(val) {
-                    this.pwdCss = val.length ? 'valid' : 'invalid';
+                password(val) { 
+                    this.pwdCss = val.length ? 'valid' : 'invalid'; 
                 }
-            },
-            mounted() {
-                this.checkUrlParam();
             }
         });
     </script>
