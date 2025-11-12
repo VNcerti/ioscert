@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -1029,7 +1028,7 @@
                                     this.shareId = await this.firebaseService.saveSignedApp(appInfo);
                                     console.log('✅ Đã tạo shareId:', this.shareId);
                                     
-                                    // Tạo URL share - FIX QUAN TRỌNG
+                                    // Tạo URL share - FIX QUAN TRỌNG: SỬ DỤNG ?download=
                                     const baseUrl = window.location.origin + window.location.pathname;
                                     this.shareUrl = baseUrl + '?download=' + this.shareId;
                                     
@@ -1064,9 +1063,9 @@
                                 } catch (firebaseError) {
                                     console.error('❌ Firebase error:', firebaseError);
                                     // Vẫn hiển thị kết quả ngay cả khi Firebase lỗi
-                                    // Tạo URL tạm thời không có Firebase
+                                    // Tạo URL tạm thời với ?download= thay vì ?job=
                                     const baseUrl = window.location.origin + window.location.pathname;
-                                    this.shareUrl = baseUrl + '?job=' + this.jobId;
+                                    this.shareUrl = baseUrl + '?download=' + this.jobId;
                                     
                                     this.showStep3 = false;
                                     this.showStep4 = true;
@@ -1112,8 +1111,9 @@
                     const downloadId = urlParams.get('download');
                     
                     console.log('🔍 Kiểm tra URL share, downloadId:', downloadId);
+                    console.log('🔍 Toàn bộ URL:', window.location.href);
                     
-                    if (downloadId && downloadId.length === 8) {
+                    if (downloadId) {
                         console.log('🔍 Đang tải signed app với ID:', downloadId);
                         
                         try {
@@ -1285,7 +1285,7 @@
                 console.log('🔗 Origin:', window.location.origin);
                 console.log('🔗 Search params:', window.location.search);
                 
-                // Kiểm tra URL khi load trang
+                // Kiểm tra URL khi load trang - GỌI NGAY KHI MOUNTED
                 this.loadSharedApp();
                 
                 // Cleanup on page unload
