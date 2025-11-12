@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -777,7 +776,7 @@
             measurementId: "G-47VMZZPJWX"
         };
 
-        // Firebase Service Class
+        // Firebase Service Class - FIXED VERSION
         class FirebaseSignService {
             constructor() {
                 if (!firebase.apps.length) {
@@ -792,7 +791,7 @@
             generateShortId() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let result = '';
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 12; i++) {
                     result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 return result;
@@ -803,30 +802,43 @@
                 const expiresAt = new Date(Date.now() + this.ttl);
 
                 try {
+                    console.log('💾 Đang lưu signed app với thông tin:', appInfo);
+                    
+                    // FIX QUAN TRỌNG: Cấu trúc dữ liệu đơn giản hơn
                     const appData = {
-                        data: {
-                            downloadUrl: appInfo.downloadUrl,
-                            originalName: appInfo.originalName,
-                            appName: appInfo.appName,
-                            bundleId: appInfo.bundleId,
-                            signedAt: new Date()
-                        },
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        downloadUrl: appInfo.downloadUrl,
+                        originalName: appInfo.originalName,
+                        appName: appInfo.appName,
+                        bundleId: appInfo.bundleId,
+                        signedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         expiresAt: firebase.firestore.Timestamp.fromDate(expiresAt),
                         views: 0
                     };
 
+                    console.log('📤 Dữ liệu sẽ được lưu:', appData);
+                    
                     await this.db.collection(this.collectionName).doc(shortId).set(appData);
-                    console.log('✅ Đã lưu signed app với ID:', shortId);
+                    console.log('✅ Đã lưu signed app thành công với ID:', shortId);
+                    
+                    // Verify dữ liệu đã được lưu
+                    const doc = await this.db.collection(this.collectionName).doc(shortId).get();
+                    if (doc.exists) {
+                        console.log('✅ Xác nhận dữ liệu đã được lưu:', doc.data());
+                    } else {
+                        console.error('❌ Dữ liệu không tồn tại sau khi lưu!');
+                    }
+                    
                     return shortId;
                 } catch (error) {
                     console.error('❌ Lỗi lưu signed app:', error);
-                    throw new Error('Không thể lưu dữ liệu lên server');
+                    throw new Error('Không thể lưu dữ liệu lên server: ' + error.message);
                 }
             }
 
             async getSignedApp(shortId) {
                 try {
+                    console.log('🔍 Đang tìm signed app với ID:', shortId);
+                    
                     const doc = await this.db.collection(this.collectionName).doc(shortId).get();
                     
                     if (!doc.exists) {
@@ -835,8 +847,13 @@
                     }
 
                     const data = doc.data();
+                    console.log('📥 Dữ liệu nhận được từ Firebase:', data);
+                    
                     const now = new Date();
                     const expiresAt = data.expiresAt.toDate();
+                    
+                    console.log('⏰ Thời gian hiện tại:', now);
+                    console.log('⏰ Thời gian hết hạn:', expiresAt);
                     
                     if (now > expiresAt) {
                         console.log('🗑️ Signed app đã hết hạn, đang xóa...');
@@ -844,16 +861,20 @@
                         return null;
                     }
 
+                    // Cập nhật số lượt xem
                     await this.db.collection(this.collectionName).doc(shortId).update({
                         views: firebase.firestore.FieldValue.increment(1)
                     });
 
                     const appInfo = {
-                        ...data.data,
-                        signedAt: data.data.signedAt
+                        downloadUrl: data.downloadUrl,
+                        originalName: data.originalName,
+                        appName: data.appName,
+                        bundleId: data.bundleId,
+                        signedAt: data.signedAt
                     };
 
-                    console.log('✅ Đã tải signed app:', appInfo.originalName);
+                    console.log('✅ Đã tải signed app thành công:', appInfo);
                     return appInfo;
                 } catch (error) {
                     console.error('❌ Lỗi lấy signed app:', error);
@@ -871,7 +892,7 @@
             }
         }
 
-        // Vue App
+        // Vue App - FIXED VERSION
         new Vue({
             el: '#app',
             data: {
@@ -1030,7 +1051,7 @@
                                     this.shareId = await this.firebaseService.saveSignedApp(appInfo);
                                     console.log('✅ Đã tạo shareId:', this.shareId);
                                     
-                                    // Tạo URL share - FIX QUAN TRỌNG: SỬ DỤNG ?share=
+                                    // Tạo URL share
                                     const baseUrl = window.location.origin + window.location.pathname;
                                     this.shareUrl = baseUrl + '?share=' + this.shareId;
                                     
@@ -1113,7 +1134,7 @@
                     console.log('🔍 Kiểm tra URL share, shareId:', shareId);
                     console.log('🔍 Toàn bộ URL:', window.location.href);
                     
-                    if (shareId) {
+                    if (shareId && shareId.length >= 8) {
                         console.log('🔍 Đang tải signed app với ID:', shareId);
                         
                         try {
@@ -1130,7 +1151,7 @@
                             console.log('📥 Đang gọi Firebase để lấy dữ liệu...');
                             const appInfo = await this.firebaseService.getSignedApp(shareId);
                             
-                            if (appInfo) {
+                            if (appInfo && appInfo.downloadUrl) {
                                 console.log('✅ Tìm thấy signed app:', appInfo);
                                 this.download = appInfo.downloadUrl;
                                 this.download_ipa = appInfo.downloadUrl;
@@ -1173,6 +1194,11 @@
                             this.showStep3 = false;
                             this.showError('Lỗi kết nối đến server. Vui lòng thử lại.');
                         }
+                    } else if (shareId) {
+                        console.log('⚠️ Share ID quá ngắn hoặc không hợp lệ:', shareId);
+                        this.showStep1 = true;
+                        this.showStep3 = false;
+                        this.showError('Liên kết không hợp lệ');
                     } else {
                         console.log('ℹ️ Không có share ID, hiển thị bước 1');
                         this.showStep1 = true;
