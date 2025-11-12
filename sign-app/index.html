@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
+    <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
-    
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -287,14 +287,6 @@
             font-size: 1.1rem;
         }
         
-        .btn-secondary {
-            background: var(--secondary);
-        }
-        
-        .btn-secondary:hover {
-            background: #6515a0;
-        }
-        
         /* Progress Bar */
         .progress-container {
             margin: 2rem 0;
@@ -446,53 +438,6 @@
             background: rgba(67, 97, 238, 0.1);
         }
         
-        .share-section {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .share-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .share-link-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .share-link {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            color: var(--primary);
-            text-decoration: none;
-            word-break: break-all;
-            transition: var(--transition);
-        }
-        
-        .share-link:hover {
-            background: rgba(67, 97, 238, 0.1);
-        }
-        
-        .copy-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 0 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .copy-btn:hover {
-            background: #6515a0;
-        }
-        
         /* Footer */
         .footer {
             text-align: center;
@@ -533,14 +478,6 @@
             .grid {
                 grid-template-columns: 1fr;
             }
-            
-            .share-link-container {
-                flex-direction: column;
-            }
-            
-            .copy-btn {
-                padding: 1rem;
-            }
         }
     </style>
 </head>
@@ -554,7 +491,7 @@
                 <div class="header-content">
                     <a href="#" class="logo">
                         <i class="fas fa-mobile-alt logo-icon"></i>
-                        IPASign
+                        CHỨNG CHỈ P12
                     </a>
                     <a href="https://chungchip12.com" target="_blank" class="cert-link">
                         <i class="fas fa-certificate"></i>
@@ -713,27 +650,10 @@
                                     </div>
                                 </div>
                                 
-                                <div class="share-section">
-                                    <h4 class="share-title">Chia sẻ kết quả</h4>
-                                    <div class="share-link-container">
-                                        <a :href="shareLink" class="share-link" id="shareLink">{{ shareLink }}</a>
-                                        <button class="copy-btn" @click="copyShareLink">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                    <p>Bạn có thể chia sẻ liên kết này để người khác truy cập trực tiếp vào kết quả ký IPA của bạn.</p>
-                                </div>
-                                
-                                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                                    <button class="btn" @click="index">
-                                        <i class="fas fa-redo"></i>
-                                        Bắt đầu lại
-                                    </button>
-                                    <button class="btn btn-secondary" @click="downloadFile">
-                                        <i class="fas fa-download"></i>
-                                        Tải xuống ngay
-                                    </button>
-                                </div>
+                                <button class="btn" @click="index">
+                                    <i class="fas fa-redo"></i>
+                                    Bắt đầu lại
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -750,20 +670,25 @@
     </div>
 
     <script>
-        // Firebase configuration - THAY THẾ BẰNG CẤU HÌNH CỦA BẠN
+        // Firebase configuration - THAY THẾ VỚI CẤU HÌNH CỦA BẠN
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
             projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
             appId: "YOUR_APP_ID"
         };
-        
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        
+
+        // Các URL API của bạn
+        const SignUrl = 'https://ioscert.site/api/sign';
+        const StatusUrl = 'https://ioscert.site/api/status';
+        const DownloadUrl = 'https://ioscert.site/api/download';
+
         new Vue({
             el: '#app',
             data: {
@@ -790,20 +715,92 @@
                 logText: '',
                 download: '',
                 download_ipa: '',
-                shareLink: '',
-                downloadCode: '',
-                pollTimer: null
+                shortId: ''
             },
             mounted() {
-                // Check if there's a download code in the URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const downloadCode = urlParams.get('download');
-                
-                if (downloadCode) {
-                    this.loadFromFirestore(downloadCode);
-                }
+                // Kiểm tra URL khi trang được tải
+                this.checkURLForDownload();
             },
             methods: {
+                // Kiểm tra URL có chứa download parameter không
+                async checkURLForDownload() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const downloadId = urlParams.get('download');
+                    
+                    if (downloadId && downloadId.length >= 6) {
+                        console.log('🔍 Đang tải dữ liệu với ID:', downloadId);
+                        await this.loadFromFirebase(downloadId);
+                    }
+                },
+                
+                // Tải dữ liệu từ Firebase
+                async loadFromFirebase(downloadId) {
+                    try {
+                        const docRef = db.collection('signedApps').doc(downloadId);
+                        const doc = await docRef.get();
+                        
+                        if (doc.exists) {
+                            const data = doc.data();
+                            console.log('📦 Dữ liệu từ Firebase:', data);
+                            
+                            // Hiển thị bước 4 với dữ liệu từ Firebase
+                            this.download = data.downloadUrl;
+                            this.showStep1 = false;
+                            this.showStep2 = false;
+                            this.showStep3 = false;
+                            this.showStep4 = true;
+                            
+                            // Tạo QR code
+                            setTimeout(() => {
+                                new QRCode(document.getElementById('qrcode'), {
+                                    width: 150,
+                                    height: 150,
+                                    colorDark: "#000000",
+                                    colorLight: "#ffffff",
+                                    correctLevel: QRCode.CorrectLevel.H
+                                }).makeCode(this.download);
+                            }, 100);
+                        } else {
+                            console.log('❌ Không tìm thấy dữ liệu với ID:', downloadId);
+                            alert('Không tìm thấy file đã ký với ID này.');
+                        }
+                    } catch (error) {
+                        console.error('❌ Lỗi khi tải dữ liệu từ Firebase:', error);
+                        alert('Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.');
+                    }
+                },
+                
+                // Tạo ID ngắn (6 ký tự)
+                generateShortId() {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    let result = '';
+                    for (let i = 0; i < 6; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
+                },
+                
+                // Lưu dữ liệu lên Firebase
+                async saveToFirebase(downloadUrl) {
+                    this.shortId = this.generateShortId();
+                    
+                    const data = {
+                        downloadUrl: downloadUrl,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        originalFileName: this.ipa ? this.ipa.name : 'unknown',
+                        appName: this.name || 'unknown'
+                    };
+                    
+                    try {
+                        await db.collection('signedApps').doc(this.shortId).set(data);
+                        console.log('✅ Đã lưu dữ liệu với ID:', this.shortId);
+                        return this.shortId;
+                    } catch (error) {
+                        console.error('❌ Lỗi khi lưu dữ liệu lên Firebase:', error);
+                        throw error;
+                    }
+                },
+                
                 getFile(e) {
                     const file = e.target.files[0] || null;
                     if (e.target.accept === '.ipa') {
@@ -820,6 +817,7 @@
                         this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
                     }
                 },
+                
                 async upload() {
                     // Validate required fields
                     if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
@@ -857,179 +855,88 @@
                         this.showStep2 = false;
                     }
                 },
+                
                 pollStatus() {
                     this.statusText = 'Đang chờ';
                     this.logText = '';
-                    
-                    // Clear any existing timer
-                    if (this.pollTimer) {
-                        clearInterval(this.pollTimer);
-                    }
-                    
-                    this.pollTimer = setInterval(async () => {
+                    const timer = setInterval(async () => {
                         try {
                             const res = await axios.get(`${StatusUrl}/${this.jobId}`);
                             const d = res.data;
                             this.statusText = d.status;
                             this.logText = d.msg || '';
                             
-                            console.log('Polling status:', d.status); // Debug log
-                            
                             if (d.status === 'SUCCESS') {
-                                console.log('SUCCESS detected, moving to step 4'); // Debug log
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
                                 this.download_ipa = base;
+                                clearInterval(timer);
                                 
-                                // Clear the polling timer
-                                clearInterval(this.pollTimer);
-                                this.pollTimer = null;
-                                
-                                // Generate a unique code for sharing
-                                this.downloadCode = this.generateCode();
-                                this.shareLink = `${window.location.origin}${window.location.pathname}?download=${this.downloadCode}`;
-                                
-                                // Save to Firestore
-                                await this.saveToFirestore();
-                                
-                                // Show step 4
-                                this.showStep3 = false;
-                                this.showStep4 = true;
-                                
-                                // Update URL without reloading
-                                window.history.pushState({}, '', this.shareLink);
-                                
-                                // Generate QR Code
-                                setTimeout(() => {
-                                    // Clear any existing QR code
-                                    const qrContainer = document.getElementById('qrcode');
-                                    qrContainer.innerHTML = '';
+                                // Lưu thông tin lên Firebase và tạo URL chia sẻ
+                                try {
+                                    const shortId = await this.saveToFirebase(base);
                                     
-                                    new QRCode(qrContainer, {
-                                        width: 150,
-                                        height: 150,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
-                                }, 100);
+                                    // Tạo URL mới với query parameter
+                                    const newUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                                    console.log('🔗 URL mới:', newUrl);
+                                    
+                                    // Cập nhật URL trong trình duyệt
+                                    window.history.pushState({}, '', newUrl);
+                                    
+                                    this.showStep3 = false;
+                                    this.showStep4 = true;
+                                    
+                                    // Generate QR Code
+                                    setTimeout(() => {
+                                        new QRCode(document.getElementById('qrcode'), {
+                                            width: 150,
+                                            height: 150,
+                                            colorDark: "#000000",
+                                            colorLight: "#ffffff",
+                                            correctLevel: QRCode.CorrectLevel.H
+                                        }).makeCode(this.download);
+                                    }, 100);
+                                    
+                                } catch (firebaseError) {
+                                    console.error('Lỗi Firebase:', firebaseError);
+                                    // Vẫn hiển thị kết quả ngay cả khi lỗi Firebase
+                                    this.showStep3 = false;
+                                    this.showStep4 = true;
+                                    
+                                    setTimeout(() => {
+                                        new QRCode(document.getElementById('qrcode'), {
+                                            width: 150,
+                                            height: 150,
+                                            colorDark: "#000000",
+                                            colorLight: "#ffffff",
+                                            correctLevel: QRCode.CorrectLevel.H
+                                        }).makeCode(this.download);
+                                    }, 100);
+                                }
                                 
                             } else if (d.status === 'FAILURE') {
-                                console.log('FAILURE detected'); // Debug log
-                                clearInterval(this.pollTimer);
-                                this.pollTimer = null;
-                                alert('Ký IPA thất bại: ' + (d.msg || 'Không rõ lý do'));
+                                clearInterval(timer);
+                                alert('Ký IPA thất bại');
                                 this.index();
                             }
                         } catch (err) {
-                            console.error('Polling error:', err); // Debug log
-                            clearInterval(this.pollTimer);
-                            this.pollTimer = null;
+                            clearInterval(timer);
                             alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
                             this.index();
                         }
                     }, 3000);
                 },
-                generateCode() {
-                    // Generate a random 6-character code
-                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                    let result = '';
-                    for (let i = 0; i < 6; i++) {
-                        result += chars.charAt(Math.floor(Math.random() * chars.length));
-                    }
-                    return result;
-                },
-                async saveToFirestore() {
-                    try {
-                        await db.collection('certificates').doc(this.downloadCode).set({
-                            downloadUrl: this.download,
-                            jobId: this.jobId,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            appName: this.name || 'Unknown App',
-                            bundleId: this.identifier || 'Unknown Bundle ID'
-                        });
-                        console.log('Document saved with ID: ', this.downloadCode);
-                    } catch (error) {
-                        console.error('Error saving document: ', error);
-                    }
-                },
-                async loadFromFirestore(downloadCode) {
-                    try {
-                        const doc = await db.collection('certificates').doc(downloadCode).get();
-                        if (doc.exists) {
-                            const data = doc.data();
-                            this.download = data.downloadUrl;
-                            this.jobId = data.jobId;
-                            this.downloadCode = downloadCode;
-                            this.shareLink = `${window.location.origin}${window.location.pathname}?download=${downloadCode}`;
-                            
-                            // Show step 4 directly
-                            this.showStep1 = false;
-                            this.showStep2 = false;
-                            this.showStep3 = false;
-                            this.showStep4 = true;
-                            
-                            // Generate QR Code
-                            setTimeout(() => {
-                                // Clear any existing QR code
-                                const qrContainer = document.getElementById('qrcode');
-                                qrContainer.innerHTML = '';
-                                
-                                new QRCode(qrContainer, {
-                                    width: 150,
-                                    height: 150,
-                                    colorDark: "#000000",
-                                    colorLight: "#ffffff",
-                                    correctLevel: QRCode.CorrectLevel.H
-                                }).makeCode(this.download);
-                            }, 100);
-                        } else {
-                            console.log('No such document!');
-                            alert('Liên kết không tồn tại hoặc đã hết hạn.');
-                            this.index();
-                        }
-                    } catch (error) {
-                        console.error('Error getting document:', error);
-                        alert('Có lỗi xảy ra khi tải dữ liệu.');
-                        this.index();
-                    }
-                },
-                copyShareLink() {
-                    const shareLinkElement = document.getElementById('shareLink');
-                    const textArea = document.createElement('textarea');
-                    textArea.value = this.shareLink;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    
-                    // Show feedback
-                    alert('Đã sao chép liên kết vào clipboard!');
-                },
-                downloadFile() {
-                    window.open(this.download, '_blank');
-                },
+                
                 index() { 
-                    // Clear any polling timer
-                    if (this.pollTimer) {
-                        clearInterval(this.pollTimer);
-                        this.pollTimer = null;
-                    }
-                    
-                    // Reset to step 1 and clear URL parameters
-                    window.history.pushState({}, '', window.location.pathname);
+                    // Quay về URL gốc không có query parameters
+                    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+                    window.history.pushState({}, '', baseUrl);
                     window.location.reload(); 
                 }
             },
             watch: {
                 password(val) { 
                     this.pwdCss = val.length ? 'valid' : 'invalid'; 
-                }
-            },
-            beforeDestroy() {
-                // Clean up polling timer when component is destroyed
-                if (this.pollTimer) {
-                    clearInterval(this.pollTimer);
                 }
             }
         });
