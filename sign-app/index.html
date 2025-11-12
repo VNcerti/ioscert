@@ -6,15 +6,15 @@
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -287,6 +287,14 @@
             font-size: 1.1rem;
         }
         
+        .btn-secondary {
+            background: var(--gray);
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
         /* Progress Bar */
         .progress-container {
             margin: 2rem 0;
@@ -438,15 +446,46 @@
             background: rgba(67, 97, 238, 0.1);
         }
         
-        .share-url {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
+        .share-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .share-url a {
-            color: var(--primary);
-            text-decoration: none;
+        .share-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .share-link {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .share-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .copy-btn:hover {
+            background: #5f0a9b;
         }
         
         /* Footer */
@@ -488,6 +527,10 @@
             
             .grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .share-link {
+                flex-direction: column;
             }
         }
     </style>
@@ -661,15 +704,29 @@
                                     </div>
                                 </div>
                                 
-                                <div class="share-url" v-if="shareUrl">
-                                    <p>Chia sẻ kết quả: <a :href="shareUrl" target="_blank">{{ shareUrl }}</a></p>
-                                    <p><small>URL hiện tại: {{ currentUrl }}</small></p>
+                                <!-- Share Section -->
+                                <div class="share-section">
+                                    <h4 class="share-title">Chia sẻ kết quả</h4>
+                                    <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7);">Copy link này để chia sẻ với người khác:</p>
+                                    <div class="share-link">
+                                        <input type="text" :value="shareUrl" readonly class="share-input" id="shareUrl">
+                                        <button class="copy-btn" @click="copyShareUrl">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Link này sẽ hoạt động trong 24 giờ</p>
                                 </div>
                                 
-                                <button class="btn" @click="index">
-                                    <i class="fas fa-redo"></i>
-                                    Bắt đầu lại
-                                </button>
+                                <div style="display: flex; gap: 10px; margin-top: 2rem;">
+                                    <button class="btn" @click="index">
+                                        <i class="fas fa-redo"></i>
+                                        Bắt đầu lại
+                                    </button>
+                                    <button class="btn btn-secondary" @click="copyShareUrl">
+                                        <i class="fas fa-share-alt"></i>
+                                        Chia sẻ
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -698,65 +755,100 @@
         };
 
         // Firebase Service Class
-        class FirebaseCertificateService {
+        class FirebaseSignService {
             constructor() {
                 if (!firebase.apps.length) {
                     firebase.initializeApp(firebaseConfig);
                 }
+                
                 this.db = firebase.firestore();
                 this.collectionName = 'signed_apps';
+                this.ttl = 24 * 60 * 60 * 1000; // 24 giờ
             }
 
-            // Tạo ID ngắn 6 ký tự
             generateShortId() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let result = '';
-                for (let i = 0; i < 6; i++) {
+                for (let i = 0; i < 8; i++) {
                     result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 return result;
             }
 
-            // Lưu thông tin ký IPA
-            async saveSignedApp(downloadUrl, appName = '') {
+            async saveSignedApp(appInfo) {
                 const shortId = this.generateShortId();
-                const certificateData = {
-                    downloadUrl: downloadUrl,
-                    appName: appName,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 ngày
-                };
+                const expiresAt = new Date(Date.now() + this.ttl);
 
                 try {
-                    console.log('📝 Đang lưu dữ liệu với ID:', shortId);
-                    await this.db.collection(this.collectionName).doc(shortId).set(certificateData);
-                    console.log('✅ Lưu dữ liệu thành công');
+                    const appData = {
+                        data: {
+                            downloadUrl: appInfo.downloadUrl,
+                            originalName: appInfo.originalName,
+                            appName: appInfo.appName,
+                            bundleId: appInfo.bundleId,
+                            signedAt: new Date()
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        expiresAt: firebase.firestore.Timestamp.fromDate(expiresAt),
+                        views: 0
+                    };
+
+                    await this.db.collection(this.collectionName).doc(shortId).set(appData);
+                    console.log('✅ Đã lưu signed app với ID:', shortId);
                     return shortId;
                 } catch (error) {
-                    console.error('❌ Lỗi khi lưu dữ liệu:', error);
-                    throw error;
+                    console.error('❌ Lỗi lưu signed app:', error);
+                    throw new Error('Không thể lưu dữ liệu lên server');
                 }
             }
 
-            // Lấy thông tin ký IPA theo ID
-            async getSignedApp(orderId) {
+            async getSignedApp(shortId) {
                 try {
-                    console.log('🔍 Đang tìm kiếm với ID:', orderId);
-                    const doc = await this.db.collection(this.collectionName).doc(orderId).get();
-                    if (doc.exists) {
-                        console.log('✅ Tìm thấy dữ liệu');
-                        return doc.data();
-                    } else {
-                        console.log('❌ Không tìm thấy dữ liệu');
+                    const doc = await this.db.collection(this.collectionName).doc(shortId).get();
+                    
+                    if (!doc.exists) {
+                        console.log('❌ Không tìm thấy signed app với ID:', shortId);
                         return null;
                     }
+
+                    const data = doc.data();
+                    const now = new Date();
+                    const expiresAt = data.expiresAt.toDate();
+                    
+                    if (now > expiresAt) {
+                        console.log('🗑️ Signed app đã hết hạn, đang xóa...');
+                        await this.deleteSignedApp(shortId);
+                        return null;
+                    }
+
+                    await this.db.collection(this.collectionName).doc(shortId).update({
+                        views: firebase.firestore.FieldValue.increment(1)
+                    });
+
+                    const appInfo = {
+                        ...data.data,
+                        signedAt: data.data.signedAt.toDate()
+                    };
+
+                    console.log('✅ Đã tải signed app:', appInfo.originalName);
+                    return appInfo;
                 } catch (error) {
-                    console.error('❌ Lỗi khi lấy dữ liệu:', error);
-                    throw error;
+                    console.error('❌ Lỗi lấy signed app:', error);
+                    return null;
+                }
+            }
+
+            async deleteSignedApp(shortId) {
+                try {
+                    await this.db.collection(this.collectionName).doc(shortId).delete();
+                    console.log('🗑️ Đã xóa signed app:', shortId);
+                } catch (error) {
+                    console.error('❌ Lỗi xóa signed app:', error);
                 }
             }
         }
 
+        // Vue App
         new Vue({
             el: '#app',
             data: {
@@ -783,61 +875,11 @@
                 logText: '',
                 download: '',
                 download_ipa: '',
+                shareId: '',
                 shareUrl: '',
-                currentUrl: window.location.href,
                 firebaseService: null
             },
-            created() {
-                console.log('🚀 Ứng dụng khởi động');
-                console.log('📍 URL hiện tại:', this.currentUrl);
-                
-                // Khởi tạo Firebase Service
-                this.firebaseService = new FirebaseCertificateService();
-                
-                // Kiểm tra URL khi tải trang
-                this.checkUrlParams();
-            },
             methods: {
-                // Kiểm tra URL parameters
-                async checkUrlParams() {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const downloadId = urlParams.get('download');
-                    
-                    console.log('🔍 Kiểm tra URL parameters:', downloadId);
-                    
-                    if (downloadId && downloadId.length === 6) {
-                        console.log('📥 Đang tải kết quả với ID:', downloadId);
-                        try {
-                            const signedApp = await this.firebaseService.getSignedApp(downloadId);
-                            if (signedApp) {
-                                console.log('✅ Tìm thấy kết quả, hiển thị bước 4');
-                                this.download = signedApp.downloadUrl;
-                                this.download_ipa = signedApp.downloadUrl;
-                                this.shareUrl = window.location.href;
-                                this.showStep1 = false;
-                                this.showStep4 = true;
-                                
-                                // Tạo QR Code
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
-                                        width: 150,
-                                        height: 150,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
-                                }, 100);
-                            } else {
-                                console.log('❌ Không tìm thấy kết quả với ID:', downloadId);
-                            }
-                        } catch (error) {
-                            console.error('❌ Lỗi khi tải kết quả:', error);
-                        }
-                    } else {
-                        console.log('ℹ️ Không có download ID trong URL');
-                    }
-                },
-                
                 getFile(e) {
                     const file = e.target.files[0] || null;
                     if (e.target.accept === '.ipa') {
@@ -907,27 +949,20 @@
                                 this.download_ipa = base;
                                 clearInterval(timer);
                                 
-                                console.log('✅ Ký IPA thành công, đang lưu kết quả...');
-                                
-                                // Lưu thông tin lên Firebase và tạo URL chia sẻ
-                                try {
-                                    const shortId = await this.firebaseService.saveSignedApp(base, this.name);
-                                    console.log('📝 Đã lưu với ID:', shortId);
-                                    
-                                    // Tạo URL với query parameter
-                                    const newUrl = this.createShareUrl(shortId);
-                                    this.shareUrl = newUrl;
-                                    this.currentUrl = newUrl;
-                                    
-                                    console.log('🔗 URL mới:', newUrl);
-                                    
-                                    // Cập nhật URL trình duyệt - ĐẢM BẢO ĐÂY ĐƯỢC GỌI
-                                    this.updateBrowserUrl(newUrl);
-                                    
-                                } catch (error) {
-                                    console.error('❌ Lỗi khi lưu kết quả:', error);
-                                    // Vẫn hiển thị kết quả ngay cả khi lưu Firebase thất bại
+                                // Lưu thông tin lên Firebase và tạo share URL
+                                if (!this.firebaseService) {
+                                    this.firebaseService = new FirebaseSignService();
                                 }
+                                
+                                const appInfo = {
+                                    downloadUrl: this.download,
+                                    originalName: this.ipa ? this.ipa.name : 'Unknown',
+                                    appName: this.name || 'Signed App',
+                                    bundleId: this.identifier || 'Unknown'
+                                };
+                                
+                                this.shareId = await this.firebaseService.saveSignedApp(appInfo);
+                                this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.shareId}`;
                                 
                                 this.showStep3 = false;
                                 this.showStep4 = true;
@@ -955,49 +990,72 @@
                         }
                     }, 3000);
                 },
-                
-                // Tạo URL chia sẻ
-                createShareUrl(shortId) {
-                    return `${window.location.origin}${window.location.pathname}?download=${shortId}`;
-                },
-                
-                // Cập nhật URL trình duyệt
-                updateBrowserUrl(newUrl) {
-                    try {
-                        // Sử dụng replaceState thay vì pushState để tránh thêm vào history
-                        window.history.replaceState({}, '', newUrl);
-                        console.log('✅ Đã cập nhật URL trình duyệt thành:', newUrl);
-                        console.log('📍 URL hiện tại sau khi cập nhật:', window.location.href);
-                    } catch (pushStateError) {
-                        console.error('❌ Lỗi khi cập nhật URL với replaceState:', pushStateError);
+                async loadSharedApp() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const downloadId = urlParams.get('download');
+                    
+                    if (downloadId && downloadId.length === 8) {
+                        console.log('🔍 Đang tải signed app với ID:', downloadId);
                         
-                        // Thử với pushState
                         try {
-                            window.history.pushState({}, '', newUrl);
-                            console.log('✅ Đã cập nhật URL trình duyệt với pushState');
-                        } catch (pushStateError2) {
-                            console.error('❌ Lỗi khi cập nhật URL với pushState:', pushStateError2);
-                            
-                            // Fallback cuối cùng: sử dụng window.location
-                            try {
-                                window.location.href = newUrl;
-                                console.log('🔄 Sử dụng window.location fallback');
-                            } catch (finalError) {
-                                console.error('❌ Lỗi cuối cùng khi cập nhật URL:', finalError);
+                            if (!this.firebaseService) {
+                                this.firebaseService = new FirebaseSignService();
                             }
+                            
+                            this.showStep1 = false;
+                            this.showStep3 = true;
+                            this.statusText = 'Đang tải thông tin...';
+                            
+                            const appInfo = await this.firebaseService.getSignedApp(downloadId);
+                            
+                            if (appInfo) {
+                                console.log('✅ Tìm thấy signed app');
+                                this.download = appInfo.downloadUrl;
+                                this.download_ipa = appInfo.downloadUrl;
+                                this.shareId = downloadId;
+                                this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${downloadId}`;
+                                
+                                this.showStep3 = false;
+                                this.showStep4 = true;
+                                
+                                // Generate QR Code
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById('qrcode'), {
+                                        width: 150,
+                                        height: 150,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                        correctLevel: QRCode.CorrectLevel.H
+                                    }).makeCode(this.download);
+                                }, 100);
+                            } else {
+                                console.log('❌ Không tìm thấy signed app hoặc đã hết hạn');
+                                this.showStep1 = true;
+                                alert('Liên kết không tồn tại hoặc đã hết hạn (24 giờ)');
+                            }
+                            
+                        } catch (error) {
+                            console.error('Lỗi tải signed app:', error);
+                            this.showStep1 = true;
+                            alert('Lỗi kết nối đến server. Vui lòng thử lại.');
                         }
+                    } else {
+                        this.showStep1 = true;
                     }
                 },
-                
+                copyShareUrl() {
+                    const shareInput = document.getElementById('shareUrl');
+                    shareInput.select();
+                    shareInput.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    
+                    // Hiển thị thông báo
+                    alert('Đã copy link chia sẻ vào clipboard!');
+                },
                 index() { 
-                    console.log('🔄 Bắt đầu lại');
-                    // Quay về URL gốc không có query parameters
+                    // Xóa query parameter khi quay lại
                     const baseUrl = `${window.location.origin}${window.location.pathname}`;
-                    try {
-                        window.history.replaceState({}, '', baseUrl);
-                    } catch (e) {
-                        console.error('Lỗi khi reset URL:', e);
-                    }
+                    window.history.pushState({}, '', baseUrl);
                     window.location.reload(); 
                 }
             },
@@ -1005,6 +1063,13 @@
                 password(val) { 
                     this.pwdCss = val.length ? 'valid' : 'invalid'; 
                 }
+            },
+            mounted() {
+                // Khởi tạo Firebase service
+                this.firebaseService = new FirebaseSignService();
+                
+                // Kiểm tra URL khi load trang
+                this.loadSharedApp();
             }
         });
     </script>
