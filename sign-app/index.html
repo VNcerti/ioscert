@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -916,22 +915,14 @@
                                     console.log('📝 Đã lưu với ID:', shortId);
                                     
                                     // Tạo URL với query parameter
-                                    const newUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                                    const newUrl = this.createShareUrl(shortId);
                                     this.shareUrl = newUrl;
                                     this.currentUrl = newUrl;
                                     
                                     console.log('🔗 URL mới:', newUrl);
                                     
-                                    // Cập nhật URL trình duyệt
-                                    try {
-                                        window.history.pushState({}, '', newUrl);
-                                        console.log('✅ Đã cập nhật URL trình duyệt');
-                                    } catch (pushStateError) {
-                                        console.error('❌ Lỗi khi cập nhật URL:', pushStateError);
-                                        // Fallback: sử dụng hash nếu pushState không hoạt động
-                                        window.location.hash = `download=${shortId}`;
-                                        console.log('🔄 Sử dụng hash fallback');
-                                    }
+                                    // Cập nhật URL trình duyệt - ĐẢM BẢO ĐÂY ĐƯỢC GỌI
+                                    this.updateBrowserUrl(newUrl);
                                     
                                 } catch (error) {
                                     console.error('❌ Lỗi khi lưu kết quả:', error);
@@ -964,12 +955,46 @@
                         }
                     }, 3000);
                 },
+                
+                // Tạo URL chia sẻ
+                createShareUrl(shortId) {
+                    return `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                },
+                
+                // Cập nhật URL trình duyệt
+                updateBrowserUrl(newUrl) {
+                    try {
+                        // Sử dụng replaceState thay vì pushState để tránh thêm vào history
+                        window.history.replaceState({}, '', newUrl);
+                        console.log('✅ Đã cập nhật URL trình duyệt thành:', newUrl);
+                        console.log('📍 URL hiện tại sau khi cập nhật:', window.location.href);
+                    } catch (pushStateError) {
+                        console.error('❌ Lỗi khi cập nhật URL với replaceState:', pushStateError);
+                        
+                        // Thử với pushState
+                        try {
+                            window.history.pushState({}, '', newUrl);
+                            console.log('✅ Đã cập nhật URL trình duyệt với pushState');
+                        } catch (pushStateError2) {
+                            console.error('❌ Lỗi khi cập nhật URL với pushState:', pushStateError2);
+                            
+                            // Fallback cuối cùng: sử dụng window.location
+                            try {
+                                window.location.href = newUrl;
+                                console.log('🔄 Sử dụng window.location fallback');
+                            } catch (finalError) {
+                                console.error('❌ Lỗi cuối cùng khi cập nhật URL:', finalError);
+                            }
+                        }
+                    }
+                },
+                
                 index() { 
                     console.log('🔄 Bắt đầu lại');
                     // Quay về URL gốc không có query parameters
                     const baseUrl = `${window.location.origin}${window.location.pathname}`;
                     try {
-                        window.history.pushState({}, '', baseUrl);
+                        window.history.replaceState({}, '', baseUrl);
                     } catch (e) {
                         console.error('Lỗi khi reset URL:', e);
                     }
