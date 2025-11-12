@@ -23,6 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* CSS giữ nguyên như trước */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -1119,21 +1120,27 @@
                         try {
                             if (!this.firebaseService) {
                                 this.firebaseService = new FirebaseSignService();
+                                console.log('✅ Đã khởi tạo Firebase service');
                             }
                             
+                            // Hiển thị loading trước
                             this.showStep1 = false;
                             this.showStep3 = true;
                             this.statusText = 'Đang tải thông tin...';
                             
+                            console.log('📥 Đang gọi Firebase để lấy dữ liệu...');
                             const appInfo = await this.firebaseService.getSignedApp(downloadId);
                             
                             if (appInfo) {
-                                console.log('✅ Tìm thấy signed app');
+                                console.log('✅ Tìm thấy signed app:', appInfo);
                                 this.download = appInfo.downloadUrl;
                                 this.download_ipa = appInfo.downloadUrl;
                                 this.shareId = downloadId;
                                 this.shareUrl = window.location.href;
                                 
+                                console.log('✅ Đã set download URL:', this.download);
+                                
+                                // Chuyển thẳng đến bước 4
                                 this.showStep3 = false;
                                 this.showStep4 = true;
                                 
@@ -1149,22 +1156,26 @@
                                             colorLight: "#ffffff",
                                             correctLevel: QRCode.CorrectLevel.H
                                         }).makeCode(this.download);
+                                        console.log('✅ Đã tạo QR code từ URL share');
                                     }
                                 }, 100);
                                 
-                                console.log('✅ Đã load từ share URL:', this.shareUrl);
+                                console.log('✅ Đã load từ share URL thành công:', this.shareUrl);
                             } else {
                                 console.log('❌ Không tìm thấy signed app hoặc đã hết hạn');
                                 this.showStep1 = true;
+                                this.showStep3 = false;
                                 this.showError('Liên kết không tồn tại hoặc đã hết hạn (24 giờ)');
                             }
                             
                         } catch (error) {
-                            console.error('Lỗi tải signed app:', error);
+                            console.error('❌ Lỗi tải signed app:', error);
                             this.showStep1 = true;
+                            this.showStep3 = false;
                             this.showError('Lỗi kết nối đến server. Vui lòng thử lại.');
                         }
                     } else {
+                        console.log('ℹ️ Không có download ID, hiển thị bước 1');
                         this.showStep1 = true;
                     }
                 },
@@ -1286,6 +1297,7 @@
                 console.log('🔗 Search params:', window.location.search);
                 
                 // Kiểm tra URL khi load trang - GỌI NGAY KHI MOUNTED
+                console.log('🚀 Đang gọi loadSharedApp...');
                 this.loadSharedApp();
                 
                 // Cleanup on page unload
@@ -1298,6 +1310,7 @@
                 // Xử lý popstate (khi người dùng nhấn back/forward)
                 window.addEventListener('popstate', () => {
                     console.log('🔄 URL đã thay đổi:', window.location.href);
+                    console.log('🔄 Đang gọi lại loadSharedApp...');
                     this.loadSharedApp();
                 });
             },
