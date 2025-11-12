@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
+        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -295,6 +296,13 @@
             background: #5a6268;
         }
         
+        .btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         /* Progress Bar */
         .progress-container {
             margin: 2rem 0;
@@ -488,6 +496,18 @@
             background: #5f0a9b;
         }
         
+        .error-message {
+            background: rgba(239, 71, 111, 0.1);
+            color: #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border: 1px solid rgba(239, 71, 111, 0.3);
+        }
+        
         /* Footer */
         .footer {
             text-align: center;
@@ -624,10 +644,12 @@
                                 </div>
                             </div>
                             
-                            <button class="btn" @click="upload">
+                            <button class="btn" @click="upload" :disabled="uploading">
                                 <i class="fas fa-signature"></i>
-                                Ký ngay!
+                                {{ uploading ? 'Đang xử lý...' : 'Ký ngay!' }}
                             </button>
+                            
+                            <div class="error-message" id="errorMessage"></div>
                         </div>
                     </div>
                 </transition>
@@ -827,7 +849,7 @@
 
                     const appInfo = {
                         ...data.data,
-                        signedAt: data.data.signedAt.toDate()
+                        signedAt: data.data.signedAt
                     };
 
                     console.log('✅ Đã tải signed app:', appInfo.originalName);
@@ -877,7 +899,9 @@
                 download_ipa: '',
                 shareId: '',
                 shareUrl: '',
-                firebaseService: null
+                firebaseService: null,
+                uploading: false,
+                pollInterval: null
             },
             methods: {
                 getFile(e) {
@@ -899,13 +923,15 @@
                 async upload() {
                     // Validate required fields
                     if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
-                        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                        this.showError('Vui lòng điền đầy đủ thông tin bắt buộc!');
                         return;
                     }
                     
+                    this.uploading = true;
                     this.showStep1 = false;
                     this.showStep2 = true;
                     this.progressBar = 0;
+                    this.hideError();
                     
                     const fd = new FormData();
                     fd.append('ipa', this.ipa);
@@ -919,35 +945,69 @@
                         const resp = await axios.post(SignUrl, fd, {
                             headers: { 'Content-Type': 'multipart/form-data' },
                             onUploadProgress: e => {
-                                if (e.lengthComputable) this.progressBar = Math.round(e.loaded / e.total * 100);
-                            }
+                                if (e.lengthComputable) {
+                                    this.progressBar = Math.round((e.loaded / e.total) * 100);
+                                }
+                            },
+                            timeout: 60000
                         });
                         
-                        this.jobId = resp.data.task_id;
-                        this.showStep2 = false;
-                        this.showStep3 = true;
-                        this.pollStatus();
+                        if (resp.data && resp.data.task_id) {
+                            this.jobId = resp.data.task_id;
+                            this.showStep2 = false;
+                            this.showStep3 = true;
+                            this.pollStatus();
+                        } else {
+                            throw new Error('Không nhận được task_id từ server');
+                        }
                     } catch (err) {
-                        alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
+                        console.error('Upload error:', err);
+                        let errorMessage = 'Gửi file thất bại. ';
+                        
+                        if (err.code === 'NETWORK_ERROR' || !err.response) {
+                            errorMessage += 'Vui lòng kiểm tra kết nối mạng.';
+                        } else if (err.response?.data?.error) {
+                            errorMessage += err.response.data.error;
+                        } else {
+                            errorMessage += 'Vui lòng thử lại sau.';
+                        }
+                        
+                        this.showError(errorMessage);
                         this.showStep1 = true;
                         this.showStep2 = false;
+                        this.uploading = false;
                     }
                 },
                 async pollStatus() {
-                    this.statusText = 'Đang chờ';
+                    this.statusText = 'Đang chờ xử lý...';
                     this.logText = '';
-                    const timer = setInterval(async () => {
+                    
+                    // Clear any existing interval
+                    if (this.pollInterval) {
+                        clearInterval(this.pollInterval);
+                    }
+                    
+                    let attempts = 0;
+                    const maxAttempts = 60;
+                    
+                    this.pollInterval = setInterval(async () => {
                         try {
-                            const res = await axios.get(`${StatusUrl}/${this.jobId}`);
+                            attempts++;
+                            
+                            const res = await axios.get(`${StatusUrl}/${this.jobId}`, {
+                                timeout: 10000
+                            });
+                            
                             const d = res.data;
-                            this.statusText = d.status;
-                            this.logText = d.msg || '';
+                            this.statusText = d.status || 'Đang xử lý...';
+                            this.logText = d.msg || d.log || '';
                             
                             if (d.status === 'SUCCESS') {
+                                clearInterval(this.pollInterval);
+                                
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
                                 this.download_ipa = base;
-                                clearInterval(timer);
                                 
                                 // Lưu thông tin lên Firebase và tạo share URL
                                 if (!this.firebaseService) {
@@ -961,34 +1021,68 @@
                                     bundleId: this.identifier || 'Unknown'
                                 };
                                 
-                                this.shareId = await this.firebaseService.saveSignedApp(appInfo);
-                                this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.shareId}`;
-                                
-                                this.showStep3 = false;
-                                this.showStep4 = true;
-                                
-                                // Generate QR Code
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
-                                        width: 150,
-                                        height: 150,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
-                                }, 100);
+                                try {
+                                    this.shareId = await this.firebaseService.saveSignedApp(appInfo);
+                                    this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.shareId}`;
+                                    
+                                    // CẬP NHẬT URL TRÌNH DUYỆT
+                                    window.history.pushState({}, '', this.shareUrl);
+                                    
+                                    this.showStep3 = false;
+                                    this.showStep4 = true;
+                                    this.uploading = false;
+                                    
+                                    // Generate QR Code
+                                    setTimeout(() => {
+                                        if (document.getElementById('qrcode')) {
+                                            new QRCode(document.getElementById('qrcode'), {
+                                                width: 150,
+                                                height: 150,
+                                                colorDark: "#000000",
+                                                colorLight: "#ffffff",
+                                                correctLevel: QRCode.CorrectLevel.H
+                                            }).makeCode(this.download);
+                                        }
+                                    }, 100);
+                                } catch (firebaseError) {
+                                    console.error('Firebase error:', firebaseError);
+                                    // Vẫn hiển thị kết quả ngay cả khi Firebase lỗi
+                                    this.showStep3 = false;
+                                    this.showStep4 = true;
+                                    this.uploading = false;
+                                    
+                                    setTimeout(() => {
+                                        if (document.getElementById('qrcode')) {
+                                            new QRCode(document.getElementById('qrcode'), {
+                                                width: 150,
+                                                height: 150,
+                                                colorDark: "#000000",
+                                                colorLight: "#ffffff",
+                                                correctLevel: QRCode.CorrectLevel.H
+                                            }).makeCode(this.download);
+                                        }
+                                    }, 100);
+                                }
                                 
                             } else if (d.status === 'FAILURE') {
-                                clearInterval(timer);
-                                alert('Ký IPA thất bại');
+                                clearInterval(this.pollInterval);
+                                this.showError('Ký IPA thất bại: ' + (d.msg || 'Lỗi không xác định'));
+                                this.index();
+                            } else if (attempts >= maxAttempts) {
+                                clearInterval(this.pollInterval);
+                                this.showError('Quá thời gian chờ xử lý. Vui lòng thử lại.');
                                 this.index();
                             }
                         } catch (err) {
-                            clearInterval(timer);
-                            alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
-                            this.index();
+                            console.error('Status poll error:', err);
+                            
+                            if (attempts >= maxAttempts) {
+                                clearInterval(this.pollInterval);
+                                this.showError('Không thể lấy trạng thái. Vui lòng thử lại.');
+                                this.index();
+                            }
                         }
-                    }, 3000);
+                    }, 5000);
                 },
                 async loadSharedApp() {
                     const urlParams = new URLSearchParams(window.location.search);
@@ -1020,24 +1114,26 @@
                                 
                                 // Generate QR Code
                                 setTimeout(() => {
-                                    new QRCode(document.getElementById('qrcode'), {
-                                        width: 150,
-                                        height: 150,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                        correctLevel: QRCode.CorrectLevel.H
-                                    }).makeCode(this.download);
+                                    if (document.getElementById('qrcode')) {
+                                        new QRCode(document.getElementById('qrcode'), {
+                                            width: 150,
+                                            height: 150,
+                                            colorDark: "#000000",
+                                            colorLight: "#ffffff",
+                                            correctLevel: QRCode.CorrectLevel.H
+                                        }).makeCode(this.download);
+                                    }
                                 }, 100);
                             } else {
                                 console.log('❌ Không tìm thấy signed app hoặc đã hết hạn');
                                 this.showStep1 = true;
-                                alert('Liên kết không tồn tại hoặc đã hết hạn (24 giờ)');
+                                this.showError('Liên kết không tồn tại hoặc đã hết hạn (24 giờ)');
                             }
                             
                         } catch (error) {
                             console.error('Lỗi tải signed app:', error);
                             this.showStep1 = true;
-                            alert('Lỗi kết nối đến server. Vui lòng thử lại.');
+                            this.showError('Lỗi kết nối đến server. Vui lòng thử lại.');
                         }
                     } else {
                         this.showStep1 = true;
@@ -1045,18 +1141,70 @@
                 },
                 copyShareUrl() {
                     const shareInput = document.getElementById('shareUrl');
-                    shareInput.select();
-                    shareInput.setSelectionRange(0, 99999);
-                    document.execCommand('copy');
-                    
-                    // Hiển thị thông báo
-                    alert('Đã copy link chia sẻ vào clipboard!');
+                    if (shareInput) {
+                        shareInput.select();
+                        shareInput.setSelectionRange(0, 99999);
+                        
+                        try {
+                            const successful = document.execCommand('copy');
+                            if (successful) {
+                                alert('Đã copy link chia sẻ vào clipboard!');
+                            } else {
+                                alert('Không thể copy link. Vui lòng sao chép thủ công.');
+                            }
+                        } catch (err) {
+                            alert('Vui lòng sao chép link thủ công: ' + this.shareUrl);
+                        }
+                    }
+                },
+                showError(message) {
+                    const errorElement = document.getElementById('errorMessage');
+                    if (errorElement) {
+                        errorElement.textContent = message;
+                        errorElement.style.display = 'block';
+                    } else {
+                        alert(message);
+                    }
+                },
+                hideError() {
+                    const errorElement = document.getElementById('errorMessage');
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
                 },
                 index() { 
+                    // Clear any existing interval
+                    if (this.pollInterval) {
+                        clearInterval(this.pollInterval);
+                    }
+                    
                     // Xóa query parameter khi quay lại
                     const baseUrl = `${window.location.origin}${window.location.pathname}`;
                     window.history.pushState({}, '', baseUrl);
-                    window.location.reload(); 
+                    
+                    this.showStep1 = true;
+                    this.showStep2 = false;
+                    this.showStep3 = false;
+                    this.showStep4 = false;
+                    this.uploading = false;
+                    this.progressBar = 0;
+                    
+                    // Reset form
+                    this.ipa = null;
+                    this.ipaCss = 'invalid';
+                    this.ipaText = 'Chọn file .ipa...';
+                    this.p12 = null;
+                    this.p12Css = 'invalid';
+                    this.p12Text = 'Chọn file .p12...';
+                    this.mobileprovision = null;
+                    this.mobCss = 'invalid';
+                    this.mobText = 'Chọn file .mobileprovision...';
+                    this.password = '';
+                    this.pwdCss = 'invalid';
+                    this.name = '';
+                    this.identifier = '';
+                    
+                    this.hideError();
                 }
             },
             watch: {
@@ -1066,10 +1214,33 @@
             },
             mounted() {
                 // Khởi tạo Firebase service
-                this.firebaseService = new FirebaseSignService();
+                try {
+                    this.firebaseService = new FirebaseSignService();
+                    console.log('✅ Firebase service initialized');
+                } catch (error) {
+                    console.error('❌ Firebase initialization error:', error);
+                }
                 
                 // Kiểm tra URL khi load trang
                 this.loadSharedApp();
+                
+                // Cleanup on page unload
+                window.addEventListener('beforeunload', () => {
+                    if (this.pollInterval) {
+                        clearInterval(this.pollInterval);
+                    }
+                });
+
+                // Xử lý popstate (khi người dùng nhấn back/forward)
+                window.addEventListener('popstate', () => {
+                    console.log('🔄 URL đã thay đổi');
+                    this.loadSharedApp();
+                });
+            },
+            beforeDestroy() {
+                if (this.pollInterval) {
+                    clearInterval(this.pollInterval);
+                }
             }
         });
     </script>
