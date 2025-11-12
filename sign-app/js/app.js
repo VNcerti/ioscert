@@ -1,3 +1,8 @@
+// THÊM 3 DÒNG NÀY
+const SignUrl = 'https://sign.ipasign.cc/api/sign';
+const StatusUrl = 'https://sign.ipasign.cc/api/status';
+const DownloadUrl = 'https://sign.ipasign.cc/api/download';
+
 new Vue({
     el: '#app',
     data: {
