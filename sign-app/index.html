@@ -2,13 +2,13 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Ký IPAs Trực Tuyến - An Toàn - Tự Động</title>
- <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
+    <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
     
@@ -287,6 +287,14 @@
             font-size: 1.1rem;
         }
         
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #6515a0;
+        }
+        
         /* Progress Bar */
         .progress-container {
             margin: 2rem 0;
@@ -438,36 +446,51 @@
             background: rgba(67, 97, 238, 0.1);
         }
         
-        .share-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 1rem;
+        .share-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .share-input {
+        .share-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .share-link-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .share-link {
             flex: 1;
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius);
-            padding: 0.8rem 1rem;
-            color: white;
-            font-size: 0.9rem;
+            padding: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            word-break: break-all;
+            transition: var(--transition);
+        }
+        
+        .share-link:hover {
+            background: rgba(67, 97, 238, 0.1);
         }
         
         .copy-btn {
-            background: var(--primary);
+            background: var(--secondary);
             color: white;
             border: none;
             border-radius: var(--border-radius);
-            padding: 0.8rem 1.5rem;
+            padding: 0 1.5rem;
             cursor: pointer;
             transition: var(--transition);
         }
         
         .copy-btn:hover {
-            background: var(--primary-dark);
+            background: #6515a0;
         }
         
         /* Footer */
@@ -510,6 +533,14 @@
             .grid {
                 grid-template-columns: 1fr;
             }
+            
+            .share-link-container {
+                flex-direction: column;
+            }
+            
+            .copy-btn {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
@@ -523,7 +554,7 @@
                 <div class="header-content">
                     <a href="#" class="logo">
                         <i class="fas fa-mobile-alt logo-icon"></i>
-                        IOSCERT.SITE - GIẢI PHÁP CHO THIẾT BỊ APPLE
+                        CHỨNG CHỈ P12
                     </a>
                     <a href="https://chungchip12.com" target="_blank" class="cert-link">
                         <i class="fas fa-certificate"></i>
@@ -549,7 +580,7 @@
                             <div class="grid">
                                 <!-- IPA File -->
                                 <div class="form-group">
-                                    <label class="form-label">File IPA muốn cài đặt</label>
+                                    <label class="form-label">File IPA</label>
                                     <div class="file-input-container">
                                         <input type="file" @change="getFile($event)" ref="ipa" required accept=".ipa" class="file-input" id="ipa">
                                         <label for="ipa" class="file-input-label" :class="ipaCss">
@@ -561,7 +592,7 @@
                                 
                                 <!-- P12 File -->
                                 <div class="form-group">
-                                    <label class="form-label">File .P12</label>
+                                    <label class="form-label">File chứng chỉ (.p12)</label>
                                     <div class="file-input-container">
                                         <input type="file" @change="getFile($event)" ref="p12" required accept=".p12" class="file-input" id="p12">
                                         <label for="p12" class="file-input-label" :class="p12Css">
@@ -573,7 +604,7 @@
                                 
                                 <!-- Mobile Provision File -->
                                 <div class="form-group">
-                                    <label class="form-label">File .MobileProvision</label>
+                                    <label class="form-label">File Mobile Provision</label>
                                     <div class="file-input-container">
                                         <input type="file" ref="mob" @change="getFile($event)" required accept=".mobileprovision" class="file-input" id="mobileprovision">
                                         <label for="mobileprovision" class="file-input-label" :class="mobCss">
@@ -618,7 +649,6 @@
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 Bước 2: Đang tải file lên
                             </h2>
-                            <p>Tốc độ nhanh hay chậm phụ thuộc vào tốc độ mạng và dung lượng IPA của bạn</p>
                         </div>
                         <div class="card-body">
                             <div class="progress-container">
@@ -680,19 +710,30 @@
                                     <div class="link-container">
                                         <p class="link-title">Hoặc sao chép link</p>
                                         <a :href="download" target="_blank" class="download-link">{{ download }}</a>
-                                        <div class="share-link">
-                                            <input type="text" :value="shareUrl" readonly class="share-input" ref="shareInput">
-                                            <button class="copy-btn" @click="copyShareUrl">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
                                     </div>
                                 </div>
                                 
-                                <button class="btn" @click="index">
-                                    <i class="fas fa-redo"></i>
-                                    Bắt đầu lại
-                                </button>
+                                <div class="share-section">
+                                    <h4 class="share-title">Chia sẻ kết quả</h4>
+                                    <div class="share-link-container">
+                                        <a :href="shareLink" class="share-link" id="shareLink">{{ shareLink }}</a>
+                                        <button class="copy-btn" @click="copyShareLink">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <p>Bạn có thể chia sẻ liên kết này để người khác truy cập trực tiếp vào kết quả ký IPA của bạn.</p>
+                                </div>
+                                
+                                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                    <button class="btn" @click="index">
+                                        <i class="fas fa-redo"></i>
+                                        Bắt đầu lại
+                                    </button>
+                                    <button class="btn btn-secondary" @click="downloadFile">
+                                        <i class="fas fa-download"></i>
+                                        Tải xuống ngay
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -712,21 +753,16 @@
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            authDomain: "YOUR_AUTH_DOMAIN",
             projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
             appId: "YOUR_APP_ID"
         };
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        
-        // URL configurations
-        const SignUrl = "https://your-api.com/sign";
-        const StatusUrl = "https://your-api.com/status";
-        const DownloadUrl = "https://your-api.com/download";
         
         new Vue({
             el: '#app',
@@ -754,8 +790,17 @@
                 logText: '',
                 download: '',
                 download_ipa: '',
-                shareUrl: '',
+                shareLink: '',
                 downloadCode: ''
+            },
+            mounted() {
+                // Check if there's a download code in the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const downloadCode = urlParams.get('download');
+                
+                if (downloadCode) {
+                    this.loadFromFirestore(downloadCode);
+                }
             },
             methods: {
                 getFile(e) {
@@ -811,7 +856,7 @@
                         this.showStep2 = false;
                     }
                 },
-                async pollStatus() {
+                pollStatus() {
                     this.statusText = 'Đang chờ';
                     this.logText = '';
                     const timer = setInterval(async () => {
@@ -825,20 +870,20 @@
                                 const base = `${DownloadUrl}/${this.jobId}`;
                                 this.download = base;
                                 this.download_ipa = base;
+                                clearInterval(timer);
                                 
                                 // Generate a unique code for sharing
-                                this.downloadCode = this.generateUniqueCode();
-                                this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.downloadCode}`;
+                                this.downloadCode = this.generateCode();
+                                this.shareLink = `${window.location.origin}${window.location.pathname}?download=${this.downloadCode}`;
                                 
                                 // Save to Firestore
                                 await this.saveToFirestore();
                                 
-                                clearInterval(timer);
                                 this.showStep3 = false;
                                 this.showStep4 = true;
                                 
                                 // Update URL without reloading
-                                window.history.pushState({}, '', this.shareUrl);
+                                window.history.pushState({}, '', this.shareLink);
                                 
                                 // Generate QR Code
                                 setTimeout(() => {
@@ -863,34 +908,40 @@
                         }
                     }, 3000);
                 },
-                generateUniqueCode() {
-                    // Generate a random 8-character code
-                    return Math.random().toString(36).substring(2, 10).toUpperCase();
+                generateCode() {
+                    // Generate a random 6-character code
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    let result = '';
+                    for (let i = 0; i < 6; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
                 },
                 async saveToFirestore() {
                     try {
                         await db.collection('certificates').doc(this.downloadCode).set({
                             downloadUrl: this.download,
                             jobId: this.jobId,
-                            fileName: this.ipa.name,
-                            appName: this.name || 'Unknown',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            appName: this.name || 'Unknown App',
+                            bundleId: this.identifier || 'Unknown Bundle ID'
                         });
+                        console.log('Document saved with ID: ', this.downloadCode);
                     } catch (error) {
-                        console.error('Error saving to Firestore:', error);
+                        console.error('Error saving document: ', error);
                     }
                 },
-                async loadFromFirestore(code) {
+                async loadFromFirestore(downloadCode) {
                     try {
-                        const doc = await db.collection('certificates').doc(code).get();
+                        const doc = await db.collection('certificates').doc(downloadCode).get();
                         if (doc.exists) {
                             const data = doc.data();
                             this.download = data.downloadUrl;
                             this.jobId = data.jobId;
-                            this.name = data.appName;
-                            this.downloadCode = code;
-                            this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${code}`;
+                            this.downloadCode = downloadCode;
+                            this.shareLink = `${window.location.origin}${window.location.pathname}?download=${downloadCode}`;
                             
+                            // Show step 4 directly
                             this.showStep1 = false;
                             this.showStep2 = false;
                             this.showStep3 = false;
@@ -906,45 +957,37 @@
                                     correctLevel: QRCode.CorrectLevel.H
                                 }).makeCode(this.download);
                             }, 100);
-                            
-                            return true;
+                        } else {
+                            console.log('No such document!');
                         }
                     } catch (error) {
-                        console.error('Error loading from Firestore:', error);
+                        console.error('Error getting document:', error);
                     }
-                    return false;
                 },
-                copyShareUrl() {
-                    const input = this.$refs.shareInput;
-                    input.select();
+                copyShareLink() {
+                    const shareLinkElement = document.getElementById('shareLink');
+                    const textArea = document.createElement('textarea');
+                    textArea.value = this.shareLink;
+                    document.body.appendChild(textArea);
+                    textArea.select();
                     document.execCommand('copy');
-                    alert('Đã sao chép link chia sẻ!');
+                    document.body.removeChild(textArea);
+                    
+                    // Show feedback
+                    alert('Đã sao chép liên kết vào clipboard!');
+                },
+                downloadFile() {
+                    window.open(this.download, '_blank');
                 },
                 index() { 
                     // Reset to step 1 and clear URL parameters
                     window.history.pushState({}, '', window.location.pathname);
                     window.location.reload(); 
-                },
-                getUrlParameter(name) {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    return urlParams.get(name);
                 }
             },
             watch: {
                 password(val) { 
                     this.pwdCss = val.length ? 'valid' : 'invalid'; 
-                }
-            },
-            async mounted() {
-                // Check if we have a download code in the URL
-                const downloadCode = this.getUrlParameter('download');
-                if (downloadCode) {
-                    const loaded = await this.loadFromFirestore(downloadCode);
-                    if (!loaded) {
-                        alert('Link tải không tồn tại hoặc đã hết hạn!');
-                        // Remove invalid parameter from URL
-                        window.history.pushState({}, '', window.location.pathname);
-                    }
                 }
             }
         });
