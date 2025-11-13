@@ -859,7 +859,8 @@
                 download_ipa: '',
                 shareUrl: '',
                 shareId: '',
-                firebaseService: null
+                firebaseService: null,
+                isFromShareLink: false
             },
             created() {
                 // Khởi tạo Firebase Service
@@ -956,6 +957,9 @@
                                         this.shareId = await this.firebaseService.saveSignedApp(appInfo);
                                         this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${this.shareId}`;
                                         console.log('🔗 Share URL:', this.shareUrl);
+                                        
+                                        // CẬP NHẬT URL TRÌNH DUYỆT KHI CHUYỂN SANG BƯỚC 4
+                                        window.history.pushState({}, '', `?download=${this.shareId}`);
                                     } catch (error) {
                                         console.error('❌ Lỗi lưu signed app:', error);
                                         this.shareUrl = this.download;
@@ -997,6 +1001,7 @@
                     
                     if (downloadId && downloadId.length === 8) {
                         console.log('🔍 Đang tải signed app với ID:', downloadId);
+                        this.isFromShareLink = true;
                         
                         try {
                             if (!this.firebaseService) {
