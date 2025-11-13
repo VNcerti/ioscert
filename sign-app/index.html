@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-        <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
+    <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
@@ -84,49 +84,59 @@
         
         .header-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             position: relative;
             z-index: 1;
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             font-size: 1.4rem;
             font-weight: 700;
             color: white;
             text-decoration: none;
         }
         
-        .logo-icon {
-            font-size: 1.6rem;
+        /* Features Section */
+        .features {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .cert-link {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 16px;
-            border-radius: 40px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.6rem;
+        }
+        
+        .feature-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.85rem;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
         }
         
-        .cert-link:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(66, 186, 150, .1);
+            color: #42ba96;
+            border-radius: 50%;
+            font-size: 0.6rem;
+            flex-shrink: 0;
         }
         
         /* Main Content */
         .main-content {
-            padding: 2rem 0;
+            padding: 1rem 0;
         }
         
         .card {
@@ -170,15 +180,15 @@
         
         /* Form Elements */
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: -0.5rem;
         }
         
         .form-label {
             display: block;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         .file-input-container {
@@ -202,7 +212,7 @@
             background: rgba(255, 255, 255, 0.05);
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius);
-            padding: 0.8rem 1.2rem;
+            padding: 0.7rem 1rem;
             cursor: pointer;
             transition: var(--transition);
             width: 100%;
@@ -225,12 +235,12 @@
         
         .file-name {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         
         .file-icon {
             color: var(--primary);
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         
         .text-input {
@@ -238,9 +248,9 @@
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius);
-            padding: 0.8rem 1.2rem;
+            padding: 0.7rem 1rem;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: var(--transition);
         }
         
@@ -261,7 +271,30 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
+            gap: 1rem;
+        }
+        
+        /* Password Suggestions */
+        .password-suggestions {
+            margin-top: 0.3rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        
+        .password-suggestion {
+            background: rgba(67, 97, 238, 0.2);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .password-suggestion:hover {
+            background: rgba(67, 97, 238, 0.4);
         }
         
         /* Buttons */
@@ -360,7 +393,85 @@
             }
         }
         
-        /* Processing */
+        /* Enhanced Step 2: Upload Progress */
+        .upload-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0;
+            position: relative;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            gap: 0.5rem;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            gap: 0.5rem;
+        }
+        
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            font-size: 0.7rem;
+        }
+        
+        .step-item.active .step-icon {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .step-item.completed .step-icon {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        .step-text {
+            transition: var(--transition);
+        }
+        
+        .step-item.active .step-text {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .step-item.completed .step-text {
+            color: var(--success);
+        }
+        
+        .step-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 8px;
+            transition: var(--transition);
+        }
+        
+        .step-item.active .step-dot {
+            background: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+        }
+        
+        .step-item.completed .step-dot {
+            background: var(--success);
+            box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.3);
+        }
+        
+        /* Step 3: Processing */
         .processing-container {
             text-align: center;
             padding: 1.5rem;
@@ -370,7 +481,7 @@
             font-size: 2.5rem;
             color: var(--primary);
             margin-bottom: 0.8rem;
-            animation: spin 2s linear infinite;
+            animation: spin 1.5s linear infinite;
         }
         
         @keyframes spin {
@@ -497,6 +608,17 @@
             background: #6510a5;
         }
         
+        .copy-success {
+            color: var(--success);
+            font-size: 0.8rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+        
+        .copy-success.show {
+            display: block;
+        }
+        
         /* Footer */
         .footer {
             text-align: center;
@@ -534,13 +656,8 @@
                 font-size: 1.2rem;
             }
             
-            .cert-link {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
-            
             .main-content {
-                padding: 1.5rem 0;
+                padding: 1rem 0;
             }
             
             .card-body {
@@ -562,7 +679,7 @@
             
             .grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+                gap: 0.8rem;
             }
 
             .share-url {
@@ -580,6 +697,32 @@
             .result-title {
                 font-size: 1.2rem;
             }
+            
+            /* Features responsive */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .feature-item {
+                font-size: 0.7rem;
+            }
+            
+            /* Upload steps responsive */
+            .upload-steps {
+                font-size: 0.75rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .step-icon {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .step-dot {
+                margin: 0 6px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -592,7 +735,7 @@
             }
             
             .main-content {
-                padding: 1rem 0;
+                padding: 0.8rem 0;
             }
             
             .card {
@@ -606,10 +749,24 @@
             .btn {
                 padding: 0.7rem 1.2rem;
                 font-size: 0.85rem;
+margin-top:1.3rem;
             }
             
             .result-container {
                 padding: 1rem;
+            }
+            
+            .features {
+                padding: 0.6rem 0.8rem;
+                margin: 0.8rem auto;
+            }
+            
+            .upload-steps {
+                font-size: 0.7rem;
+            }
+            
+            .step-dot {
+                margin: 0 4px;
             }
         }
     </style>
@@ -622,17 +779,48 @@
         <header class="header">
             <div class="container">
                 <div class="header-content">
-                    <a href="#" class="logo">
-                        <i class="fas fa-mobile-alt logo-icon"></i>
-                        IPASign
-                    </a>
-                    <a href="https://chungchip12.com" target="_blank" class="cert-link">
-                        <i class="fas fa-certificate"></i>
-                        Mua chứng chỉ ký IPA tại: CHUNGCHIP12.COM
-                    </a>
+                    <h1 class="logo">IOSCERT COMMUNITY | KÝ IPA KHÔNG GIỚI HẠN</h1>
                 </div>
             </div>
         </header>
+        
+        <!-- Features Section -->
+        <div class="container">
+            <div class="features">
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Công cụ ký IPA trực tuyến không cần MacOS</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Hệ thống tự động 24/7, dễ sử dụng, không quảng cáo</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Ký/tinh chỉnh file IPA dung lượng lớn không giới hạn</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>An toàn - Bảo mật - Tự động</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span><a href="https://chungchip12.com/" target="_blank" style="color: inherit; text-decoration: none;">Mua chứng chỉ ký iPA tại : Chungchip12.com</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- Main Content -->
         <main class="main-content">
@@ -687,7 +875,12 @@
                                 <!-- Password -->
                                 <div class="form-group">
                                     <label class="form-label">Mật khẩu file .p12</label>
-                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss">
+                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
+                                    <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
+                                        <span class="password-suggestion" v-for="suggestion in passwordSuggestions" :key="suggestion" @click="selectPassword(suggestion)">
+                                            {{ suggestion }}
+                                        </span>
+                                    </div>
                                 </div>
                                 
                                 <!-- Bundle ID -->
@@ -721,6 +914,36 @@
                             </h2>
                         </div>
                         <div class="card-body">
+                            <div class="upload-steps">
+                                <div class="step-item" :class="{ active: uploadStep >= 1, completed: uploadStep > 1 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-upload"></i>
+                                    </div>
+                                    <span class="step-text">Tải IPA</span>
+                                </div>
+                                <div class="step-dot"></div>
+                                <div class="step-item" :class="{ active: uploadStep >= 2, completed: uploadStep > 2 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-download"></i>
+                                    </div>
+                                    <span class="step-text">Nhận IPA</span>
+                                </div>
+                                <div class="step-dot"></div>
+                                <div class="step-item" :class="{ active: uploadStep >= 3, completed: uploadStep > 3 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-signature"></i>
+                                    </div>
+                                    <span class="step-text">Bắt đầu ký</span>
+                                </div>
+                                <div class="step-dot"></div>
+                                <div class="step-item" :class="{ active: uploadStep >= 4, completed: uploadStep > 4 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <span class="step-text">Hoàn tất</span>
+                                </div>
+                            </div>
+                            
                             <div class="progress-container">
                                 <div class="progress-label">
                                     <span>Đang tải lên...</span>
@@ -791,6 +1014,9 @@
                                         <button class="copy-btn" @click="copyShareUrl">
                                             <i class="fas fa-copy"></i> Copy
                                         </button>
+                                    </div>
+                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+                                        Đã sao chép thành công
                                     </div>
                                     <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
                                         Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
@@ -867,6 +1093,16 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Hàm tạo ID ngắn (6 ký tự)
+        function generateShortId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
         new Vue({
             el: '#app',
             data: {
@@ -876,6 +1112,7 @@
                 showStep4: false,
                 showDirectDownload: false,
                 progressBar: 0,
+                uploadStep: 1,
                 ipa: null,
                 ipaCss: 'invalid',
                 ipaText: 'Chọn file .ipa...',
@@ -896,13 +1133,59 @@
                 download_ipa: '',
                 shareUrl: '',
                 directDownloadUrl: '',
-                firestoreDocId: ''
+                firestoreDocId: '',
+                showPasswordSuggestions: false,
+                passwordSuggestions: [],
+                copySuccess: false
             },
             mounted() {
+                // Load password suggestions from localStorage
+                this.loadPasswordSuggestions();
+                
                 // Check if there's a download parameter in URL
                 this.checkDirectDownload();
             },
             methods: {
+                loadPasswordSuggestions() {
+                    const savedPasswords = localStorage.getItem('ipasign_password_history');
+                    if (savedPasswords) {
+                        this.passwordSuggestions = JSON.parse(savedPasswords);
+                    }
+                },
+                
+                savePasswordToHistory(password) {
+                    if (!password) return;
+                    
+                    // Remove password if already exists
+                    const index = this.passwordSuggestions.indexOf(password);
+                    if (index > -1) {
+                        this.passwordSuggestions.splice(index, 1);
+                    }
+                    
+                    // Add to beginning of array
+                    this.passwordSuggestions.unshift(password);
+                    
+                    // Keep only last 5 passwords
+                    if (this.passwordSuggestions.length > 5) {
+                        this.passwordSuggestions = this.passwordSuggestions.slice(0, 5);
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('ipasign_password_history', JSON.stringify(this.passwordSuggestions));
+                },
+                
+                selectPassword(password) {
+                    this.password = password;
+                    this.showPasswordSuggestions = false;
+                },
+                
+                hidePasswordSuggestions() {
+                    // Delay hiding to allow clicking on suggestions
+                    setTimeout(() => {
+                        this.showPasswordSuggestions = false;
+                    }, 200);
+                },
+                
                 checkDirectDownload() {
                     const urlParams = new URLSearchParams(window.location.search);
                     const downloadId = urlParams.get('download');
@@ -947,17 +1230,20 @@
                 
                 async saveToFirestore(downloadUrl) {
                     try {
-                        // Create document in Firestore
-                        const docRef = await db.collection('signed_apps').add({
+                        // Generate short ID (6 characters)
+                        const shortId = generateShortId();
+                        
+                        // Create document in Firestore with short ID
+                        await db.collection('signed_apps').doc(shortId).set({
                             download_url: downloadUrl,
                             created_at: firebase.firestore.FieldValue.serverTimestamp(),
                             app_name: this.name || 'Unknown App',
                             bundle_id: this.identifier || 'Unknown Bundle ID'
                         });
                         
-                        this.firestoreDocId = docRef.id;
-                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${docRef.id}`;
-                        return docRef.id;
+                        this.firestoreDocId = shortId;
+                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                        return shortId;
                     } catch (error) {
                         console.error('Error saving to Firestore:', error);
                         return null;
@@ -988,9 +1274,22 @@
                         return;
                     }
                     
+                    // Save password to history
+                    this.savePasswordToHistory(this.password);
+                    
                     this.showStep1 = false;
                     this.showStep2 = true;
                     this.progressBar = 0;
+                    this.uploadStep = 1;
+                    
+                    // Simulate upload steps
+                    const stepInterval = setInterval(() => {
+                        if (this.uploadStep < 4) {
+                            this.uploadStep++;
+                        } else {
+                            clearInterval(stepInterval);
+                        }
+                    }, 800);
                     
                     const fd = new FormData();
                     fd.append('ipa', this.ipa);
@@ -1073,7 +1372,12 @@
                     const input = this.$refs.shareUrlInput;
                     input.select();
                     document.execCommand('copy');
-                    alert('Đã copy link chia sẻ!');
+                    
+                    // Show success message
+                    this.copySuccess = true;
+                    setTimeout(() => {
+                        this.copySuccess = false;
+                    }, 3000);
                 },
                 
                 index() { 
