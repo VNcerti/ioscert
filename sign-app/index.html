@@ -404,8 +404,7 @@
             color: rgba(255, 255, 255, 0.7);
             flex-wrap: nowrap;
             white-space: nowrap;
-            overflow-x: auto;
-            padding-bottom: 5px;
+            padding: 0 10px;
         }
         
         .step-item {
@@ -415,13 +414,13 @@
             position: relative;
             z-index: 2;
             gap: 0.5rem;
-            min-width: 70px;
-            flex-shrink: 0;
+            flex: 1;
+            max-width: 25%;
         }
         
         .step-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
@@ -429,7 +428,7 @@
             justify-content: center;
             transition: var(--transition);
             border: 2px solid transparent;
-            font-size: 0.6rem;
+            font-size: 0.7rem;
         }
         
         .step-item.active .step-icon {
@@ -445,8 +444,9 @@
         
         .step-text {
             transition: var(--transition);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-align: center;
+            white-space: nowrap;
         }
         
         .step-item.active .step-text {
@@ -458,25 +458,22 @@
             color: var(--success);
         }
         
-        .step-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: var(--transition);
+        .step-connector {
             position: absolute;
-            top: 10px;
-            right: -10px;
+            top: 12px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1;
         }
         
-        .step-item.active .step-dot {
-            background: var(--primary);
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+        .step-item:last-child .step-connector {
+            display: none;
         }
         
-        .step-item.completed .step-dot {
+        .step-item.completed .step-connector {
             background: var(--success);
-            box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.3);
         }
         
         /* Step 3: Processing */
@@ -719,26 +716,20 @@
             /* Upload steps responsive - FIXED */
             .upload-steps {
                 font-size: 0.7rem;
-                justify-content: space-between;
                 padding: 0 5px;
             }
             
-            .step-item {
-                min-width: 60px;
-            }
-            
             .step-text {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
             }
             
             .step-icon {
-                width: 18px;
-                height: 18px;
+                width: 22px;
+                height: 22px;
             }
             
-            .step-dot {
-                top: 9px;
-                right: -8px;
+            .step-connector {
+                top: 11px;
             }
         }
         
@@ -782,17 +773,17 @@
                 font-size: 0.65rem;
             }
             
-            .step-item {
-                min-width: 55px;
-            }
-            
             .step-text {
-                font-size: 0.6rem;
+                font-size: 0.65rem;
             }
             
-            .step-dot {
-                top: 9px;
-                right: -7px;
+            .step-icon {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .step-connector {
+                top: 10px;
             }
         }
     </style>
@@ -946,21 +937,21 @@
                                         <i class="fas fa-file-upload"></i>
                                     </div>
                                     <span class="step-text">Tải IPA</span>
-                                    <div class="step-dot"></div>
+                                    <div class="step-connector"></div>
                                 </div>
                                 <div class="step-item" :class="{ active: uploadStep >= 2, completed: uploadStep > 2 }">
                                     <div class="step-icon">
                                         <i class="fas fa-file-download"></i>
                                     </div>
                                     <span class="step-text">Nhận IPA</span>
-                                    <div class="step-dot"></div>
+                                    <div class="step-connector"></div>
                                 </div>
                                 <div class="step-item" :class="{ active: uploadStep >= 3, completed: uploadStep > 3 }">
                                     <div class="step-icon">
                                         <i class="fas fa-signature"></i>
                                     </div>
                                     <span class="step-text">Bắt đầu ký</span>
-                                    <div class="step-dot"></div>
+                                    <div class="step-connector"></div>
                                 </div>
                                 <div class="step-item" :class="{ active: uploadStep >= 4, completed: uploadStep > 4 }">
                                     <div class="step-icon">
