@@ -179,7 +179,7 @@
         
         /* Form Elements */
         .form-group {
-            margin-bottom: -0.5rem;
+            margin-bottom: 0.8rem;
         }
         
         .form-label {
@@ -313,6 +313,7 @@
             transition: var(--transition);
             text-decoration: none;
             width: 100%;
+            margin-top: 1.rem;
         }
         
         .btn:hover {
@@ -399,7 +400,7 @@
             align-items: center;
             margin: 1.5rem 0;
             position: relative;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.7);
             flex-wrap: nowrap;
             white-space: nowrap;
@@ -415,8 +416,8 @@
         }
         
         .step-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
@@ -424,7 +425,7 @@
             justify-content: center;
             transition: var(--transition);
             border: 2px solid transparent;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
         }
         
         .step-item.active .step-icon {
@@ -678,7 +679,7 @@
             
             .grid {
                 grid-template-columns: 1fr;
-                gap: 0.8rem;
+                gap: 0rem;
             }
 
             .share-url {
@@ -709,14 +710,14 @@
             
             /* Upload steps responsive */
             .upload-steps {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
                 flex-wrap: wrap;
                 justify-content: center;
             }
             
             .step-icon {
-                width: 20px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
             }
             
             .step-dot {
@@ -748,7 +749,6 @@
             .btn {
                 padding: 0.7rem 1.2rem;
                 font-size: 0.85rem;
-margin-top:1.5em;
             }
             
             .result-container {
@@ -761,7 +761,7 @@ margin-top:1.5em;
             }
             
             .upload-steps {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
             
             .step-dot {
@@ -1281,14 +1281,23 @@ margin-top:1.5em;
                     this.progressBar = 0;
                     this.uploadStep = 1;
                     
-                    // Simulate upload steps
-                    const stepInterval = setInterval(() => {
-                        if (this.uploadStep < 4) {
-                            this.uploadStep++;
-                        } else {
-                            clearInterval(stepInterval);
+                    // Simulate upload steps based on progress percentage
+                    const progressInterval = setInterval(() => {
+                        // Update upload step based on progress percentage
+                        if (this.progressBar < 20) {
+                            this.uploadStep = 1; // Tải IPA
+                        } else if (this.progressBar < 36) {
+                            this.uploadStep = 2; // Nhận IPA
+                        } else if (this.progressBar < 70) {
+                            this.uploadStep = 3; // Bắt đầu ký
+                        } else if (this.progressBar < 99) {
+                            this.uploadStep = 4; // Hoàn tất
                         }
-                    }, 800);
+                        
+                        if (this.progressBar >= 100) {
+                            clearInterval(progressInterval);
+                        }
+                    }, 100);
                     
                     const fd = new FormData();
                     fd.append('ipa', this.ipa);
@@ -1302,7 +1311,9 @@ margin-top:1.5em;
                         const resp = await axios.post(SignUrl, fd, {
                             headers: { 'Content-Type': 'multipart/form-data' },
                             onUploadProgress: e => {
-                                if (e.lengthComputable) this.progressBar = Math.round(e.loaded / e.total * 100);
+                                if (e.lengthComputable) {
+                                    this.progressBar = Math.round(e.loaded / e.total * 100);
+                                }
                             }
                         });
                         
@@ -1311,6 +1322,7 @@ margin-top:1.5em;
                         this.showStep3 = true;
                         this.pollStatus();
                     } catch (err) {
+                        clearInterval(progressInterval);
                         alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
                         this.showStep1 = true;
                         this.showStep2 = false;
