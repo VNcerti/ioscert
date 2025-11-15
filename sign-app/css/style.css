@@ -286,7 +286,7 @@ body {
     transition: var(--transition);
     text-decoration: none;
     width: 100%;
-    margin-top: 1.rem;
+    margin-top: 1rem;
 }
 
 .btn:hover {
@@ -298,6 +298,7 @@ body {
 .btn i {
     font-size: 0.95rem;
 }
+
 .btn-secondary {
     background: var(--secondary);
 }
@@ -540,22 +541,26 @@ body {
 .download-link:hover {
     background: rgba(67, 97, 238, 0.1);
 }
+
 .share-section {
     margin-top: 1.5rem;
     padding: 1.2rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: var(--border-radius);
 }
+
 .share-title {
     font-size: 1rem;
     margin-bottom: 0.8rem;
     color: rgba(255, 255, 255, 0.9);
 }
+
 .share-url {
     display: flex;
     gap: 8px;
     margin-bottom: 0.8rem;
 }
+
 .share-url-input {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
@@ -565,6 +570,7 @@ body {
     color: white;
     font-size: 0.8rem;
 }
+
 .copy-btn {
     background: var(--secondary);
     color: white;
@@ -575,6 +581,7 @@ body {
     transition: var(--transition);
     font-size: 0.8rem;
 }
+
 .copy-btn:hover {
     background: #6510a5;
 }
@@ -604,6 +611,7 @@ body {
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.4s;
 }
+
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
@@ -611,6 +619,7 @@ body {
 .slide-enter-active, .slide-leave-active {
     transition: transform 0.4s, opacity 0.4s;
 }
+
 .slide-enter, .slide-leave-to {
     transform: translateY(15px);
     opacity: 0;
@@ -652,6 +661,7 @@ body {
         grid-template-columns: 1fr;
         gap: 0rem;
     }
+    
     .share-url {
         flex-direction: column;
     }
