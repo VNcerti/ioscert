@@ -611,6 +611,7 @@ body {
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.4s;
 }
+
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
@@ -618,6 +619,7 @@ body {
 .slide-enter-active, .slide-leave-active {
     transition: transform 0.4s, opacity 0.4s;
 }
+
 .slide-enter, .slide-leave-to {
     transform: translateY(15px);
     opacity: 0;
@@ -659,7 +661,7 @@ body {
         grid-template-columns: 1fr;
         gap: 0rem;
     }
-
+    
     .share-url {
         flex-direction: column;
     }
