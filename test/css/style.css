@@ -619,49 +619,6 @@ body {
     margin-right: 0.5rem;
 }
 
-.app-mode-toggle {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.mode-option {
-    flex: 1;
-    text-align: center;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.mode-option.active {
-    background: rgba(67, 97, 238, 0.1);
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.mode-option:hover {
-    border-color: var(--primary);
-}
-
-/* Animations */
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 0.4s;
-}
-.fade-enter, .fade-leave-to {
-    opacity: 0;
-}
-
-.slide-enter-active, .slide-leave-active {
-    transition: transform 0.4s, opacity 0.4s;
-}
-.slide-enter, .slide-leave-to {
-    transform: translateY(15px);
-    opacity: 0;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     .header-content {
