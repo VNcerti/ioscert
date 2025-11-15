@@ -10,7 +10,7 @@ function generateShortId() {
     return result;
 }
 
-// API URLs (giữ nguyên từ code gốc)
-const SignUrl = 'https://sign.ipasign.cc/api/sign';
-const StatusUrl = 'https://sign.ipasign.cc/api/status';
-const DownloadUrl = 'https://sign.ipasign.cc/api/download';
+// API URLs - QUAN TRỌNG: Thêm các biến global này
+window.SignUrl = 'https://sign.ipasign.cc/api/sign';
+window.StatusUrl = 'https://sign.ipasign.cc/api/status'; 
+window.DownloadUrl = 'https://sign.ipasign.cc/api/download';
