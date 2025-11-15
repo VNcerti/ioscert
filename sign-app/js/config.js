@@ -24,3 +24,8 @@ function generateShortId() {
     }
     return result;
 }
+
+// Kiểm tra xem Firebase có khả dụng không
+function isFirebaseAvailable() {
+    return typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0;
+}
