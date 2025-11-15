@@ -45,9 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
         mounted() {
             console.log('App mounted, API URLs:', { SignUrl, StatusUrl, DownloadUrl });
             
-            // Kiểm tra Firebase availability
-            this.isFirebaseAvailable = typeof firebaseAvailable !== 'undefined' ? firebaseAvailable : false;
-            console.log('Firebase available:', this.isFirebaseAvailable);
+            // Kiểm tra Firebase availability - CHỜ FIREBASE LOAD XONG
+            setTimeout(() => {
+                this.checkFirebaseAvailability();
+                console.log('Firebase available after timeout:', this.isFirebaseAvailable);
+            }, 1000);
             
             // Load password suggestions from localStorage
             this.loadPasswordSuggestions();
@@ -56,6 +58,22 @@ document.addEventListener('DOMContentLoaded', function() {
             this.checkDirectDownload();
         },
         methods: {
+            checkFirebaseAvailability() {
+                try {
+                    // Kiểm tra xem Firebase đã sẵn sàng chưa
+                    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                        this.isFirebaseAvailable = true;
+                        console.log('✅ Firebase is available and initialized');
+                    } else {
+                        this.isFirebaseAvailable = false;
+                        console.log('❌ Firebase is not available');
+                    }
+                } catch (error) {
+                    console.error('Error checking Firebase availability:', error);
+                    this.isFirebaseAvailable = false;
+                }
+            },
+            
             loadPasswordSuggestions() {
                 const savedPasswords = localStorage.getItem('ipasign_password_history');
                 if (savedPasswords) {
@@ -146,6 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async saveToFirestore(downloadUrl) {
                 try {
+                    // Kiểm tra lại Firebase availability trước khi sử dụng
+                    this.checkFirebaseAvailability();
+                    
                     if (!this.isFirebaseAvailable) {
                         console.log('Firebase not available, skipping Firestore save');
                         return null;
@@ -168,10 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.firestoreDocId = shortId;
                     this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
                     
-                    console.log('Successfully saved to Firestore, share URL:', this.shareUrl);
+                    console.log('✅ Successfully saved to Firestore, share URL:', this.shareUrl);
                     return shortId;
                 } catch (error) {
-                    console.error('Error saving to Firestore:', error);
+                    console.error('❌ Error saving to Firestore:', error);
                     console.error('Error details:', error.message, error.code);
                     return null;
                 }
@@ -275,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             this.download_ipa = base;
                             clearInterval(timer);
                             
-                            console.log('Signing successful, download URL:', base);
+                            console.log('✅ Signing successful, download URL:', base);
                             
                             // Luôn hiển thị kết quả thành công
                             this.showStep3 = false;
@@ -298,25 +319,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             }, 100);
                             
                             // Thử lưu vào Firestore để có link chia sẻ
-                            if (this.isFirebaseAvailable) {
-                                try {
-                                    const docId = await this.saveToFirestore(base);
-                                    if (docId) {
-                                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${docId}`;
-                                        console.log('Firestore save successful, share URL:', this.shareUrl);
-                                    } else {
-                                        // Nếu không lưu được Firestore, dùng link trực tiếp
-                                        this.shareUrl = this.download;
-                                        console.log('Firestore save failed, using direct URL for sharing');
-                                    }
-                                } catch (firestoreError) {
-                                    console.error('Firestore operation error:', firestoreError);
+                            console.log('Attempting to save to Firestore...');
+                            try {
+                                const docId = await this.saveToFirestore(base);
+                                if (docId) {
+                                    this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${docId}`;
+                                    console.log('✅ Firestore save successful, share URL:', this.shareUrl);
+                                } else {
+                                    // Nếu không lưu được Firestore, dùng link trực tiếp
                                     this.shareUrl = this.download;
+                                    console.log('❌ Firestore save failed, using direct URL for sharing');
                                 }
-                            } else {
-                                // Nếu Firebase không khả dụng, dùng link trực tiếp
+                            } catch (firestoreError) {
+                                console.error('❌ Firestore operation error:', firestoreError);
                                 this.shareUrl = this.download;
-                                console.log('Firebase not available, using direct URL for sharing');
                             }
                             
                         } else if (d.status === 'FAILURE') {
