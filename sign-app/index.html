@@ -1,2827 +1,333 @@
 <!DOCTYPE html>
-
 <html lang="vi">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-
     <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
-
-    <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
-
-    <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
-
-    
-
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
-
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
-
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
-
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
-
-    
-
-    <!-- Firebase SDK -->
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    
-
-    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
-
-    
-
-    <!-- Font Awesome -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    
-
-    <!-- Google Fonts -->
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    
-
-    <style>
-
-        :root {
-
-            --primary: #4361ee;
-
-            --primary-dark: #3a56d4;
-
-            --secondary: #7209b7;
-
-            --dark: #1a1d28;
-
-            --dark-light: #252a38;
-
-            --light: #f8f9fa;
-
-            --success: #06d6a0;
-
-            --danger: #ef476f;
-
-            --warning: #ffd166;
-
-            --gray: #6c757d;
-
-            --border-radius: 10px;
-
-            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
-            --transition: all 0.3s ease;
-
-        }
-
-        
-
-        * {
-
-            margin: 0;
-
-            padding: 0;
-
-            box-sizing: border-box;
-
-        }
-
-        
-
-        body {
-
-            font-family: 'Inter', sans-serif;
-
-            background: linear-gradient(135deg, #0f1720, #1e293b);
-
-            color: var(--light);
-
-            min-height: 100vh;
-
-            line-height: 1.5;
-
-            font-size: 14px;
-
-        }
-
-        
-
-        .container {
-
-            max-width: 1000px;
-
-            margin: 0 auto;
-
-            padding: 0 15px;
-
-        }
-
-        
-
-        /* Header */
-
-        .header {
-
-            padding: 1rem 0;
-
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-
-            position: relative;
-
-            overflow: hidden;
-
-        }
-
-        
-
-        .header::before {
-
-            content: '';
-
-            position: absolute;
-
-            top: 0;
-
-            left: 0;
-
-            width: 100%;
-
-            height: 100%;
-
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgZD0iTTI1IDI1aDUwdjUwaC01MHoiLz48L3N2Zz4=');
-
-            opacity: 0.1;
-
-        }
-
-        
-
-        .header-content {
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            position: relative;
-
-            z-index: 1;
-
-        }
-
-        
-
-        .logo {
-
-            font-size: 1.4rem;
-
-            font-weight: 700;
-
-            color: white;
-
-            text-decoration: none;
-
-        }
-
-        
-
-        /* Features Section */
-
-        .features {
-
-            background: rgba(255, 255, 255, 0.05);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.8rem 1rem;
-
-            margin: 1rem auto;
-
-            max-width: 800px;
-
-            border: 1px solid rgba(255, 255, 255, 0.1);
-
-        }
-
-        
-
-        .features-grid {
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-
-            gap: 0.6rem;
-
-        }
-
-        
-
-        .feature-item {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 0.5rem;
-
-            font-size: 0.75rem;
-
-            color: rgba(255, 255, 255, 0.8);
-
-        }
-
-        
-
-        .feature-icon {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            width: 20px;
-
-            height: 20px;
-
-            background-color: rgba(66, 186, 150, .1);
-
-            color: #42ba96;
-
-            border-radius: 50%;
-
-            font-size: 0.6rem;
-
-            flex-shrink: 0;
-
-        }
-
-        
-
-        /* Main Content */
-
-        .main-content {
-
-            padding: 1rem 0;
-
-        }
-
-        
-
-        .card {
-
-            background: var(--dark-light);
-
-            border-radius: var(--border-radius);
-
-            box-shadow: var(--box-shadow);
-
-            overflow: hidden;
-
-            margin-bottom: 1.5rem;
-
-            transition: var(--transition);
-
-            border: 1px solid rgba(255, 255, 255, 0.05);
-
-        }
-
-        
-
-        .card:hover {
-
-            transform: translateY(-3px);
-
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-
-        }
-
-        
-
-        .card-header {
-
-            background: rgba(0, 0, 0, 0.2);
-
-            padding: 1.2rem 1.5rem;
-
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
-        }
-
-        
-
-        .card-title {
-
-            font-size: 1.2rem;
-
-            font-weight: 600;
-
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-        }
-
-        
-
-        .card-title i {
-
-            color: var(--primary);
-
-            font-size: 1.1rem;
-
-        }
-
-        
-
-        .card-body {
-
-            padding: 1.5rem;
-
-        }
-
-        
-
-        /* Form Elements */
-
-        .form-group {
-
-            margin-bottom: 0.8rem;
-
-        }
-
-        
-
-        .form-label {
-
-            display: block;
-
-            margin-bottom: 0.3rem;
-
-            font-weight: 500;
-
-            color: rgba(255, 255, 255, 0.8);
-
-            font-size: 0.85rem;
-
-        }
-
-        
-
-        .file-input-container {
-
-            position: relative;
-
-            display: flex;
-
-            align-items: center;
-
-        }
-
-        
-
-        .file-input {
-
-            position: absolute;
-
-            opacity: 0;
-
-            width: 0.1px;
-
-            height: 0.1px;
-
-            overflow: hidden;
-
-        }
-
-        
-
-        .file-input-label {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            background: rgba(255, 255, 255, 0.05);
-
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.7rem 1rem;
-
-            cursor: pointer;
-
-            transition: var(--transition);
-
-            width: 100%;
-
-        }
-
-        
-
-        .file-input-label:hover {
-
-            border-color: var(--primary);
-
-            background: rgba(67, 97, 238, 0.05);
-
-        }
-
-        
-
-        .file-input-label.valid {
-
-            border-color: var(--success);
-
-            background: rgba(6, 214, 160, 0.05);
-
-        }
-
-        
-
-        .file-input-label.invalid {
-
-            border-color: var(--danger);
-
-            background: rgba(239, 71, 111, 0.05);
-
-        }
-
-        
-
-        .file-name {
-
-            color: rgba(255, 255, 255, 0.7);
-
-            font-size: 0.8rem;
-
-        }
-
-        
-
-        .file-icon {
-
-            color: var(--primary);
-
-            font-size: 0.9rem;
-
-        }
-
-        
-
-        .text-input {
-
-            width: 100%;
-
-            background: rgba(255, 255, 255, 0.05);
-
-            border: 2px solid rgba(255, 255, 255, 0.1);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.7rem 1rem;
-
-            color: white;
-
-            font-size: 0.85rem;
-
-            transition: var(--transition);
-
-        }
-
-        
-
-        .text-input:focus {
-
-            outline: none;
-
-            border-color: var(--primary);
-
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
-
-        }
-
-        
-
-        .text-input.valid {
-
-            border-color: var(--success);
-
-        }
-
-        
-
-        .text-input.invalid {
-
-            border-color: var(--danger);
-
-        }
-
-        
-
-        .grid {
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-            gap: 1rem;
-
-        }
-
-        
-
-        /* Password Suggestions */
-
-        .password-suggestions {
-
-            margin-top: 0.3rem;
-
-            display: flex;
-
-            flex-wrap: wrap;
-
-            gap: 0.4rem;
-
-        }
-
-        
-
-        .password-suggestion {
-
-            background: rgba(67, 97, 238, 0.2);
-
-            border: 1px solid rgba(67, 97, 238, 0.3);
-
-            border-radius: 4px;
-
-            padding: 0.3rem 0.6rem;
-
-            font-size: 0.75rem;
-
-            color: rgba(255, 255, 255, 0.8);
-
-            cursor: pointer;
-
-            transition: var(--transition);
-
-        }
-
-        
-
-        .password-suggestion:hover {
-
-            background: rgba(67, 97, 238, 0.4);
-
-        }
-
-        
-
-        /* Buttons */
-
-        .btn {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 8px;
-
-            background: var(--primary);
-
-            color: white;
-
-            border: none;
-
-            border-radius: var(--border-radius);
-
-            padding: 0.8rem 1.5rem;
-
-            font-size: 0.9rem;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: var(--transition);
-
-            text-decoration: none;
-
-            width: 100%;
-
-            margin-top: 1.rem;
-
-        }
-
-        
-
-        .btn:hover {
-
-            background: var(--primary-dark);
-
-            transform: translateY(-2px);
-
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-
-        }
-
-        
-
-        .btn i {
-
-            font-size: 0.95rem;
-
-        }
-
-        .btn-secondary {
-
-            background: var(--secondary);
-
-        }
-
-        
-
-        .btn-secondary:hover {
-
-            background: #6510a5;
-
-        }
-
-        
-
-        /* Progress Bar */
-
-        .progress-container {
-
-            margin: 1.5rem 0;
-
-        }
-
-        
-
-        .progress-label {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            margin-bottom: 0.4rem;
-
-            font-size: 0.8rem;
-
-            color: rgba(255, 255, 255, 0.7);
-
-        }
-
-        
-
-        .progress-bar {
-
-            height: 10px;
-
-            background: rgba(255, 255, 255, 0.1);
-
-            border-radius: 8px;
-
-            overflow: hidden;
-
-        }
-
-        
-
-        .progress-fill {
-
-            height: 100%;
-
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-
-            border-radius: 8px;
-
-            transition: width 0.5s ease;
-
-            position: relative;
-
-            overflow: hidden;
-
-        }
-
-        
-
-        .progress-fill::after {
-
-            content: '';
-
-            position: absolute;
-
-            top: 0;
-
-            left: 0;
-
-            bottom: 0;
-
-            right: 0;
-
-            background-image: linear-gradient(
-
-                -45deg,
-
-                rgba(255, 255, 255, 0.2) 25%,
-
-                transparent 25%,
-
-                transparent 50%,
-
-                rgba(255, 255, 255, 0.2) 50%,
-
-                rgba(255, 255, 255, 0.2) 75%,
-
-                transparent 75%,
-
-                transparent
-
-            );
-
-            background-size: 40px 40px;
-
-            animation: move 2s linear infinite;
-
-        }
-
-        
-
-        @keyframes move {
-
-            0% {
-
-                background-position: 0 0;
-
-            }
-
-            100% {
-
-                background-position: 40px 40px;
-
-            }
-
-        }
-
-        
-
-        /* Enhanced Step 2: Upload Progress */
-
-        .upload-steps {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin: 1.5rem 0;
-
-            position: relative;
-
-            font-size: 0.75rem;
-
-            color: rgba(255, 255, 255, 0.7);
-
-            flex-wrap: nowrap;
-
-            white-space: nowrap;
-
-            padding: 0 10px;
-
-        }
-
-        
-
-        .step-item {
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            position: relative;
-
-            z-index: 2;
-
-            gap: 0.5rem;
-
-            flex: 1;
-
-            max-width: 25%;
-
-        }
-
-        
-
-        .step-icon {
-
-            width: 24px;
-
-            height: 24px;
-
-            border-radius: 50%;
-
-            background: rgba(255, 255, 255, 0.1);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            transition: var(--transition);
-
-            border: 2px solid transparent;
-
-            font-size: 0.7rem;
-
-        }
-
-        
-
-        .step-item.active .step-icon {
-
-            background: var(--primary);
-
-            border-color: var(--primary);
-
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-
-        }
-
-        
-
-        .step-item.completed .step-icon {
-
-            background: var(--success);
-
-            border-color: var(--success);
-
-        }
-
-        
-
-        .step-text {
-
-            transition: var(--transition);
-
-            font-size: 0.75rem;
-
-            text-align: center;
-
-            white-space: nowrap;
-
-        }
-
-        
-
-        .step-item.active .step-text {
-
-            color: var(--primary);
-
-            font-weight: 600;
-
-        }
-
-        
-
-        .step-item.completed .step-text {
-
-            color: var(--success);
-
-        }
-
-        
-
-        .step-connector {
-
-            position: absolute;
-
-            top: 12px;
-
-            left: 50%;
-
-            width: 100%;
-
-            height: 2px;
-
-            background: rgba(255, 255, 255, 0.2);
-
-            z-index: 1;
-
-        }
-
-        
-
-        .step-item:last-child .step-connector {
-
-            display: none;
-
-        }
-
-        
-
-        .step-item.completed .step-connector {
-
-            background: var(--success);
-
-        }
-
-        
-
-        /* Step 3: Processing */
-
-        .processing-container {
-
-            text-align: center;
-
-            padding: 1.5rem;
-
-        }
-
-        
-
-        .spinner {
-
-            font-size: 2.5rem;
-
-            color: var(--primary);
-
-            margin-bottom: 0.8rem;
-
-            animation: spin 1.5s linear infinite;
-
-        }
-
-        
-
-        @keyframes spin {
-
-            0% { transform: rotate(0deg); }
-
-            100% { transform: rotate(360deg); }
-
-        }
-
-        
-
-        .processing-text {
-
-            font-size: 1rem;
-
-            margin-bottom: 0.8rem;
-
-        }
-
-        
-
-        .log-container {
-
-            background: rgba(0, 0, 0, 0.2);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.8rem;
-
-            margin-top: 0.8rem;
-
-            max-height: 150px;
-
-            overflow-y: auto;
-
-            font-family: monospace;
-
-            font-size: 0.8rem;
-
-            color: rgba(255, 255, 255, 0.7);
-
-        }
-
-        
-
-        /* Result */
-
-        .result-container {
-
-            text-align: center;
-
-            padding: 1.5rem;
-
-        }
-
-        
-
-        .success-icon {
-
-            font-size: 3rem;
-
-            color: var(--success);
-
-            margin-bottom: 0.8rem;
-
-        }
-
-        
-
-        .result-title {
-
-            font-size: 1.4rem;
-
-            margin-bottom: 0.8rem;
-
-            color: white;
-
-        }
-
-        
-
-        .result-content {
-
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            gap: 1.5rem;
-
-            margin: 1.5rem 0;
-
-        }
-
-        
-
-        .qr-container, .link-container {
-
-            background: rgba(0, 0, 0, 0.2);
-
-            border-radius: var(--border-radius);
-
-            padding: 1.2rem;
-
-        }
-
-        
-
-        .qr-title, .link-title {
-
-            font-size: 0.95rem;
-
-            margin-bottom: 0.8rem;
-
-            color: rgba(255, 255, 255, 0.8);
-
-        }
-
-        
-
-        .qr-code {
-
-            display: flex;
-
-            justify-content: center;
-
-        }
-
-        
-
-        .download-link {
-
-            display: block;
-
-            background: rgba(255, 255, 255, 0.05);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.8rem;
-
-            color: var(--primary);
-
-            text-decoration: none;
-
-            word-break: break-all;
-
-            transition: var(--transition);
-
-            font-size: 0.85rem;
-
-        }
-
-        
-
-        .download-link:hover {
-
-            background: rgba(67, 97, 238, 0.1);
-
-        }
-
-        .share-section {
-
-            margin-top: 1.5rem;
-
-            padding: 1.2rem;
-
-            background: rgba(0, 0, 0, 0.2);
-
-            border-radius: var(--border-radius);
-
-        }
-
-        .share-title {
-
-            font-size: 1rem;
-
-            margin-bottom: 0.8rem;
-
-            color: rgba(255, 255, 255, 0.9);
-
-        }
-
-        .share-url {
-
-            display: flex;
-
-            gap: 8px;
-
-            margin-bottom: 0.8rem;
-
-        }
-
-        .share-url-input {
-
-            flex: 1;
-
-            background: rgba(255, 255, 255, 0.05);
-
-            border: 1px solid rgba(255, 255, 255, 0.1);
-
-            border-radius: var(--border-radius);
-
-            padding: 0.6rem 0.8rem;
-
-            color: white;
-
-            font-size: 0.8rem;
-
-        }
-
-        .copy-btn {
-
-            background: var(--secondary);
-
-            color: white;
-
-            border: none;
-
-            border-radius: var(--border-radius);
-
-            padding: 0.6rem 1.2rem;
-
-            cursor: pointer;
-
-            transition: var(--transition);
-
-            font-size: 0.8rem;
-
-        }
-
-        .copy-btn:hover {
-
-            background: #6510a5;
-
-        }
-
-        
-
-        .copy-success {
-
-            color: var(--success);
-
-            font-size: 0.8rem;
-
-            margin-top: 0.4rem;
-
-            display: none;
-
-        }
-
-        
-
-        .copy-success.show {
-
-            display: block;
-
-        }
-
-        
-
-        /* Footer */
-
-        .footer {
-
-            text-align: center;
-
-            padding: 1.5rem 0;
-
-            color: rgba(255, 255, 255, 0.5);
-
-            font-size: 0.8rem;
-
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-
-            margin-top: 2rem;
-
-        }
-
-        
-
-        /* Animations */
-
-        .fade-enter-active, .fade-leave-active {
-
-            transition: opacity 0.4s;
-
-        }
-
-        .fade-enter, .fade-leave-to {
-
-            opacity: 0;
-
-        }
-
-        
-
-        .slide-enter-active, .slide-leave-active {
-
-            transition: transform 0.4s, opacity 0.4s;
-
-        }
-
-        .slide-enter, .slide-leave-to {
-
-            transform: translateY(15px);
-
-            opacity: 0;
-
-        }
-
-        
-
-        /* Responsive */
-
-        @media (max-width: 768px) {
-
-            .header-content {
-
-                flex-direction: column;
-
-                gap: 0.8rem;
-
-            }
-
-            
-
-            .logo {
-
-                font-size: 1.2rem;
-
-            }
-
-            
-
-            .main-content {
-
-                padding: 1rem 0;
-
-            }
-
-            
-
-            .card-body {
-
-                padding: 1.2rem;
-
-            }
-
-            
-
-            .card-header {
-
-                padding: 1rem 1.2rem;
-
-            }
-
-            
-
-            .card-title {
-
-                font-size: 1.1rem;
-
-            }
-
-            
-
-            .result-content {
-
-                grid-template-columns: 1fr;
-
-                gap: 1rem;
-
-            }
-
-            
-
-            .grid {
-
-                grid-template-columns: 1fr;
-
-                gap: 0rem;
-
-            }
-
-            .share-url {
-
-                flex-direction: column;
-
-            }
-
-            
-
-            .qr-container, .link-container {
-
-                padding: 1rem;
-
-            }
-
-            
-
-            .success-icon {
-
-                font-size: 2.5rem;
-
-            }
-
-            
-
-            .result-title {
-
-                font-size: 1.2rem;
-
-            }
-
-            
-
-            /* Features responsive */
-
-            .features-grid {
-
-                grid-template-columns: 1fr;
-
-                gap: 0.5rem;
-
-            }
-
-            
-
-            .feature-item {
-
-                font-size: 0.7rem;
-
-            }
-
-            
-
-            /* Upload steps responsive - FIXED */
-
-            .upload-steps {
-
-                font-size: 0.7rem;
-
-                padding: 0 5px;
-
-            }
-
-            
-
-            .step-text {
-
-                font-size: 0.7rem;
-
-            }
-
-            
-
-            .step-icon {
-
-                width: 22px;
-
-                height: 22px;
-
-            }
-
-            
-
-            .step-connector {
-
-                top: 11px;
-
-            }
-
-        }
-
-        
-
-        @media (max-width: 480px) {
-
-            .container {
-
-                padding: 0 10px;
-
-            }
-
-            
-
-            .header {
-
-                padding: 0.8rem 0;
-
-            }
-
-            
-
-            .main-content {
-
-                padding: 0.8rem 0;
-
-            }
-
-            
-
-            .card {
-
-                margin-bottom: 1rem;
-
-            }
-
-            
-
-            .card-body {
-
-                padding: 1rem;
-
-            }
-
-            
-
-            .btn {
-
-                padding: 0.7rem 1.2rem;
-
-                font-size: 0.85rem;
-
-            }
-
-            
-
-            .result-container {
-
-                padding: 1rem;
-
-            }
-
-            
-
-            .features {
-
-                padding: 0.6rem 0.8rem;
-
-                margin: 0.8rem auto;
-
-            }
-
-            
-
-            /* Upload steps responsive - FIXED */
-
-            .upload-steps {
-
-                font-size: 0.65rem;
-
-            }
-
-            
-
-            .step-text {
-
-                font-size: 0.65rem;
-
-            }
-
-            
-
-            .step-icon {
-
-                width: 20px;
-
-                height: 20px;
-
-            }
-
-            
-
-            .step-connector {
-
-                top: 10px;
-
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
+    <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
+    <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
-
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Internal CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- External JS -->
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
     <div id="app">
-
         <!-- Header -->
-
         <header class="header">
-
             <div class="container">
-
                 <div class="header-content">
-
                     <h1 class="logo">Unlimited IPA Notation Tool</h1>
-
                 </div>
-
             </div>
-
         </header>
-
         
-
         <!-- Features Section -->
-
         <div class="container">
-
             <div class="features">
-
                 <div class="features-grid">
-
                     <div class="feature-item">
-
                         <div class="feature-icon">
-
                             <i class="fas fa-check"></i>
-
                         </div>
-
                         <span>Công cụ ký IPA trực tuyến không cần MacOS</span>
-
                     </div>
-
                     <div class="feature-item">
-
                         <div class="feature-icon">
-
                             <i class="fas fa-check"></i>
-
                         </div>
-
                         <span>Hệ thống tự động 24/7, dễ sử dụng, không quảng cáo</span>
-
                     </div>
-
                     <div class="feature-item">
-
                         <div class="feature-icon">
-
                             <i class="fas fa-check"></i>
-
                         </div>
-
                         <span>Ký/tinh chỉnh file IPA dung lượng lớn không giới hạn</span>
-
                     </div>
-
                     <div class="feature-item">
-
                         <div class="feature-icon">
-
                             <i class="fas fa-check"></i>
-
                         </div>
-
                         <span>An toàn - Bảo mật - Tự động</span>
-
                     </div>
-
                     <div class="feature-item">
-
                         <div class="feature-icon">
-
                             <i class="fas fa-check"></i>
-
                         </div>
-
                         <span><a href="https://chungchip12.com/" target="_blank" style="color: inherit; text-decoration: none;">Mua chứng chỉ ký iPA tại : Chungchip12.com</a></span>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         
-
         <!-- Main Content -->
-
         <main class="main-content">
-
             <div class="container">
-
                 <!-- Step 1: File Selection -->
-
                 <transition name="slide" mode="out-in">
-
                     <div class="card" v-show="showStep1">
-
                         <div class="card-header">
-
                             <h2 class="card-title">
-
                                 <i class="fas fa-file-upload"></i>
-
                                 Bước 1: Chọn file cần ký
-
                             </h2>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="grid">
-
                                 <!-- IPA File -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">File IPA</label>
-
                                     <div class="file-input-container">
-
                                         <input type="file" @change="getFile($event)" ref="ipa" required accept=".ipa" class="file-input" id="ipa">
-
                                         <label for="ipa" class="file-input-label" :class="ipaCss">
-
                                             <span class="file-name">{{ ipaText }}</span>
-
                                             <i class="fas fa-cloud-upload-alt file-icon"></i>
-
                                         </label>
-
                                     </div>
-
                                 </div>
-
                                 
-
                                 <!-- P12 File -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">File chứng chỉ (.p12)</label>
-
                                     <div class="file-input-container">
-
                                         <input type="file" @change="getFile($event)" ref="p12" required accept=".p12" class="file-input" id="p12">
-
                                         <label for="p12" class="file-input-label" :class="p12Css">
-
                                             <span class="file-name">{{ p12Text }}</span>
-
                                             <i class="fas fa-certificate file-icon"></i>
-
                                         </label>
-
                                     </div>
-
                                 </div>
-
                                 
-
                                 <!-- Mobile Provision File -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">File Mobile Provision</label>
-
                                     <div class="file-input-container">
-
                                         <input type="file" ref="mob" @change="getFile($event)" required accept=".mobileprovision" class="file-input" id="mobileprovision">
-
                                         <label for="mobileprovision" class="file-input-label" :class="mobCss">
-
                                             <span class="file-name">{{ mobText }}</span>
-
                                             <i class="fas fa-file-contract file-icon"></i>
-
                                         </label>
-
                                     </div>
-
                                 </div>
-
                                 
-
                                 <!-- Password -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">Mật khẩu file .p12</label>
-
                                     <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
-
                                     <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
-
                                         <span class="password-suggestion" v-for="suggestion in passwordSuggestions" :key="suggestion" @click="selectPassword(suggestion)">
-
                                             {{ suggestion }}
-
                                         </span>
-
                                     </div>
-
                                 </div>
-
                                 
-
                                 <!-- Bundle ID -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">Bundle ID mới (tùy chọn)</label>
-
                                     <input type="text" v-model="identifier" ref="identifier" placeholder="Nhập BundleID mới" class="text-input">
-
                                 </div>
-
                                 
-
                                 <!-- App Name -->
-
                                 <div class="form-group">
-
                                     <label class="form-label">Tên App mới (tùy chọn)</label>
-
                                     <input type="text" v-model="name" ref="name" placeholder="Nhập tên App mới" class="text-input">
-
                                 </div>
-
                             </div>
-
                             
-
                             <button class="btn" @click="upload">
-
                                 <i class="fas fa-signature"></i>
-
                                 Ký ngay!
-
                             </button>
-
                         </div>
-
                     </div>
-
                 </transition>
-
                 
-
                 <!-- Step 2: Upload Progress -->
-
                 <transition name="slide" mode="out-in">
-
                     <div class="card" v-show="showStep2">
-
                         <div class="card-header">
-
                             <h2 class="card-title">
-
                                 <i class="fas fa-cloud-upload-alt"></i>
-
                                 Bước 2: Đang tải file lên
-
                             </h2>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="upload-steps">
-
                                 <div class="step-item" :class="{ active: uploadStep >= 1, completed: uploadStep > 1 }">
-
                                     <div class="step-icon">
-
                                         <i class="fas fa-file-upload"></i>
-
                                     </div>
-
                                     <span class="step-text">Tải IPA</span>
-
                                     <div class="step-connector"></div>
-
                                 </div>
-
                                 <div class="step-item" :class="{ active: uploadStep >= 2, completed: uploadStep > 2 }">
-
                                     <div class="step-icon">
-
                                         <i class="fas fa-file-download"></i>
-
                                     </div>
-
                                     <span class="step-text">Nhận IPA</span>
-
                                     <div class="step-connector"></div>
-
                                 </div>
-
                                 <div class="step-item" :class="{ active: uploadStep >= 3, completed: uploadStep > 3 }">
-
                                     <div class="step-icon">
-
                                         <i class="fas fa-signature"></i>
-
                                     </div>
-
                                     <span class="step-text">Bắt đầu ký</span>
-
                                     <div class="step-connector"></div>
-
                                 </div>
-
                                 <div class="step-item" :class="{ active: uploadStep >= 4, completed: uploadStep > 4 }">
-
                                     <div class="step-icon">
-
                                         <i class="fas fa-check-circle"></i>
-
                                     </div>
-
                                     <span class="step-text">Hoàn tất</span>
-
                                 </div>
-
                             </div>
-
                             
-
                             <div class="progress-container">
-
                                 <div class="progress-label">
-
                                     <span>Đang tải lên...</span>
-
                                     <span>{{ progressBar }}%</span>
-
                                 </div>
-
                                 <div class="progress-bar">
-
                                     <div class="progress-fill" :style="{width: progressBar + '%'}"></div>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </transition>
-
                 
-
                 <!-- Step 3: Processing -->
-
                 <transition name="slide" mode="out-in">
-
                     <div class="card" v-show="showStep3">
-
                         <div class="card-header">
-
                             <h2 class="card-title">
-
                                 <i class="fas fa-cog"></i>
-
                                 Bước 3: Đang xử lý
-
                             </h2>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="processing-container">
-
                                 <i class="fas fa-cog spinner"></i>
-
                                 <p class="processing-text">Đang xử lý file của bạn, vui lòng chờ...</p>
-
                                 <p>Trạng thái: {{ statusText }}</p>
-
                                 
-
                                 <div class="log-container" v-if="logText">
-
                                     {{ logText }}
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </transition>
-
                 
-
                 <!-- Step 4: Result -->
-
                 <transition name="slide" mode="out-in">
-
                     <div class="card" v-show="showStep4">
-
                         <div class="card-header">
-
                             <h2 class="card-title">
-
                                 <i class="fas fa-check-circle"></i>
-
                                 Bước 4: Hoàn tất
-
                             </h2>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="result-container">
-
                                 <i class="fas fa-check-circle success-icon"></i>
-
                                 <h3 class="result-title">Ký IPA thành công!</h3>
-
                                 
-
                                 <div class="result-content">
-
                                     <div class="qr-container">
-
                                         <p class="qr-title">Quét mã QR để cài đặt</p>
-
                                         <div class="qr-code" id="qrcode"></div>
-
                                     </div>
-
                                     
-
                                     <div class="link-container">
-
                                         <p class="link-title">Bấm vào link để cài đặt</p>
-
                                         <a :href="download" target="_blank" class="download-link">{{ download }}</a>
-
                                     </div>
-
                                 </div>
-
                                 <!-- Share Section -->
-
                                 <div class="share-section">
-
                                     <h4 class="share-title">Chia sẻ ứng dụng</h4>
-
                                     <div class="share-url">
-
                                         <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
-
                                         <button class="copy-btn" @click="copyShareUrl">
-
                                             <i class="fas fa-copy"></i> Copy
-
                                         </button>
-
                                     </div>
-
                                     <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
-
                                         Đã sao chép thành công
-
                                     </div>
-
                                     <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
-
                                         Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
-
                                     </p>
-
                                 </div>
-
                                 
-
                                 <button class="btn" @click="index">
-
                                     <i class="fas fa-redo"></i>
-
                                     Bắt đầu lại
-
                                 </button>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </transition>
-
                 <!-- Direct Download View -->
-
                 <transition name="slide" mode="out-in">
-
                     <div class="card" v-show="showDirectDownload">
-
                         <div class="card-header">
-
                             <h2 class="card-title">
-
                                 <i class="fas fa-download"></i>
-
                                 Cài đặt ứng dụng
-
                             </h2>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="result-container">
-
                                 <i class="fas fa-mobile-alt success-icon"></i>
-
                                 <h3 class="result-title">Ứng dụng đã sẵn sàng!</h3>
-
                                 
-
                                 <div class="result-content">
-
                                     <div class="qr-container">
-
                                         <p class="qr-title">Quét mã QR để cài đặt</p>
-
                                         <div class="qr-code" id="directQrcode"></div>
-
                                     </div>
-
                                     
-
                                     <div class="link-container">
-
                                         <p class="link-title">Bấm vào link để cài đặt</p>
-
                                         <a :href="directDownloadUrl" target="_blank" class="download-link">{{ directDownloadUrl }}</a>
-
                                     </div>
-
                                 </div>
-
                                 
-
                                 <button class="btn btn-secondary" @click="goToHome">
-
                                     <i class="fas fa-home"></i>
-
                                     Về trang chủ
-
                                 </button>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </transition>
-
             </div>
-
         </main>
-
         
-
         <!-- Footer -->
-
         <footer class="footer">
-
             <div class="container">
-
                 <p>© 2023 VNCERT - Công cụ ký IPA trực tuyến</p>
-
             </div>
-
         </footer>
-
     </div>
 
-    <script>
-
-        // Firebase Configuration
-
-        const firebaseConfig = {
-
-            apiKey: "AIzaSyBeKh-_VbiM9F9S4iRdGllx3ypze0Gp4hw",
-
-            authDomain: "ioscert-signer.firebaseapp.com",
-
-            projectId: "ioscert-signer",
-
-            storageBucket: "ioscert-signer.firebasestorage.app",
-
-            messagingSenderId: "31766936132",
-
-            appId: "1:31766936132:web:acf88a5f88396033ac1a11",
-
-            measurementId: "G-7GYFBFWLHE"
-
-        };
-
-        // Initialize Firebase
-
-        firebase.initializeApp(firebaseConfig);
-
-        const db = firebase.firestore();
-
-        // Hàm tạo ID ngắn (6 ký tự)
-
-        function generateShortId() {
-
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-            let result = '';
-
-            for (let i = 0; i < 6; i++) {
-
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-
-            }
-
-            return result;
-
-        }
-
-        new Vue({
-
-            el: '#app',
-
-            data: {
-
-                showStep1: true,
-
-                showStep2: false,
-
-                showStep3: false,
-
-                showStep4: false,
-
-                showDirectDownload: false,
-
-                progressBar: 0,
-
-                uploadStep: 1,
-
-                ipa: null,
-
-                ipaCss: 'invalid',
-
-                ipaText: 'Chọn file .ipa...',
-
-                p12: null,
-
-                p12Css: 'invalid',
-
-                p12Text: 'Chọn file .p12...',
-
-                mobileprovision: null,
-
-                mobCss: 'invalid',
-
-                mobText: 'Chọn file .mobileprovision...',
-
-                password: '',
-
-                pwdCss: 'invalid',
-
-                name: '',
-
-                identifier: '',
-
-                jobId: '',
-
-                statusText: '',
-
-                logText: '',
-
-                download: '',
-
-                download_ipa: '',
-
-                shareUrl: '',
-
-                directDownloadUrl: '',
-
-                firestoreDocId: '',
-
-                showPasswordSuggestions: false,
-
-                passwordSuggestions: [],
-
-                copySuccess: false
-
-            },
-
-            mounted() {
-
-                // Load password suggestions from localStorage
-
-                this.loadPasswordSuggestions();
-
-                
-
-                // Check if there's a download parameter in URL
-
-                this.checkDirectDownload();
-
-            },
-
-            methods: {
-
-                loadPasswordSuggestions() {
-
-                    const savedPasswords = localStorage.getItem('ipasign_password_history');
-
-                    if (savedPasswords) {
-
-                        this.passwordSuggestions = JSON.parse(savedPasswords);
-
-                    }
-
-                },
-
-                
-
-                savePasswordToHistory(password) {
-
-                    if (!password) return;
-
-                    
-
-                    // Remove password if already exists
-
-                    const index = this.passwordSuggestions.indexOf(password);
-
-                    if (index > -1) {
-
-                        this.passwordSuggestions.splice(index, 1);
-
-                    }
-
-                    
-
-                    // Add to beginning of array
-
-                    this.passwordSuggestions.unshift(password);
-
-                    
-
-                    // Keep only last 5 passwords
-
-                    if (this.passwordSuggestions.length > 5) {
-
-                        this.passwordSuggestions = this.passwordSuggestions.slice(0, 5);
-
-                    }
-
-                    
-
-                    // Save to localStorage
-
-                    localStorage.setItem('ipasign_password_history', JSON.stringify(this.passwordSuggestions));
-
-                },
-
-                
-
-                selectPassword(password) {
-
-                    this.password = password;
-
-                    this.showPasswordSuggestions = false;
-
-                },
-
-                
-
-                hidePasswordSuggestions() {
-
-                    // Delay hiding to allow clicking on suggestions
-
-                    setTimeout(() => {
-
-                        this.showPasswordSuggestions = false;
-
-                    }, 200);
-
-                },
-
-                
-
-                checkDirectDownload() {
-
-                    const urlParams = new URLSearchParams(window.location.search);
-
-                    const downloadId = urlParams.get('download');
-
-                    
-
-                    if (downloadId) {
-
-                        this.loadFromFirestore(downloadId);
-
-                    }
-
-                },
-
-                
-
-                async loadFromFirestore(docId) {
-
-                    try {
-
-                        const docRef = db.collection('signed_apps').doc(docId);
-
-                        const doc = await docRef.get();
-
-                        
-
-                        if (doc.exists) {
-
-                            const data = doc.data();
-
-                            this.directDownloadUrl = data.download_url;
-
-                            this.showDirectDownload = true;
-
-                            this.showStep1 = false;
-
-                            this.showStep2 = false;
-
-                            this.showStep3 = false;
-
-                            this.showStep4 = false;
-
-                            
-
-                            // Generate QR code for direct download
-
-                            setTimeout(() => {
-
-                                new QRCode(document.getElementById('directQrcode'), {
-
-                                    width: 130,
-
-                                    height: 130,
-
-                                    colorDark: "#000000",
-
-                                    colorLight: "#ffffff",
-
-                                    correctLevel: QRCode.CorrectLevel.H
-
-                                }).makeCode(this.directDownloadUrl);
-
-                            }, 100);
-
-                        } else {
-
-                            alert('Link tải không tồn tại hoặc đã hết hạn!');
-
-                        }
-
-                    } catch (error) {
-
-                        console.error('Error loading from Firestore:', error);
-
-                        alert('Có lỗi xảy ra khi tải thông tin!');
-
-                    }
-
-                },
-
-                
-
-                async saveToFirestore(downloadUrl) {
-
-                    try {
-
-                        // Generate short ID (6 characters)
-
-                        const shortId = generateShortId();
-
-                        
-
-                        // Create document in Firestore with short ID
-
-                        await db.collection('signed_apps').doc(shortId).set({
-
-                            download_url: downloadUrl,
-
-                            created_at: firebase.firestore.FieldValue.serverTimestamp(),
-
-                            app_name: this.name || 'Unknown App',
-
-                            bundle_id: this.identifier || 'Unknown Bundle ID'
-
-                        });
-
-                        
-
-                        this.firestoreDocId = shortId;
-
-                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
-
-                        return shortId;
-
-                    } catch (error) {
-
-                        console.error('Error saving to Firestore:', error);
-
-                        return null;
-
-                    }
-
-                },
-
-                
-
-                getFile(e) {
-
-                    const file = e.target.files[0] || null;
-
-                    if (e.target.accept === '.ipa') {
-
-                        this.ipa = file;
-
-                        this.ipaCss = file ? 'valid' : 'invalid';
-
-                        this.ipaText = file ? file.name : 'Chọn file .ipa...';
-
-                    } else if (e.target.accept === '.p12') {
-
-                        this.p12 = file;
-
-                        this.p12Css = file ? 'valid' : 'invalid';
-
-                        this.p12Text = file ? file.name : 'Chọn file .p12...';
-
-                    } else if (e.target.accept === '.mobileprovision') {
-
-                        this.mobileprovision = file;
-
-                        this.mobCss = file ? 'valid' : 'invalid';
-
-                        this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
-
-                    }
-
-                },
-
-                
-
-                async upload() {
-
-                    // Validate required fields
-
-                    if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
-
-                        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
-
-                        return;
-
-                    }
-
-                    
-
-                    // Save password to history
-
-                    this.savePasswordToHistory(this.password);
-
-                    
-
-                    this.showStep1 = false;
-
-                    this.showStep2 = true;
-
-                    this.progressBar = 0;
-
-                    this.uploadStep = 1;
-
-                    
-
-                    // Simulate upload steps based on progress percentage
-
-                    const progressInterval = setInterval(() => {
-
-                        // Update upload step based on progress percentage
-
-                        if (this.progressBar < 20) {
-
-                            this.uploadStep = 1; // Tải IPA
-
-                        } else if (this.progressBar < 36) {
-
-                            this.uploadStep = 2; // Nhận IPA
-
-                        } else if (this.progressBar < 70) {
-
-                            this.uploadStep = 3; // Bắt đầu ký
-
-                        } else if (this.progressBar < 99) {
-
-                            this.uploadStep = 4; // Hoàn tất
-
-                        }
-
-                        
-
-                        if (this.progressBar >= 100) {
-
-                            clearInterval(progressInterval);
-
-                        }
-
-                    }, 100);
-
-                    
-
-                    const fd = new FormData();
-
-                    fd.append('ipa', this.ipa);
-
-                    fd.append('p12', this.p12);
-
-                    fd.append('mp', this.mobileprovision);
-
-                    fd.append('password', this.password);
-
-                    fd.append('app_name', this.name);
-
-                    fd.append('bundle_id', this.identifier);
-
-                    
-
-                    try {
-
-                        const resp = await axios.post(SignUrl, fd, {
-
-                            headers: { 'Content-Type': 'multipart/form-data' },
-
-                            onUploadProgress: e => {
-
-                                if (e.lengthComputable) {
-
-                                    this.progressBar = Math.round(e.loaded / e.total * 100);
-
-                                }
-
-                            }
-
-                        });
-
-                        
-
-                        this.jobId = resp.data.task_id;
-
-                        this.showStep2 = false;
-
-                        this.showStep3 = true;
-
-                        this.pollStatus();
-
-                    } catch (err) {
-
-                        clearInterval(progressInterval);
-
-                        alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
-
-                        this.showStep1 = true;
-
-                        this.showStep2 = false;
-
-                    }
-
-                },
-
-                
-
-                async pollStatus() {
-
-                    this.statusText = 'Đang chờ';
-
-                    this.logText = '';
-
-                    const timer = setInterval(async () => {
-
-                        try {
-
-                            const res = await axios.get(`${StatusUrl}/${this.jobId}`);
-
-                            const d = res.data;
-
-                            this.statusText = d.status;
-
-                            this.logText = d.msg || '';
-
-                            
-
-                            if (d.status === 'SUCCESS') {
-
-                                const base = `${DownloadUrl}/${this.jobId}`;
-
-                                this.download = base;
-
-                                this.download_ipa = base;
-
-                                clearInterval(timer);
-
-                                
-
-                                // Save to Firestore and get share URL
-
-                                const docId = await this.saveToFirestore(base);
-
-                                if (docId) {
-
-                                    this.showStep3 = false;
-
-                                    this.showStep4 = true;
-
-                                    
-
-                                    // Generate QR Code
-
-                                    setTimeout(() => {
-
-                                        new QRCode(document.getElementById('qrcode'), {
-
-                                            width: 130,
-
-                                            height: 130,
-
-                                            colorDark: "#000000",
-
-                                            colorLight: "#ffffff",
-
-                                            correctLevel: QRCode.CorrectLevel.H
-
-                                        }).makeCode(this.download);
-
-                                    }, 100);
-
-                                } else {
-
-                                    alert('Có lỗi khi tạo link chia sẻ!');
-
-                                    this.index();
-
-                                }
-
-                                
-
-                            } else if (d.status === 'FAILURE') {
-
-                                clearInterval(timer);
-
-                                alert('Ký IPA thất bại');
-
-                                this.index();
-
-                            }
-
-                        } catch (err) {
-
-                            clearInterval(timer);
-
-                            alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
-
-                            this.index();
-
-                        }
-
-                    }, 3000);
-
-                },
-
-                
-
-                copyShareUrl() {
-
-                    const input = this.$refs.shareUrlInput;
-
-                    input.select();
-
-                    document.execCommand('copy');
-
-                    
-
-                    // Show success message
-
-                    this.copySuccess = true;
-
-                    setTimeout(() => {
-
-                        this.copySuccess = false;
-
-                    }, 3000);
-
-                },
-
-                
-
-                index() { 
-
-                    window.location.href = window.location.pathname;
-
-                },
-
-                
-
-                goToHome() {
-
-                    window.location.href = window.location.pathname;
-
-                }
-
-            },
-
-            watch: {
-
-                password(val) { 
-
-                    this.pwdCss = val.length ? 'valid' : 'invalid'; 
-
-                }
-
-            }
-
-        });
-
-    </script>
-
+    <!-- Internal JS Files -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
 </body>
-
 </html>
