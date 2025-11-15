@@ -29,21 +29,21 @@ new Vue({
             selectedApp: '',
             uploadMode: 'manual', // 'manual' or 'preset'
             
-            // Preset apps - DÙNG CORS PROXY để fix lỗi
+            // Preset apps
             presetApps: {
                 'esign': {
                     name: 'ESign',
-                    url: 'https://api.allorigins.win/raw?url=https://github.com/VNcerti/ioscert/releases/download/v1.0.0/esign.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/esign.ipa',
                     filename: 'esign.ipa'
                 },
                 'scarlet': {
                     name: 'Scarlet', 
-                    url: 'https://api.allorigins.win/raw?url=https://github.com/VNcerti/ioscert/releases/download/v1.0.0/scarlet.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/scarlet.ipa',
                     filename: 'scarlet.ipa'
                 },
                 'gbox': {
                     name: 'Gbox',
-                    url: 'https://api.allorigins.win/raw?url=https://github.com/VNcerti/ioscert/releases/download/v1.0.0/gbox.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/gbox.ipa',
                     filename: 'gbox.ipa'
                 }
             },
@@ -58,7 +58,8 @@ new Vue({
             firestoreDocId: '',
             showPasswordSuggestions: false,
             passwordSuggestions: [],
-            copySuccess: false
+            copySuccess: false,
+            isDownloadingIPA: false
         }
     },
     mounted() {
@@ -130,65 +131,48 @@ new Vue({
             const app = this.presetApps[appKey];
             if (!app) return null;
             
-            try {
-                console.log('Đang tải file IPA từ:', app.url);
-                this.statusText = 'Đang tải file IPA...';
+            return new Promise((resolve, reject) => {
+                this.isDownloadingIPA = true;
                 
-                // Sử dụng CORS proxy để tránh lỗi
-                const response = await axios.get(app.url, {
-                    responseType: 'blob',
-                    timeout: 45000, // 45 giây timeout
-                    onDownloadProgress: (progressEvent) => {
-                        if (progressEvent.lengthComputable) {
-                            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                            this.progressBar = 10 + Math.round(percent * 0.2); // 10-30%
-                            console.log(`Download progress: ${percent}%`);
-                        }
-                    }
-                });
+                // Hiển thị hướng dẫn cho user
+                const userConfirmed = confirm(
+                    `🔧 HƯỚNG DẪN TẢI FILE ${app.name.toUpperCase()}\n\n` +
+                    `1. Bấm OK để mở link tải ${app.name}.ipa\n` +
+                    `2. Chờ file tải về máy (tự động download)\n` +
+                    `3. QUAY LẠI TRANG NÀY và chọn file vừa tải\n\n` +
+                    `Sau khi bấm OK, cửa sổ download sẽ mở ra...`
+                );
                 
-                if (response.status !== 200) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                if (!userConfirmed) {
+                    this.isDownloadingIPA = false;
+                    reject(new Error('User cancelled download'));
+                    return;
                 }
                 
-                const blob = response.data;
+                // Mở link download trong tab mới
+                const downloadWindow = window.open(app.url, '_blank');
                 
-                // Kiểm tra kích thước file
-                if (blob.size === 0) {
-                    throw new Error('File tải về trống');
+                if (!downloadWindow) {
+                    this.isDownloadingIPA = false;
+                    alert('Trình duyệt chặn popup! Vui lòng cho phép popup và thử lại.');
+                    reject(new Error('Popup blocked'));
+                    return;
                 }
                 
-                console.log('File IPA tải thành công, kích thước:', blob.size, 'bytes');
+                // Hiển thị thông báo chờ user
+                alert(
+                    `📥 ĐANG TẢI ${app.name.toUpperCase()}\n\n` +
+                    `1. File đang được tải về máy bạn...\n` +
+                    `2. Khi tải xong, QUAY LẠI trang này\n` +
+                    `3. Bấm "Chọn file .ipa" và chọn file vừa tải\n\n` +
+                    `Sau đó bấm "Ký ngay!" để tiếp tục.`
+                );
                 
-                // Tạo File object từ blob
-                const file = new File([blob], app.filename, { 
-                    type: 'application/octet-stream' 
-                });
+                this.isDownloadingIPA = false;
                 
-                this.statusText = 'File IPA đã tải xong!';
-                return file;
-                
-            } catch (error) {
-                console.error('Lỗi khi lấy file IPA:', error);
-                
-                // Hiển thị thông báo lỗi chi tiết hơn
-                let errorMessage = 'Không thể tải file IPA. ';
-                
-                if (error.code === 'ECONNABORTED') {
-                    errorMessage += 'Timeout - file quá lớn hoặc mạng chậm.';
-                } else if (error.response?.status === 404) {
-                    errorMessage += 'File không tồn tại trên server.';
-                } else if (error.response?.status === 403) {
-                    errorMessage += 'Truy cập bị từ chối.';
-                } else if (error.message?.includes('Network Error')) {
-                    errorMessage += 'Lỗi kết nối mạng. Vui lòng kiểm tra internet.';
-                } else {
-                    errorMessage += 'Vui lòng thử lại sau!';
-                }
-                
-                alert(errorMessage);
-                return null;
-            }
+                // Trả về null để user tự chọn file
+                resolve(null);
+            });
         },
         
         checkDirectDownload() {
@@ -283,18 +267,36 @@ new Vue({
                 this.uploadStep = 1;
                 this.statusText = 'Đang chuẩn bị tải file IPA...';
                 
-                // Lấy file IPA từ preset
-                ipaFile = await this.getPresetIpa(this.selectedApp);
-                
-                if (!ipaFile) {
+                try {
+                    // Lấy file IPA từ preset
+                    ipaFile = await this.getPresetIpa(this.selectedApp);
+                    
+                    if (ipaFile === null) {
+                        // User đã được hướng dẫn tải file thủ công
+                        this.showStep1 = true;
+                        this.showStep2 = false;
+                        this.statusText = '';
+                        
+                        // Hiển thị lại input file IPA để user chọn file vừa tải
+                        this.$nextTick(() => {
+                            const ipaInput = this.$refs.ipa;
+                            if (ipaInput) {
+                                ipaInput.click();
+                            }
+                        });
+                        return;
+                    }
+                    
+                    this.progressBar = 30;
+                    this.statusText = 'Đang chuẩn bị upload...';
+                    
+                } catch (error) {
+                    console.error('Lỗi tải file IPA:', error);
                     this.showStep1 = true;
                     this.showStep2 = false;
                     this.statusText = '';
                     return;
                 }
-                
-                this.progressBar = 30;
-                this.statusText = 'Đang chuẩn bị upload...';
             } else {
                 // Chế độ manual - lấy file từ input
                 ipaFile = this.ipa;
