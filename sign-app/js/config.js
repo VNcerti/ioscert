@@ -1,7 +1,8 @@
 // Configuration file for API URLs and constants
-const SignUrl = 'https://sign.ipasign.cc/sign';
-const StatusUrl = 'https://sign.ipasign.cc/status';
-const DownloadUrl = 'https://sign.ipasign.cc/download';
+// Các URL API từ server chính - sẽ được ghi đè bởi file index.js từ server
+let SignUrl = 'https://sign.ipasign.cc/sign';
+let StatusUrl = 'https://sign.ipasign.cc/status'; 
+let DownloadUrl = 'https://sign.ipasign.cc/download';
 
 // Firebase Configuration
 const firebaseConfig = {
