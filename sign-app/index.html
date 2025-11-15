@@ -9,24 +9,29 @@
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
-    <!-- External CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- External JS Libraries - ĐÚNG THỨ TỰ -->
+    <!-- External Libraries -->
     <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
-    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
     <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Custom JS - ĐÚNG THỨ TỰ -->
-    <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/script.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Local Styles and Scripts -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Configuration -->
+    <script src="/assets/js/config.js"></script>
+    
+    <!-- Main Application Script -->
+    <script src="/assets/js/script.js" defer></script>
 </head>
 <body>
     <div id="app">
@@ -260,40 +265,22 @@
                                         <a :href="download" target="_blank" class="download-link">{{ download }}</a>
                                     </div>
                                 </div>
-                                
                                 <!-- Share Section -->
-<div class="share-section">
-    <h4 class="share-title">Chia sẻ ứng dụng</h4>
-    <div class="share-url">
-        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
-        <button class="copy-btn" @click="copyShareUrl">
-            <i class="fas fa-copy"></i> Copy
-        </button>
-    </div>
-    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
-        Đã sao chép thành công
-    </div>
-    
-    <!-- HIỂN THỊ KHI CÓ LINK CHIA SẺ THÀNH CÔNG -->
-    <div v-if="shareUrl && shareUrl.includes('?download=')" 
-         class="firestore-success" 
-         style="color: var(--success); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(6,214,160,0.1); padding: 0.5rem; border-radius: 5px;">
-        <i class="fas fa-check-circle"></i> 
-        Gửi link này cho người khác để họ cài đặt mà không cần ký lại!
-    </div>
-    
-    <!-- HIỂN THỊ KHI CHƯA CÓ LINK CHIA SẺ -->
-    <div v-else 
-         class="firestore-warning" 
-         style="color: var(--warning); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(255,209,102,0.1); padding: 0.5rem; border-radius: 5px;">
-        <i class="fas fa-exclamation-triangle"></i> 
-        Tính năng chia sẻ tạm thời không khả dụng.
-    </div>
-    
-    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
-        Khi người khác bấm vào link chia sẻ, họ sẽ thấy trực tiếp trang tải app này mà không cần ký lại!
-    </p>
-</div>
+                                <div class="share-section">
+                                    <h4 class="share-title">Chia sẻ ứng dụng</h4>
+                                    <div class="share-url">
+                                        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
+                                        <button class="copy-btn" @click="copyShareUrl">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+                                        Đã sao chép thành công
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+                                        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
+                                    </p>
+                                </div>
                                 
                                 <button class="btn" @click="index">
                                     <i class="fas fa-redo"></i>
@@ -303,45 +290,40 @@
                         </div>
                     </div>
                 </transition>
-                
                 <!-- Direct Download View -->
                 <transition name="slide" mode="out-in">
-    <div class="card" v-show="showDirectDownload">
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="fas fa-download"></i>
-                Cài đặt ứng dụng
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="result-container">
-                <i class="fas fa-mobile-alt success-icon"></i>
-                <h3 class="result-title">Ứng dụng đã sẵn sàng!</h3>
-                
-                <div class="result-content">
-                    <div class="qr-container">
-                        <p class="qr-title">Quét mã QR để cài đặt</p>
-                        <div class="qr-code" id="directQrcode"></div>
+                    <div class="card" v-show="showDirectDownload">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-download"></i>
+                                Cài đặt ứng dụng
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="result-container">
+                                <i class="fas fa-mobile-alt success-icon"></i>
+                                <h3 class="result-title">Ứng dụng đã sẵn sàng!</h3>
+                                
+                                <div class="result-content">
+                                    <div class="qr-container">
+                                        <p class="qr-title">Quét mã QR để cài đặt</p>
+                                        <div class="qr-code" id="directQrcode"></div>
+                                    </div>
+                                    
+                                    <div class="link-container">
+                                        <p class="link-title">Bấm vào link để cài đặt</p>
+                                        <a :href="directDownloadUrl" target="_blank" class="download-link">{{ directDownloadUrl }}</a>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-secondary" @click="goToHome">
+                                    <i class="fas fa-home"></i>
+                                    Về trang chủ
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="link-container">
-                        <p class="link-title">Bấm vào link để cài đặt</p>
-                        <a :href="directDownloadUrl" target="_blank" class="download-link">{{ directDownloadUrl }}</a>
-                    </div>
-                </div>
-                
-                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 1rem;">
-                    Ứng dụng đã được ký sẵn, bạn có thể tải về và cài đặt ngay!
-                </p>
-                
-                <button class="btn btn-secondary" @click="goToHome">
-                    <i class="fas fa-signature"></i>
-                    Ký ứng dụng khác
-                </button>
-            </div>
-        </div>
-    </div>
-</transition>
+                </transition>
             </div>
         </main>
         
