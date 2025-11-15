@@ -35,6 +35,8 @@ new Vue({
         copySuccess: false
     },
     mounted() {
+        console.log('Vue app mounted - API URLs:', { SignUrl, StatusUrl, DownloadUrl });
+        
         // Load password suggestions from localStorage
         this.loadPasswordSuggestions();
         
@@ -170,6 +172,8 @@ new Vue({
                 return;
             }
             
+            console.log('Starting upload with API URL:', SignUrl);
+            
             // Save password to history
             this.savePasswordToHistory(this.password);
             
@@ -205,6 +209,7 @@ new Vue({
             fd.append('bundle_id', this.identifier);
             
             try {
+                console.log('Sending request to:', SignUrl);
                 const resp = await axios.post(SignUrl, fd, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: e => {
@@ -214,11 +219,13 @@ new Vue({
                     }
                 });
                 
+                console.log('Upload response:', resp.data);
                 this.jobId = resp.data.task_id;
                 this.showStep2 = false;
                 this.showStep3 = true;
                 this.pollStatus();
             } catch (err) {
+                console.error('Upload error:', err);
                 clearInterval(progressInterval);
                 alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
                 this.showStep1 = true;
@@ -231,6 +238,7 @@ new Vue({
             this.logText = '';
             const timer = setInterval(async () => {
                 try {
+                    console.log('Checking status with URL:', `${StatusUrl}/${this.jobId}`);
                     const res = await axios.get(`${StatusUrl}/${this.jobId}`);
                     const d = res.data;
                     this.statusText = d.status;
@@ -269,6 +277,7 @@ new Vue({
                         this.index();
                     }
                 } catch (err) {
+                    console.error('Status check error:', err);
                     clearInterval(timer);
                     alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
                     this.index();
