@@ -262,25 +262,26 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Share Section -->
-                                <div class="share-section">
-                                    <h4 class="share-title">Chia sẻ ứng dụng</h4>
-                                    <div class="share-url">
-                                        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
-                                        <button class="copy-btn" @click="copyShareUrl">
-                                            <i class="fas fa-copy"></i> Copy
-                                        </button>
-                                    </div>
-                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
-                                        Đã sao chép thành công
-                                    </div>
-                                    <div v-if="!isFirebaseAvailable" class="firestore-warning" style="color: var(--warning); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(255,209,102,0.1); padding: 0.5rem; border-radius: 5px;">
-                                        <i class="fas fa-exclamation-triangle"></i> Tính năng chia sẻ tạm thời không khả dụng. Vui lòng sử dụng link tải trực tiếp bên trên.
-                                    </div>
-                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
-                                        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
-                                    </p>
-                                </div>
+                             <!-- Share Section -->
+<div class="share-section">
+    <h4 class="share-title">Chia sẻ ứng dụng</h4>
+    <div class="share-url">
+        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
+        <button class="copy-btn" @click="copyShareUrl">
+            <i class="fas fa-copy"></i> Copy
+        </button>
+    </div>
+    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+        Đã sao chép thành công
+    </div>
+    <!-- Chỉ hiển thị cảnh báo khi Firebase không hoạt động VÀ shareUrl là link trực tiếp -->
+    <div v-if="!isFirebaseAvailable && shareUrl === download" class="firestore-warning" style="color: var(--warning); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(255,209,102,0.1); padding: 0.5rem; border-radius: 5px;">
+        <i class="fas fa-exclamation-triangle"></i> Tính năng chia sẻ tạm thời không khả dụng. Vui lòng sử dụng link tải trực tiếp bên trên.
+    </div>
+    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
+        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
+    </p>
+</div>
                                 
                                 <button class="btn" @click="index">
                                     <i class="fas fa-redo"></i>
