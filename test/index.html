@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
+    <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
+    <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Internal CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- External JS -->
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="logo">Unlimited IPA Notation Tool</h1>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Features Section -->
+        <div class="container">
+            <div class="features">
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Công cụ ký IPA trực tuyến không cần MacOS</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Hệ thống tự động 24/7, dễ sử dụng, không quảng cáo</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Ký/tinh chỉnh file IPA dung lượng lớn không giới hạn</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>An toàn - Bảo mật - Tự động</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span><a href="https://chungchip12.com/" target="_blank" style="color: inherit; text-decoration: none;">Mua chứng chỉ ký iPA tại : Chungchip12.com</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Step 1: File Selection -->
+                <transition name="slide" mode="out-in">
+                    <div class="card" v-show="showStep1">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-file-upload"></i>
+                                Bước 1: Chọn file cần ký
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- Chọn app có sẵn -->
+                            <div class="form-group">
+                                <label class="form-label">Hoặc chọn app có sẵn</label>
+                                <div class="app-selection">
+                                    <select v-model="selectedApp" @change="onAppSelect" class="text-input">
+                                        <option value="">-- Chọn app --</option>
+                                        <option value="esign">ESign</option>
+                                        <option value="scarlet">Scarlet</option>
+                                        <option value="gbox">Gbox</option>
+                                    </select>
+                                    
+                                    <div v-if="selectedApp" class="selected-app-info">
+                                        <i class="fas fa-check-circle"></i>
+                                        Đã chọn: <strong>{{ getAppName(selectedApp) }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid">
+                                <!-- IPA File -->
+                                <div class="form-group" v-show="!selectedApp">
+                                    <label class="form-label">File IPA</label>
+                                    <div class="file-input-container">
+                                        <input type="file" @change="getFile($event)" ref="ipa" required accept=".ipa" class="file-input" id="ipa">
+                                        <label for="ipa" class="file-input-label" :class="ipaCss">
+                                            <span class="file-name">{{ ipaText }}</span>
+                                            <i class="fas fa-cloud-upload-alt file-icon"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- P12 File -->
+                                <div class="form-group">
+                                    <label class="form-label">File chứng chỉ (.p12)</label>
+                                    <div class="file-input-container">
+                                        <input type="file" @change="getFile($event)" ref="p12" required accept=".p12" class="file-input" id="p12">
+                                        <label for="p12" class="file-input-label" :class="p12Css">
+                                            <span class="file-name">{{ p12Text }}</span>
+                                            <i class="fas fa-certificate file-icon"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mobile Provision File -->
+                                <div class="form-group">
+                                    <label class="form-label">File Mobile Provision</label>
+                                    <div class="file-input-container">
+                                        <input type="file" ref="mob" @change="getFile($event)" required accept=".mobileprovision" class="file-input" id="mobileprovision">
+                                        <label for="mobileprovision" class="file-input-label" :class="mobCss">
+                                            <span class="file-name">{{ mobText }}</span>
+                                            <i class="fas fa-file-contract file-icon"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Password -->
+                                <div class="form-group">
+                                    <label class="form-label">Mật khẩu file .p12</label>
+                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
+                                    <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
+                                        <span class="password-suggestion" v-for="suggestion in passwordSuggestions" :key="suggestion" @click="selectPassword(suggestion)">
+                                            {{ suggestion }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bundle ID -->
+                                <div class="form-group">
+                                    <label class="form-label">Bundle ID mới (tùy chọn)</label>
+                                    <input type="text" v-model="identifier" ref="identifier" placeholder="Nhập BundleID mới" class="text-input">
+                                </div>
+                                
+                                <!-- App Name -->
+                                <div class="form-group">
+                                    <label class="form-label">Tên App mới (tùy chọn)</label>
+                                    <input type="text" v-model="name" ref="name" placeholder="Nhập tên App mới" class="text-input">
+                                </div>
+                            </div>
+                            
+                            <button class="btn" @click="upload">
+                                <i class="fas fa-signature"></i>
+                                Ký ngay!
+                            </button>
+                        </div>
+                    </div>
+                </transition>
+                
+                <!-- Step 2: Upload Progress -->
+                <transition name="slide" mode="out-in">
+                    <div class="card" v-show="showStep2">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Bước 2: Đang tải file lên
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="upload-steps">
+                                <div class="step-item" :class="{ active: uploadStep >= 1, completed: uploadStep > 1 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-upload"></i>
+                                    </div>
+                                    <span class="step-text">Tải IPA</span>
+                                    <div class="step-connector"></div>
+                                </div>
+                                <div class="step-item" :class="{ active: uploadStep >= 2, completed: uploadStep > 2 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-download"></i>
+                                    </div>
+                                    <span class="step-text">Nhận IPA</span>
+                                    <div class="step-connector"></div>
+                                </div>
+                                <div class="step-item" :class="{ active: uploadStep >= 3, completed: uploadStep > 3 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-signature"></i>
+                                    </div>
+                                    <span class="step-text">Bắt đầu ký</span>
+                                    <div class="step-connector"></div>
+                                </div>
+                                <div class="step-item" :class="{ active: uploadStep >= 4, completed: uploadStep > 4 }">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <span class="step-text">Hoàn tất</span>
+                                </div>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-label">
+                                    <span>Đang tải lên...</span>
+                                    <span>{{ progressBar }}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" :style="{width: progressBar + '%'}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+                
+                <!-- Step 3: Processing -->
+                <transition name="slide" mode="out-in">
+                    <div class="card" v-show="showStep3">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-cog"></i>
+                                Bước 3: Đang xử lý
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="processing-container">
+                                <i class="fas fa-cog spinner"></i>
+                                <p class="processing-text">Đang xử lý file của bạn, vui lòng chờ...</p>
+                                <p>Trạng thái: {{ statusText }}</p>
+                                
+                                <div class="log-container" v-if="logText">
+                                    {{ logText }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+                
+                <!-- Step 4: Result -->
+                <transition name="slide" mode="out-in">
+                    <div class="card" v-show="showStep4">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-check-circle"></i>
+                                Bước 4: Hoàn tất
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="result-container">
+                                <i class="fas fa-check-circle success-icon"></i>
+                                <h3 class="result-title">Ký IPA thành công!</h3>
+                                
+                                <div class="result-content">
+                                    <div class="qr-container">
+                                        <p class="qr-title">Quét mã QR để cài đặt</p>
+                                        <div class="qr-code" id="qrcode"></div>
+                                    </div>
+                                    
+                                    <div class="link-container">
+                                        <p class="link-title">Bấm vào link để cài đặt</p>
+                                        <a :href="download" target="_blank" class="download-link">{{ download }}</a>
+                                    </div>
+                                </div>
+                                <!-- Share Section -->
+                                <div class="share-section">
+                                    <h4 class="share-title">Chia sẻ ứng dụng</h4>
+                                    <div class="share-url">
+                                        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
+                                        <button class="copy-btn" @click="copyShareUrl">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+                                        Đã sao chép thành công
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+                                        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
+                                    </p>
+                                </div>
+                                
+                                <button class="btn" @click="index">
+                                    <i class="fas fa-redo"></i>
+                                    Bắt đầu lại
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+                <!-- Direct Download View -->
+                <transition name="slide" mode="out-in">
+                    <div class="card" v-show="showDirectDownload">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-download"></i>
+                                Cài đặt ứng dụng
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="result-container">
+                                <i class="fas fa-mobile-alt success-icon"></i>
+                                <h3 class="result-title">Ứng dụng đã sẵn sàng!</h3>
+                                
+                                <div class="result-content">
+                                    <div class="qr-container">
+                                        <p class="qr-title">Quét mã QR để cài đặt</p>
+                                        <div class="qr-code" id="directQrcode"></div>
+                                    </div>
+                                    
+                                    <div class="link-container">
+                                        <p class="link-title">Bấm vào link để cài đặt</p>
+                                        <a :href="directDownloadUrl" target="_blank" class="download-link">{{ directDownloadUrl }}</a>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-secondary" @click="goToHome">
+                                    <i class="fas fa-home"></i>
+                                    Về trang chủ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>© 2023 VNCERT - Công cụ ký IPA trực tuyến</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Internal JS Files -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
