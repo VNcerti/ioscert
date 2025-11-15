@@ -1,5 +1,11 @@
 // Main Vue.js application
 document.addEventListener('DOMContentLoaded', function() {
+    // Đảm bảo các biến global đã được load
+    if (typeof SignUrl === 'undefined' || typeof StatusUrl === 'undefined' || typeof DownloadUrl === 'undefined') {
+        console.error('API URLs chưa được khai báo. Vui lòng kiểm tra file config.js và index.js');
+        return;
+    }
+
     new Vue({
         el: '#app',
         data: {
@@ -36,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
             copySuccess: false
         },
         mounted() {
+            console.log('App mounted, API URLs:', { SignUrl, StatusUrl, DownloadUrl });
+            
             // Load password suggestions from localStorage
             this.loadPasswordSuggestions();
             
@@ -94,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async loadFromFirestore(docId) {
                 try {
+                    const db = firebase.firestore();
                     const docRef = db.collection('signed_apps').doc(docId);
                     const doc = await docRef.get();
                     
@@ -127,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async saveToFirestore(downloadUrl) {
                 try {
+                    const db = firebase.firestore();
                     // Generate short ID (6 characters)
                     const shortId = generateShortId();
                     
@@ -206,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fd.append('bundle_id', this.identifier);
                 
                 try {
+                    console.log('Sending request to:', SignUrl);
                     const resp = await axios.post(SignUrl, fd, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                         onUploadProgress: e => {
@@ -221,6 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.pollStatus();
                 } catch (err) {
                     clearInterval(progressInterval);
+                    console.error('Upload error:', err);
                     alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
                     this.showStep1 = true;
                     this.showStep2 = false;
@@ -271,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     } catch (err) {
                         clearInterval(timer);
+                        console.error('Status polling error:', err);
                         alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
                         this.index();
                     }
