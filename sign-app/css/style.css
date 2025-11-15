@@ -704,4 +704,60 @@ body {
     }
     
     .step-connector {
-        top: 11px
+        top: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .header {
+        padding: 0.8rem 0;
+    }
+    
+    .main-content {
+        padding: 0.8rem 0;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+    }
+    
+    .result-container {
+        padding: 1rem;
+    }
+    
+    .features {
+        padding: 0.6rem 0.8rem;
+        margin: 0.8rem auto;
+    }
+    
+    /* Upload steps responsive - FIXED */
+    .upload-steps {
+        font-size: 0.65rem;
+    }
+    
+    .step-text {
+        font-size: 0.65rem;
+    }
+    
+    .step-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .step-connector {
+        top: 10px;
+    }
+}
