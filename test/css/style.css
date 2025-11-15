@@ -674,4 +674,126 @@ body {
     }
     
     .main-content {
-        padding: 1rem 
+        padding: 1rem 0;
+    }
+    
+    .card-body {
+        padding: 1.2rem;
+    }
+    
+    .card-header {
+        padding: 1rem 1.2rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .result-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 0rem;
+    }
+    .share-url {
+        flex-direction: column;
+    }
+    
+    .qr-container, .link-container {
+        padding: 1rem;
+    }
+    
+    .success-icon {
+        font-size: 2.5rem;
+    }
+    
+    .result-title {
+        font-size: 1.2rem;
+    }
+    
+    /* Features responsive */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .feature-item {
+        font-size: 0.7rem;
+    }
+    
+    /* Upload steps responsive - FIXED */
+    .upload-steps {
+        font-size: 0.7rem;
+        padding: 0 5px;
+    }
+    
+    .step-text {
+        font-size: 0.7rem;
+    }
+    
+    .step-icon {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .step-connector {
+        top: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .header {
+        padding: 0.8rem 0;
+    }
+    
+    .main-content {
+        padding: 0.8rem 0;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+    }
+    
+    .result-container {
+        padding: 1rem;
+    }
+    
+    .features {
+        padding: 0.6rem 0.8rem;
+        margin: 0.8rem auto;
+    }
+    
+    /* Upload steps responsive - FIXED */
+    .upload-steps {
+        font-size: 0.65rem;
+    }
+    
+    .step-text {
+        font-size: 0.65rem;
+    }
+    
+    .step-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .step-connector {
+        top: 10px;
+    }
+}
