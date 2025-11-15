@@ -1,4 +1,20 @@
 // Main Vue Application
+
+// ĐỊNH NGHĨA API URLs TRỰC TIẾP TRONG FILE NÀY
+const SignUrl = 'https://sign.ipasign.cc/api/sign';
+const StatusUrl = 'https://sign.ipasign.cc/api/status'; 
+const DownloadUrl = 'https://sign.ipasign.cc/api/download';
+
+// Hàm tạo ID ngắn (6 ký tự) - ĐƯA LUÔN VÀO ĐÂY
+function generateShortId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
 new Vue({
     el: '#app',
     data: {
@@ -210,24 +226,52 @@ new Vue({
             
             try {
                 console.log('Sending request to:', SignUrl);
+                console.log('FormData files:', {
+                    ipa: this.ipa?.name,
+                    p12: this.p12?.name,
+                    mp: this.mobileprovision?.name,
+                    password: this.password ? '***' : 'empty',
+                    app_name: this.name,
+                    bundle_id: this.identifier
+                });
+                
                 const resp = await axios.post(SignUrl, fd, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: e => {
                         if (e.lengthComputable) {
                             this.progressBar = Math.round(e.loaded / e.total * 100);
+                            console.log('Upload progress:', this.progressBar + '%');
                         }
-                    }
+                    },
+                    timeout: 60000 // 60 seconds timeout
                 });
                 
                 console.log('Upload response:', resp.data);
-                this.jobId = resp.data.task_id;
-                this.showStep2 = false;
-                this.showStep3 = true;
-                this.pollStatus();
+                
+                if (resp.data && resp.data.task_id) {
+                    this.jobId = resp.data.task_id;
+                    this.showStep2 = false;
+                    this.showStep3 = true;
+                    this.pollStatus();
+                } else {
+                    throw new Error('Invalid response from server');
+                }
+                
             } catch (err) {
-                console.error('Upload error:', err);
+                console.error('Upload error details:', err);
+                console.error('Error response:', err.response);
                 clearInterval(progressInterval);
-                alert(err.response?.data?.error || 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.');
+                
+                let errorMessage = 'Gửi file thất bại. Vui lòng kiểm tra mạng hoặc dữ liệu.';
+                if (err.response?.data?.error) {
+                    errorMessage = err.response.data.error;
+                } else if (err.code === 'NETWORK_ERROR') {
+                    errorMessage = 'Lỗi kết nối mạng. Vui lòng kiểm tra internet.';
+                } else if (err.code === 'TIMEOUT') {
+                    errorMessage = 'Quá thời gian kết nối. Vui lòng thử lại.';
+                }
+                
+                alert(errorMessage);
                 this.showStep1 = true;
                 this.showStep2 = false;
             }
@@ -239,16 +283,22 @@ new Vue({
             const timer = setInterval(async () => {
                 try {
                     console.log('Checking status with URL:', `${StatusUrl}/${this.jobId}`);
-                    const res = await axios.get(`${StatusUrl}/${this.jobId}`);
+                    const res = await axios.get(`${StatusUrl}/${this.jobId}`, {
+                        timeout: 10000
+                    });
                     const d = res.data;
                     this.statusText = d.status;
                     this.logText = d.msg || '';
+                    
+                    console.log('Status response:', d);
                     
                     if (d.status === 'SUCCESS') {
                         const base = `${DownloadUrl}/${this.jobId}`;
                         this.download = base;
                         this.download_ipa = base;
                         clearInterval(timer);
+                        
+                        console.log('Signing successful! Download URL:', base);
                         
                         // Save to Firestore and get share URL
                         const docId = await this.saveToFirestore(base);
@@ -273,7 +323,7 @@ new Vue({
                         
                     } else if (d.status === 'FAILURE') {
                         clearInterval(timer);
-                        alert('Ký IPA thất bại');
+                        alert('Ký IPA thất bại: ' + (d.msg || 'Unknown error'));
                         this.index();
                     }
                 } catch (err) {
