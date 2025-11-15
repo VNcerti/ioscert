@@ -39,10 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
             firestoreDocId: '',
             showPasswordSuggestions: false,
             passwordSuggestions: [],
-            copySuccess: false
+            copySuccess: false,
+            isFirebaseAvailable: false
         },
         mounted() {
             console.log('App mounted, API URLs:', { SignUrl, StatusUrl, DownloadUrl });
+            
+            // Kiểm tra Firebase availability
+            this.isFirebaseAvailable = typeof firebaseAvailable !== 'undefined' ? firebaseAvailable : false;
+            console.log('Firebase available:', this.isFirebaseAvailable);
             
             // Load password suggestions from localStorage
             this.loadPasswordSuggestions();
@@ -102,6 +107,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async loadFromFirestore(docId) {
                 try {
+                    if (!this.isFirebaseAvailable) {
+                        console.log('Firebase not available, skipping Firestore load');
+                        return;
+                    }
+                    
                     const db = firebase.firestore();
                     const docRef = db.collection('signed_apps').doc(docId);
                     const doc = await docRef.get();
@@ -136,9 +146,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async saveToFirestore(downloadUrl) {
                 try {
+                    if (!this.isFirebaseAvailable) {
+                        console.log('Firebase not available, skipping Firestore save');
+                        return null;
+                    }
+                    
                     const db = firebase.firestore();
                     // Generate short ID (6 characters)
                     const shortId = generateShortId();
+                    
+                    console.log('Saving to Firestore with ID:', shortId, 'URL:', downloadUrl);
                     
                     // Create document in Firestore with short ID
                     await db.collection('signed_apps').doc(shortId).set({
@@ -150,9 +167,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     this.firestoreDocId = shortId;
                     this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                    
+                    console.log('Successfully saved to Firestore, share URL:', this.shareUrl);
                     return shortId;
                 } catch (error) {
                     console.error('Error saving to Firestore:', error);
+                    console.error('Error details:', error.message, error.code);
                     return null;
                 }
             },
@@ -255,14 +275,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             this.download_ipa = base;
                             clearInterval(timer);
                             
-                            // Save to Firestore and get share URL
-                            const docId = await this.saveToFirestore(base);
-                            if (docId) {
-                                this.showStep3 = false;
-                                this.showStep4 = true;
-                                
-                                // Generate QR Code
-                                setTimeout(() => {
+                            console.log('Signing successful, download URL:', base);
+                            
+                            // Luôn hiển thị kết quả thành công
+                            this.showStep3 = false;
+                            this.showStep4 = true;
+                            
+                            // Generate QR Code
+                            setTimeout(() => {
+                                try {
                                     new QRCode(document.getElementById('qrcode'), {
                                         width: 130,
                                         height: 130,
@@ -270,10 +291,32 @@ document.addEventListener('DOMContentLoaded', function() {
                                         colorLight: "#ffffff",
                                         correctLevel: QRCode.CorrectLevel.H
                                     }).makeCode(this.download);
-                                }, 100);
+                                    console.log('QR code generated successfully');
+                                } catch (qrError) {
+                                    console.error('QR code generation error:', qrError);
+                                }
+                            }, 100);
+                            
+                            // Thử lưu vào Firestore để có link chia sẻ
+                            if (this.isFirebaseAvailable) {
+                                try {
+                                    const docId = await this.saveToFirestore(base);
+                                    if (docId) {
+                                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${docId}`;
+                                        console.log('Firestore save successful, share URL:', this.shareUrl);
+                                    } else {
+                                        // Nếu không lưu được Firestore, dùng link trực tiếp
+                                        this.shareUrl = this.download;
+                                        console.log('Firestore save failed, using direct URL for sharing');
+                                    }
+                                } catch (firestoreError) {
+                                    console.error('Firestore operation error:', firestoreError);
+                                    this.shareUrl = this.download;
+                                }
                             } else {
-                                alert('Có lỗi khi tạo link chia sẻ!');
-                                this.index();
+                                // Nếu Firebase không khả dụng, dùng link trực tiếp
+                                this.shareUrl = this.download;
+                                console.log('Firebase not available, using direct URL for sharing');
                             }
                             
                         } else if (d.status === 'FAILURE') {
