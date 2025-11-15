@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>IOSCERT - Ký file IPA trực tuyến không cần macOS</title>
-    <link rel="icon" href="https://i.imgur.com/wYEHqz7.png" type="image/x-icon">
+    <link rel="icon" href="https://i.imgur.com/gyJ5hF1.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
@@ -26,7 +26,6 @@
     
     <!-- Custom JS - ĐÚNG THỨ TỰ -->
     <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/firebase-init.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
 </head>
 <body>
@@ -262,39 +261,34 @@
                                     </div>
                                 </div>
                                 
-                           <!-- Share Section -->
-<div class="share-section">
-    <h4 class="share-title">Chia sẻ ứng dụng</h4>
-    <div class="share-url">
-        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
-        <button class="copy-btn" @click="copyShareUrl">
-            <i class="fas fa-copy"></i> Copy
-        </button>
-    </div>
-    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
-        Đã sao chép thành công
-    </div>
-    
-    <!-- HIỂN THỊ KHI CÓ LINK CHIA SẺ THÀNH CÔNG -->
-    <div v-if="shareUrl && shareUrl.includes('ioscert.site')" 
-         class="firestore-success" 
-         style="color: var(--success); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(6,214,160,0.1); padding: 0.5rem; border-radius: 5px;">
-        <i class="fas fa-check-circle"></i> 
-        Link chia sẻ đã sẵn sàng! Gửi link này cho người khác.
-    </div>
-    
-    <!-- CHỈ HIỂN THỊ CẢNH BÁO KHI shareUrl là link trực tiếp (không phải link ioscert.site) -->
-    <div v-else-if="shareUrl && shareUrl.startsWith('https://sign.ipasign.cc/download/')" 
-         class="firestore-warning" 
-         style="color: var(--warning); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(255,209,102,0.1); padding: 0.5rem; border-radius: 5px;">
-        <i class="fas fa-exclamation-triangle"></i> 
-        Tính năng chia sẻ tạm thời không khả dụng. Vui lòng sử dụng link tải trực tiếp bên trên.
-    </div>
-    
-    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
-        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
-    </p>
-</div>
+                                <!-- Share Section -->
+                                <div class="share-section">
+                                    <h4 class="share-title">Chia sẻ ứng dụng</h4>
+                                    <div class="share-url">
+                                        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
+                                        <button class="copy-btn" @click="copyShareUrl">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+                                        Đã sao chép thành công
+                                    </div>
+                                    <div v-if="shareUrl && shareUrl.includes('ioscert.site')" 
+                                         class="firestore-success" 
+                                         style="color: var(--success); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(6,214,160,0.1); padding: 0.5rem; border-radius: 5px;">
+                                        <i class="fas fa-check-circle"></i> 
+                                        Link chia sẻ đã sẵn sàng! Gửi link này cho người khác.
+                                    </div>
+                                    <div v-else-if="shareUrl && shareUrl.startsWith('https://sign.ipasign.cc/download/')" 
+                                         class="firestore-warning" 
+                                         style="color: var(--warning); font-size: 0.8rem; margin-top: 0.5rem; background: rgba(255,209,102,0.1); padding: 0.5rem; border-radius: 5px;">
+                                        <i class="fas fa-exclamation-triangle"></i> 
+                                        Tính năng chia sẻ tạm thời không khả dụng. Vui lòng sử dụng link tải trực tiếp bên trên.
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
+                                        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
+                                    </p>
+                                </div>
                                 
                                 <button class="btn" @click="index">
                                     <i class="fas fa-redo"></i>
