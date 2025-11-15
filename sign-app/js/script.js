@@ -40,16 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
             showPasswordSuggestions: false,
             passwordSuggestions: [],
             copySuccess: false,
-            isFirebaseAvailable: false
+            isFirebaseAvailable: false,
+            firestoreInitialized: false
         },
         mounted() {
             console.log('App mounted, API URLs:', { SignUrl, StatusUrl, DownloadUrl });
             
             // Kiểm tra Firebase availability - CHỜ FIREBASE LOAD XONG
-            setTimeout(() => {
-                this.checkFirebaseAvailability();
-                console.log('Firebase available after timeout:', this.isFirebaseAvailable);
-            }, 1000);
+            this.initializeFirebase();
             
             // Load password suggestions from localStorage
             this.loadPasswordSuggestions();
@@ -58,19 +56,66 @@ document.addEventListener('DOMContentLoaded', function() {
             this.checkDirectDownload();
         },
         methods: {
-            checkFirebaseAvailability() {
+            async initializeFirebase() {
                 try {
-                    // Kiểm tra xem Firebase đã sẵn sàng chưa
-                    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                        this.isFirebaseAvailable = true;
-                        console.log('✅ Firebase is available and initialized');
-                    } else {
-                        this.isFirebaseAvailable = false;
-                        console.log('❌ Firebase is not available');
+                    console.log('🔄 Initializing Firebase...');
+                    
+                    // Đợi Firebase SDK load hoàn toàn
+                    if (typeof firebase === 'undefined') {
+                        console.log('⏳ Waiting for Firebase SDK to load...');
+                        setTimeout(() => this.initializeFirebase(), 500);
+                        return;
                     }
+                    
+                    // Kiểm tra xem Firebase đã được khởi tạo chưa
+                    if (!firebase.apps.length) {
+                        console.log('🚀 Initializing Firebase app...');
+                        firebase.initializeApp(firebaseConfig);
+                    }
+                    
+                    // Kiểm tra Firestore
+                    if (typeof firebase.firestore === 'undefined') {
+                        console.log('⏳ Waiting for Firestore to load...');
+                        setTimeout(() => this.initializeFirebase(), 500);
+                        return;
+                    }
+                    
+                    // Test Firestore connection
+                    const db = firebase.firestore();
+                    await db.collection('test').limit(1).get();
+                    
+                    this.isFirebaseAvailable = true;
+                    this.firestoreInitialized = true;
+                    console.log('✅ Firebase is available and initialized');
+                    
                 } catch (error) {
-                    console.error('Error checking Firebase availability:', error);
+                    console.error('❌ Firebase initialization failed:', error);
                     this.isFirebaseAvailable = false;
+                    this.firestoreInitialized = false;
+                    
+                    // Thử lại sau 1 giây
+                    setTimeout(() => this.initializeFirebase(), 1000);
+                }
+            },
+            
+            async checkFirebaseAvailability() {
+                try {
+                    if (typeof firebase === 'undefined') {
+                        this.isFirebaseAvailable = false;
+                        return false;
+                    }
+                    
+                    const db = firebase.firestore();
+                    // Test với query đơn giản
+                    await db.collection('signed_apps').limit(1).get();
+                    
+                    this.isFirebaseAvailable = true;
+                    console.log('✅ Firebase check passed');
+                    return true;
+                } catch (error) {
+                    console.error('❌ Firebase check failed:', error);
+                    this.isFirebaseAvailable = false;
+                    return false;
                 }
             },
             
@@ -84,21 +129,17 @@ document.addEventListener('DOMContentLoaded', function() {
             savePasswordToHistory(password) {
                 if (!password) return;
                 
-                // Remove password if already exists
                 const index = this.passwordSuggestions.indexOf(password);
                 if (index > -1) {
                     this.passwordSuggestions.splice(index, 1);
                 }
                 
-                // Add to beginning of array
                 this.passwordSuggestions.unshift(password);
                 
-                // Keep only last 5 passwords
                 if (this.passwordSuggestions.length > 5) {
                     this.passwordSuggestions = this.passwordSuggestions.slice(0, 5);
                 }
                 
-                // Save to localStorage
                 localStorage.setItem('ipasign_password_history', JSON.stringify(this.passwordSuggestions));
             },
             
@@ -108,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             
             hidePasswordSuggestions() {
-                // Delay hiding to allow clicking on suggestions
                 setTimeout(() => {
                     this.showPasswordSuggestions = false;
                 }, 200);
@@ -125,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async loadFromFirestore(docId) {
                 try {
-                    if (!this.isFirebaseAvailable) {
+                    if (!await this.checkFirebaseAvailability()) {
                         console.log('Firebase not available, skipping Firestore load');
                         return;
                     }
@@ -143,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.showStep3 = false;
                         this.showStep4 = false;
                         
-                        // Generate QR code for direct download
                         setTimeout(() => {
                             new QRCode(document.getElementById('directQrcode'), {
                                 width: 130,
@@ -164,36 +203,53 @@ document.addEventListener('DOMContentLoaded', function() {
             
             async saveToFirestore(downloadUrl) {
                 try {
-                    // Kiểm tra lại Firebase availability trước khi sử dụng
-                    this.checkFirebaseAvailability();
+                    console.log('🔄 Starting Firestore save...');
                     
-                    if (!this.isFirebaseAvailable) {
-                        console.log('Firebase not available, skipping Firestore save');
+                    // Kiểm tra Firebase availability
+                    const isAvailable = await this.checkFirebaseAvailability();
+                    if (!isAvailable) {
+                        console.log('❌ Firebase not available for saving');
                         return null;
                     }
                     
                     const db = firebase.firestore();
-                    // Generate short ID (6 characters)
                     const shortId = generateShortId();
                     
-                    console.log('Saving to Firestore with ID:', shortId, 'URL:', downloadUrl);
+                    console.log('📝 Saving to Firestore with ID:', shortId, 'URL:', downloadUrl);
                     
-                    // Create document in Firestore with short ID
-                    await db.collection('signed_apps').doc(shortId).set({
+                    // Tạo document trong Firestore
+                    const docData = {
                         download_url: downloadUrl,
                         created_at: firebase.firestore.FieldValue.serverTimestamp(),
                         app_name: this.name || 'Unknown App',
-                        bundle_id: this.identifier || 'Unknown Bundle ID'
-                    });
+                        bundle_id: this.identifier || 'Unknown Bundle ID',
+                        original_filename: this.ipa ? this.ipa.name : 'Unknown'
+                    };
                     
-                    this.firestoreDocId = shortId;
-                    this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                    await db.collection('signed_apps').doc(shortId).set(docData);
                     
-                    console.log('✅ Successfully saved to Firestore, share URL:', this.shareUrl);
-                    return shortId;
+                    // Xác nhận document đã được lưu
+                    const docRef = db.collection('signed_apps').doc(shortId);
+                    const savedDoc = await docRef.get();
+                    
+                    if (savedDoc.exists) {
+                        this.firestoreDocId = shortId;
+                        this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${shortId}`;
+                        
+                        console.log('✅ Successfully saved to Firestore');
+                        console.log('🔗 Share URL:', this.shareUrl);
+                        console.log('📊 Document data:', savedDoc.data());
+                        
+                        return shortId;
+                    } else {
+                        console.error('❌ Document not found after save');
+                        return null;
+                    }
+                    
                 } catch (error) {
                     console.error('❌ Error saving to Firestore:', error);
-                    console.error('Error details:', error.message, error.code);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
                     return null;
                 }
             },
@@ -216,13 +272,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             
             async upload() {
-                // Validate required fields
                 if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
                     alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
                     return;
                 }
                 
-                // Save password to history
                 this.savePasswordToHistory(this.password);
                 
                 this.showStep1 = false;
@@ -230,17 +284,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.progressBar = 0;
                 this.uploadStep = 1;
                 
-                // Simulate upload steps based on progress percentage
                 const progressInterval = setInterval(() => {
-                    // Update upload step based on progress percentage
                     if (this.progressBar < 20) {
-                        this.uploadStep = 1; // Tải IPA
+                        this.uploadStep = 1;
                     } else if (this.progressBar < 36) {
-                        this.uploadStep = 2; // Nhận IPA
+                        this.uploadStep = 2;
                     } else if (this.progressBar < 70) {
-                        this.uploadStep = 3; // Bắt đầu ký
+                        this.uploadStep = 3;
                     } else if (this.progressBar < 99) {
-                        this.uploadStep = 4; // Hoàn tất
+                        this.uploadStep = 4;
                     }
                     
                     if (this.progressBar >= 100) {
@@ -298,11 +350,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             console.log('✅ Signing successful, download URL:', base);
                             
-                            // Luôn hiển thị kết quả thành công
+                            // Hiển thị kết quả thành công NGAY LẬP TỨC
                             this.showStep3 = false;
                             this.showStep4 = true;
                             
-                            // Generate QR Code
+                            // Tạo QR Code
                             setTimeout(() => {
                                 try {
                                     new QRCode(document.getElementById('qrcode'), {
@@ -318,22 +370,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }, 100);
                             
-                            // Thử lưu vào Firestore để có link chia sẻ
-                            console.log('Attempting to save to Firestore...');
+                            // THỬ LƯU VÀO FIRESTORE - QUAN TRỌNG!
+                            console.log('🔄 Attempting to save to Firestore for sharing...');
+                            
                             try {
                                 const docId = await this.saveToFirestore(base);
                                 if (docId) {
+                                    // THÀNH CÔNG: Tạo link chia sẻ ngắn
                                     this.shareUrl = `${window.location.origin}${window.location.pathname}?download=${docId}`;
-                                    console.log('✅ Firestore save successful, share URL:', this.shareUrl);
+                                    console.log('🎉 SUCCESS: Firestore save successful!');
+                                    console.log('🔗 Share URL:', this.shareUrl);
                                 } else {
-                                    // Nếu không lưu được Firestore, dùng link trực tiếp
+                                    // THẤT BẠI: Dùng link trực tiếp
                                     this.shareUrl = this.download;
-                                    console.log('❌ Firestore save failed, using direct URL for sharing');
+                                    console.log('⚠️ Firestore save failed, using direct URL');
                                 }
                             } catch (firestoreError) {
                                 console.error('❌ Firestore operation error:', firestoreError);
                                 this.shareUrl = this.download;
                             }
+                            
+                            console.log('📋 FINAL shareUrl:', this.shareUrl);
+                            console.log('📋 isFirebaseAvailable:', this.isFirebaseAvailable);
                             
                         } else if (d.status === 'FAILURE') {
                             clearInterval(timer);
@@ -354,7 +412,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.select();
                 document.execCommand('copy');
                 
-                // Show success message
                 this.copySuccess = true;
                 setTimeout(() => {
                     this.copySuccess = false;
