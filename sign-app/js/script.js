@@ -106,36 +106,40 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             
             async loadFromFirestore(docId) {
-                try {
-                    const docRef = db.collection('signed_apps').doc(docId);
-                    const doc = await docRef.get();
-                    
-                    if (doc.exists) {
-                        const data = doc.data();
-                        this.directDownloadUrl = data.download_url;
-                        this.showDirectDownload = true;
-                        this.showStep1 = false;
-                        this.showStep2 = false;
-                        this.showStep3 = false;
-                        this.showStep4 = false;
-                        
-                        setTimeout(() => {
-                            new QRCode(document.getElementById('directQrcode'), {
-                                width: 130,
-                                height: 130,
-                                colorDark: "#000000",
-                                colorLight: "#ffffff",
-                                correctLevel: QRCode.CorrectLevel.H
-                            }).makeCode(this.directDownloadUrl);
-                        }, 100);
-                    } else {
-                        alert('Link tải không tồn tại hoặc đã hết hạn!');
-                    }
-                } catch (error) {
-                    console.error('Error loading from Firestore:', error);
-                    alert('Có lỗi xảy ra khi tải thông tin!');
-                }
-            },
+    try {
+        const docRef = db.collection('signed_apps').doc(docId);
+        const doc = await docRef.get();
+        
+        if (doc.exists) {
+            const data = doc.data();
+            // Lấy link tải app thực tế từ Firestore
+            this.directDownloadUrl = data.download_url;
+            
+            // HIỂN THỊ BƯỚC 4 TRỰC TIẾP - KHÔNG CẦN KÝ LẠI
+            this.showDirectDownload = true;
+            this.showStep1 = false;
+            this.showStep2 = false;
+            this.showStep3 = false;
+            this.showStep4 = false;
+            
+            // Tạo QR code với link tải app thực tế
+            setTimeout(() => {
+                new QRCode(document.getElementById('directQrcode'), {
+                    width: 130,
+                    height: 130,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                }).makeCode(this.directDownloadUrl);
+            }, 100);
+        } else {
+            alert('Link tải không tồn tại hoặc đã hết hạn!');
+        }
+    } catch (error) {
+        console.error('Error loading from Firestore:', error);
+        alert('Có lỗi xảy ra khi tải thông tin!');
+    }
+},
             
             async saveToFirestore(downloadUrl) {
                 try {
@@ -235,63 +239,64 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             
-            async pollStatus() {
-                this.statusText = 'Đang chờ';
-                this.logText = '';
-                const timer = setInterval(async () => {
-                    try {
-                        const res = await axios.get(`${StatusUrl}/${this.jobId}`);
-                        const d = res.data;
-                        this.statusText = d.status;
-                        this.logText = d.msg || '';
-                        
-                        if (d.status === 'SUCCESS') {
-                            const base = `${DownloadUrl}/${this.jobId}`;
-                            this.download = base;
-                            this.download_ipa = base;
-                            clearInterval(timer);
-                            
-                            console.log('✅ Signing successful, download URL:', base);
-                            
-                            // Hiển thị kết quả thành công
-                            this.showStep3 = false;
-                            this.showStep4 = true;
-                            
-                            // Tạo QR Code
-                            setTimeout(() => {
-                                new QRCode(document.getElementById('qrcode'), {
-                                    width: 130,
-                                    height: 130,
-                                    colorDark: "#000000",
-                                    colorLight: "#ffffff",
-                                    correctLevel: QRCode.CorrectLevel.H
-                                }).makeCode(this.download);
-                            }, 100);
-                            
-                            // Lưu vào Firestore và tạo link chia sẻ
-                            const docId = await this.saveToFirestore(base);
-                            if (docId) {
-                                this.shareUrl = `https://ioscert.site/sign-app/?download=${docId}`;
-                                console.log('✅ Firestore save successful! Share URL:', this.shareUrl);
-                            } else {
-                                // Nếu không lưu được Firestore, dùng link trực tiếp
-                                this.shareUrl = this.download;
-                                console.log('⚠️ Firestore save failed, using direct URL');
-                            }
-                            
-                        } else if (d.status === 'FAILURE') {
-                            clearInterval(timer);
-                            alert('Ký IPA thất bại');
-                            this.index();
-                        }
-                    } catch (err) {
-                        clearInterval(timer);
-                        console.error('Status polling error:', err);
-                        alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
-                        this.index();
-                    }
-                }, 3000);
-            },
+    async pollStatus() {
+    this.statusText = 'Đang chờ';
+    this.logText = '';
+    const timer = setInterval(async () => {
+        try {
+            const res = await axios.get(`${StatusUrl}/${this.jobId}`);
+            const d = res.data;
+            this.statusText = d.status;
+            this.logText = d.msg || '';
+            
+            if (d.status === 'SUCCESS') {
+                const base = `${DownloadUrl}/${this.jobId}`;
+                this.download = base;  // Link tải app thực tế
+                this.download_ipa = base;
+                clearInterval(timer);
+                
+                console.log('✅ Signing successful, download URL:', base);
+                
+                // Hiển thị kết quả thành công
+                this.showStep3 = false;
+                this.showStep4 = true;
+                
+                // Tạo QR Code với link tải app thực tế
+                setTimeout(() => {
+                    new QRCode(document.getElementById('qrcode'), {
+                        width: 130,
+                        height: 130,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    }).makeCode(this.download);
+                }, 100);
+                
+                // Lưu vào Firestore và tạo link chia sẻ TRANG WEB
+                const docId = await this.saveToFirestore(base);
+                if (docId) {
+                    // LINK CHIA SẺ LÀ TRANG WEB, KHÔNG PHẢI LINK TẢI APP
+                    this.shareUrl = `https://ioscert.site/sign-app/?download=${docId}`;
+                    console.log('✅ Firestore save successful! Share URL:', this.shareUrl);
+                } else {
+                    // Nếu không lưu được Firestore, vẫn dùng link chia sẻ trang web nhưng không có ID
+                    this.shareUrl = 'https://ioscert.site/sign-app/';
+                    console.log('⚠️ Firestore save failed, using base URL');
+                }
+                
+            } else if (d.status === 'FAILURE') {
+                clearInterval(timer);
+                alert('Ký IPA thất bại');
+                this.index();
+            }
+        } catch (err) {
+            clearInterval(timer);
+            console.error('Status polling error:', err);
+            alert('Không thể lấy trạng thái. Vui lòng kiểm tra mạng.');
+            this.index();
+        }
+    }, 3000);
+},
             
             copyShareUrl() {
                 const input = this.$refs.shareUrlInput;
