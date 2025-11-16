@@ -29,21 +29,21 @@ new Vue({
             selectedApp: '',
             uploadMode: 'manual', // 'manual' or 'preset'
             
-            // Preset apps
+            // Preset apps - DÙNG RAW URL CHUẨN
             presetApps: {
                 'esign': {
                     name: 'ESign',
-                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/esign.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/raw/refs/heads/main/esign.ipa',
                     filename: 'esign.ipa'
                 },
                 'scarlet': {
                     name: 'Scarlet', 
-                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/scarlet.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/raw/refs/heads/main/scarlet.ipa',
                     filename: 'scarlet.ipa'
                 },
                 'gbox': {
                     name: 'Gbox',
-                    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/gbox.ipa',
+                    url: 'https://github.com/VNcerti/ioscert/raw/refs/heads/main/gbox.ipa',
                     filename: 'gbox.ipa'
                 }
             },
@@ -117,6 +117,9 @@ new Vue({
                 if (!this.name) {
                     this.name = this.getAppName(this.selectedApp);
                 }
+                
+                // TỰ ĐỘNG LẤY FILE IPA KHI CHỌN APP
+                this.autoGetPresetIpa(this.selectedApp);
             } else {
                 this.uploadMode = 'manual';
             }
@@ -126,43 +129,62 @@ new Vue({
             return this.presetApps[appKey]?.name || appKey;
         },
 
-        async getPresetIpa(appKey) {
+        async autoGetPresetIpa(appKey) {
             const app = this.presetApps[appKey];
-            if (!app) return null;
+            if (!app) return;
             
             try {
-                this.statusText = `Đang tải file ${app.name}...`;
+                this.statusText = `Đang tải ${app.name}...`;
                 
-                // Hiển thị thông báo cho user
-                const userAction = confirm(`🎯 CHỌN APP ${app.name.toUpperCase()}\n\n` +
-                    `Để sử dụng ${app.name}, hệ thống sẽ:\n` +
-                    `1. Mở link tải ${app.filename}\n` +
-                    `2. Bạn tải file về máy\n` +
-                    `3. QUAY LẠI trang này và chọn file vừa tải\n\n` +
-                    `Bấm OK để tiếp tục, Cancel để hủy.`);
+                // Hiển thị loading
+                this.ipaText = `Đang tải ${app.name}...`;
+                this.ipaCss = 'valid';
                 
-                if (!userAction) {
-                    return null;
+                // Dùng axios để tải file từ Raw URL
+                const response = await axios.get(app.url, {
+                    responseType: 'blob',
+                    timeout: 60000, // 60 giây timeout
+                    onDownloadProgress: (progressEvent) => {
+                        if (progressEvent.lengthComputable) {
+                            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                            this.ipaText = `Đang tải ${app.name}... ${percent}%`;
+                        }
+                    }
+                });
+                
+                if (response.status !== 200) {
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
-                // Mở link download trong tab mới
-                window.open(app.url, '_blank');
+                const blob = response.data;
                 
-                // Hiển thị hướng dẫn chi tiết
-                alert(`📥 HƯỚNG DẪN TẢI FILE\n\n` +
-                    `1. Tab mới đã mở, file đang được tải...\n` +
-                    `2. Khi tải xong, QUAY LẠI trang này\n` +
-                    `3. Bấm "Chọn file .ipa" và chọn file vừa tải\n` +
-                    `4. Bấm "Ký ngay!" để tiếp tục\n\n` +
-                    `File cần tải: ${app.filename}`);
+                // Kiểm tra file
+                if (blob.size === 0) {
+                    throw new Error('File tải về trống');
+                }
                 
-                // Trả về null để user tự chọn file (đảm bảo file chuẩn)
-                return null;
+                // Tạo File object từ blob
+                const ipaFile = new File([blob], app.filename, {
+                    type: 'application/octet-stream'
+                });
+                
+                // Tự động gán file IPA
+                this.ipa = ipaFile;
+                this.ipaText = `${app.name} (${(ipaFile.size / 1024 / 1024).toFixed(1)}MB)`;
+                this.ipaCss = 'valid';
+                
+                this.statusText = `${app.name} đã sẵn sàng!`;
+                
+                console.log(`✅ Tải thành công ${app.name}: ${ipaFile.size} bytes`);
                 
             } catch (error) {
-                console.error('Lỗi:', error);
-                alert('Lỗi khi mở link download. Vui lòng thử lại!');
-                return null;
+                console.error('Lỗi tải file tự động:', error);
+                this.ipaText = 'Chọn file .ipa...';
+                this.ipaCss = 'invalid';
+                this.statusText = '';
+                
+                alert(`❌ Không thể tự động tải ${app.name}\n\n` +
+                      `Vui lòng tải file thủ công từ:\n${app.url}`);
             }
         },
         
@@ -248,108 +270,33 @@ new Vue({
         },
         
         async upload() {
-            let ipaFile = null;
-            
-            // Lấy file IPA tùy theo chế độ
-            if (this.uploadMode === 'preset' && this.selectedApp) {
-                this.showStep1 = false;
-                this.showStep2 = true;
-                this.progressBar = 10;
-                this.uploadStep = 1;
-                this.statusText = 'Đang chuẩn bị file IPA...';
-                
-                try {
-                    // Lấy file IPA từ preset
-                    ipaFile = await this.getPresetIpa(this.selectedApp);
-                    
-                    // Nếu trả về null, user sẽ tự chọn file
-                    if (ipaFile === null) {
-                        this.showStep1 = true;
-                        this.showStep2 = false;
-                        this.statusText = '';
-                        
-                        // Tự động mở dialog chọn file sau 2 giây
-                        setTimeout(() => {
-                            const ipaInput = this.$refs.ipa;
-                            if (ipaInput) {
-                                ipaInput.click();
-                            }
-                        }, 2000);
-                        
-                        return;
-                    }
-                    
-                    if (!ipaFile) {
-                        alert('Không thể lấy file IPA. Vui lòng thử lại!');
-                        this.showStep1 = true;
-                        this.showStep2 = false;
-                        this.statusText = '';
-                        return;
-                    }
-                    
-                    this.progressBar = 50;
-                    this.statusText = 'File IPA đã sẵn sàng!';
-                    
-                } catch (error) {
-                    console.error('Lỗi tải file IPA:', error);
-                    this.showStep1 = true;
-                    this.showStep2 = false;
-                    this.statusText = '';
-                    return;
-                }
-            } else {
-                // Chế độ manual - lấy file từ input
-                ipaFile = this.ipa;
-                
-                if (!ipaFile && this.uploadMode === 'manual') {
-                    alert('Vui lòng chọn file IPA!');
-                    return;
-                }
-            }
+            let ipaFile = this.ipa;
             
             // Validate required fields
             if (!ipaFile || !this.p12 || !this.mobileprovision || !this.password) {
                 alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
-                if (this.uploadMode === 'preset') {
-                    this.showStep1 = true;
-                    this.showStep2 = false;
-                    this.statusText = '';
-                }
                 return;
             }
             
             // Save password to history
             this.savePasswordToHistory(this.password);
             
-            if (this.uploadMode === 'manual') {
-                this.showStep1 = false;
-                this.showStep2 = true;
-                this.progressBar = 0;
-                this.uploadStep = 1;
-            }
+            this.showStep1 = false;
+            this.showStep2 = true;
+            this.progressBar = 0;
+            this.uploadStep = 1;
+            this.statusText = 'Đang bắt đầu upload...';
             
-            // Simulate upload steps based on progress percentage
+            // Simulate upload steps
             const progressInterval = setInterval(() => {
-                if (this.uploadMode === 'manual') {
-                    // Update upload step based on progress percentage
-                    if (this.progressBar < 20) {
-                        this.uploadStep = 1; // Tải IPA
-                    } else if (this.progressBar < 36) {
-                        this.uploadStep = 2; // Nhận IPA
-                    } else if (this.progressBar < 70) {
-                        this.uploadStep = 3; // Bắt đầu ký
-                    } else if (this.progressBar < 99) {
-                        this.uploadStep = 4; // Hoàn tất
-                    }
-                } else {
-                    // Preset mode - progress nhanh hơn
-                    if (this.progressBar < 50) {
-                        this.uploadStep = 1; // Tải IPA
-                    } else if (this.progressBar < 80) {
-                        this.uploadStep = 3; // Bắt đầu ký
-                    } else {
-                        this.uploadStep = 4; // Hoàn tất
-                    }
+                if (this.progressBar < 20) {
+                    this.uploadStep = 1;
+                } else if (this.progressBar < 36) {
+                    this.uploadStep = 2;
+                } else if (this.progressBar < 70) {
+                    this.uploadStep = 3;
+                } else if (this.progressBar < 99) {
+                    this.uploadStep = 4;
                 }
                 
                 if (this.progressBar >= 100) {
@@ -371,14 +318,7 @@ new Vue({
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: e => {
                         if (e.lengthComputable) {
-                            if (this.uploadMode === 'manual') {
-                                this.progressBar = Math.round(e.loaded / e.total * 100);
-                            } else {
-                                // Preset mode - tăng progress từ 30% lên
-                                const baseProgress = 30;
-                                const additionalProgress = Math.round((e.loaded / e.total) * 70);
-                                this.progressBar = baseProgress + additionalProgress;
-                            }
+                            this.progressBar = Math.round(e.loaded / e.total * 100);
                         }
                     }
                 });
