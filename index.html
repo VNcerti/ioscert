@@ -661,6 +661,7 @@ background: #4461ee;
         <a href="https://download1588.mediafire.com/r75t6sxs2gxg9MbJlCSaTR8_OO0hZA4O0GFUiYvYKKHudakSWBfzp96wgu_7icBr8CiOiNr9G_botiNJhH-jvohRGnTWLqEWJ46_IbIAJOObUz9Xv-BSwtbJVMfAl8Q-BeglNq7W8MHS9zTxnBg_mKijA1EOebiNN1UFEL-G794/rfwgpy8u8rxfkms/DNS+Anti-Revoke%28ioscert%29.mobileconfig" target="_blank" class="dns-link" data-i18n="dns">
           <i class="fas fa-shield-alt"></i> DNS Chặn Thu Hồi và Quảng Cáo
         </a>
+    
       </div>
     </header>
 
@@ -686,7 +687,7 @@ background: #4461ee;
     <!-- ========== ESIGN LIST ========== -->
     <div id="esign-list" class="app-grid">
 
- <!-- ESign Item: OLA CITY GLOBAL -->
+ <!-- ESign Item: Etisalat -->
  <div class="app-card">
   <div class="app-header">
     <div class="app-icon">
@@ -697,6 +698,33 @@ background: #4461ee;
       <div class="app-title">
         ESign 5.0.2
         <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="Etisalat - Emirates Telecommunications Corporation">
+        <i class="fas fa-map-marker-alt"></i> Etisalat - Emirates Telecommunications Corporation
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-esign-Etisalat">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-esign-Etisalat" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End ESign Item: Etisalat -->
+
+ <!-- ESign Item: OLA CITY GLOBAL -->
+ <div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-signature"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        ESign 5.0.2
+     
       </div>
       <div class="app-meta" data-i18n="OLA CITY GLOBAL LIMITED">
         <i class="fas fa-map-marker-alt"></i> OLA CITY GLOBAL LIMITED
@@ -960,7 +988,8 @@ background: #4461ee;
     <!-- ========== CERT LIST ========== -->
     <div id="cert-list" class="app-grid hidden">
 
-<!-- Cert Item: OLA CITY -->
+
+<!-- Cert Item: Etisalat - Emirates Telecommunications Corporation -->
 <div class="app-card">
   <div class="app-header">
     <div class="app-icon">
@@ -971,6 +1000,33 @@ background: #4461ee;
       <div class="app-title">
         Certificate File
         <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="Etisalat - Emirates Telecommunications Corporation">
+        <i class="fas fa-map-marker-alt"></i> Etisalat - Emirates Telecommunications Corporation
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-cert-Etisalat">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-cert-Etisalat" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End Cert Item: OLACITY -->
+
+
+<!-- Cert Item: OLA CITY -->
+<div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-certificate"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        Certificate File
       </div>
       <div class="app-meta" data-i18n="OLA CITY GLOBAL LIMITED">
         <i class="fas fa-map-marker-alt"></i> OLA CITY GLOBAL LIMITED
@@ -1773,6 +1829,7 @@ background: #4461ee;
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
       const esignButtons = [
+         { btnId: 'download-esign-Etisalat', linkId: 'esign-Etisalat', url: 'https://link4sub.com/dmS5' },
       { btnId: 'download-esign-ola', linkId: 'esign-ola', url: 'https://link4sub.com/oXbA' },
         { btnId: 'download-esign-global', linkId: 'esign-global', url: 'https://link4sub.com/JjFO' },
         { btnId: 'download-esign-zheshang', linkId: 'esign-zheshang', url: 'https://link4sub.com/JjFO' },
@@ -1787,7 +1844,7 @@ background: #4461ee;
       ];
 
       const certButtons = [
-      { btnId: 'download-cert-ola', linkId: 'cert-ola', url: 'https://link4m.com/lXS3Cp' },
+      { btnId: 'download-cert-Etisalat', linkId: 'cert-Etisalat', url: 'https://github.com/VNcerti/biodemo/raw/refs/heads/main/Etisalat%20-%20Emirates%20Telecommunications%20Corporation.zip' },
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
         { btnId: 'download-cert-zheshang', linkId: 'cert-zheshang', url: 'https://link4m.com/epZLK' },
         { btnId: 'download-cert-bmw', linkId: 'cert-bmw', url: 'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file' },
