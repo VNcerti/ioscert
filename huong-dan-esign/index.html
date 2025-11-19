@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn nhân bản ứng dụng bằng ESign</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --border-radius: 10px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            color: white;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .step {
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            background-color: var(--light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+        
+        h3 {
+            color: var(--primary-dark);
+            font-size: 18px;
+            margin: 15px 0 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+            background-color: rgba(231, 76, 60, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .image-container {
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-container img {
+            width: 100%;
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+            padding: 5px;
+        }
+        
+        .note {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffcc00;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--dark);
+            color: white;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hướng dẫn nhân bản ứng dụng ESign</h1>
+            <p>Thực hiện theo từng bước để nhân bản ứng dụng một cách dễ dàng</p>
+        </div>
+        
+        <div class="content">
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2>Chọn mục <span class="highlight">App</span> trên ESign</h2>
+                </div>
+                <p>Sau khi nhập app vào thư viện, hãy vào mục <span class="highlight">APP</span> như ảnh bên dưới để tiến hành nhân bản.</p>
+                <div class="note">
+                    <p><strong>Lưu ý:</strong> Vui lòng xem lại hướng dẫn sử dụng ESign trước khi nhân bản.</p>
+                </div>
+                <div class="image-container">
+                    <img src="https://i.imgur.com/GUfQkxJ.png" alt="Hình minh họa bước 1">
+                    <div class="image-caption">Ảnh minh hoạ ví dụ bởi Chứng Chỉ P12</div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2>Chọn ứng dụng cần nhân bản</h2>
+                </div>
+                <p>Chọn ứng dụng bạn muốn nhân bản, sau đó chọn mục "<span class="highlight">KÝ</span>".</p>
+                <div class="image-container">
+                    <img src="https://i.imgur.com/Ljju1hr.png" alt="Hình minh họa bước 2">
+                    <div class="image-caption">Ảnh minh hoạ ví dụ bởi Chứng Chỉ P12</div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2>Sửa "<span class="highlight">Tên APP</span>" và "<span class="highlight">Bundle định danh</span>"</h2>
+                </div>
+                <h3>Thay đổi Tên APP</h3>
+                <p>Tại mục tên APP, các bạn hãy thêm một ký tự bất kỳ hoặc thay luôn tên app sao cho không trùng với app gốc.</p>
+                
+                <h3>Thay đổi Bundle định danh</h3>
+                <p>Tại mục Bundle định danh các bạn chỉ cần thêm một ký tự vào cuối dãy mã gốc.</p>
+                
+                <h3>Bật cài đặt sau khi ký</h3>
+                <p>Tiếp theo hãy bật "<span class="highlight">Cài đặt sau khi ký</span>".</p>
+                
+                <h3>Hoàn tất quá trình</h3>
+                <p>Cuối cùng ấn nút '<span class="highlight">CHỮ KÝ</span>' để hoàn tất quá trình nhân bản.</p>
+                
+                <div class="image-container">
+                    <img src="https://i.imgur.com/udLDQSk.png" alt="Hình minh họa bước 3">
+                    <div class="image-caption">Ảnh minh hoạ ví dụ bởi Chứng Chỉ P12</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Liên hệ: vncert.site@gmail.com</p>
+            <p>Bản quyền © 2022 CHUNGCHIP12.COM. Bảo lưu mọi quyền.</p>
+        </div>
+    </div>
+</body>
+</html>
