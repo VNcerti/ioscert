@@ -11,12 +11,11 @@ new Vue({
         ipa: null,
         ipaCss: 'invalid',
         ipaText: 'Chọn file .ipa...',
+        certZip: null,
+        certZipCss: 'invalid',
+        certZipText: 'Chọn file .zip chứa chứng chỉ...',
         p12: null,
-        p12Css: 'invalid',
-        p12Text: 'Chọn file .p12...',
         mobileprovision: null,
-        mobCss: 'invalid',
-        mobText: 'Chọn file .mobileprovision...',
         password: '',
         pwdCss: 'invalid',
         name: '',
@@ -31,7 +30,8 @@ new Vue({
         firestoreDocId: '',
         showPasswordSuggestions: false,
         passwordSuggestions: [],
-        copySuccess: false
+        copySuccess: false,
+        isExtractingZip: false
     },
     mounted() {
         // Load password suggestions from localStorage
@@ -145,27 +145,89 @@ new Vue({
             }
         },
         
-        getFile(e) {
+        async getFile(e) {
             const file = e.target.files[0] || null;
+            
             if (e.target.accept === '.ipa') {
                 this.ipa = file;
                 this.ipaCss = file ? 'valid' : 'invalid';
                 this.ipaText = file ? file.name : 'Chọn file .ipa...';
-            } else if (e.target.accept === '.p12') {
-                this.p12 = file;
-                this.p12Css = file ? 'valid' : 'invalid';
-                this.p12Text = file ? file.name : 'Chọn file .p12...';
-            } else if (e.target.accept === '.mobileprovision') {
-                this.mobileprovision = file;
-                this.mobCss = file ? 'valid' : 'invalid';
-                this.mobText = file ? file.name : 'Chọn file .mobileprovision...';
+            } else if (e.target.accept === '.zip') {
+                this.certZip = file;
+                this.certZipCss = file ? 'valid' : 'invalid';
+                this.certZipText = file ? file.name : 'Chọn file .zip chứa chứng chỉ...';
+                
+                // Auto extract zip file when selected
+                if (file) {
+                    await this.extractZipFile(file);
+                }
             }
+        },
+        
+        async extractZipFile(zipFile) {
+            this.isExtractingZip = true;
+            
+            try {
+                const zip = new JSZip();
+                const zipContent = await zip.loadAsync(zipFile);
+                
+                let p12File = null;
+                let mobileprovisionFile = null;
+                
+                // Find .p12 and .mobileprovision files in the zip
+                for (const [filename, file] of Object.entries(zipContent.files)) {
+                    if (!file.dir) {
+                        if (filename.toLowerCase().endsWith('.p12')) {
+                            const blob = await file.async('blob');
+                            p12File = new File([blob], filename, { type: 'application/x-pkcs12' });
+                        } else if (filename.toLowerCase().endsWith('.mobileprovision')) {
+                            const blob = await file.async('blob');
+                            mobileprovisionFile = new File([blob], filename, { type: 'application/x-apple-aspen-config' });
+                        }
+                    }
+                }
+                
+                if (!p12File) {
+                    alert('Không tìm thấy file .p12 trong file zip!');
+                    this.certZipCss = 'invalid';
+                    this.isExtractingZip = false;
+                    return;
+                }
+                
+                if (!mobileprovisionFile) {
+                    alert('Không tìm thấy file .mobileprovision trong file zip!');
+                    this.certZipCss = 'invalid';
+                    this.isExtractingZip = false;
+                    return;
+                }
+                
+                // Store the extracted files
+                this.p12 = p12File;
+                this.mobileprovision = mobileprovisionFile;
+                
+                this.certZipCss = 'valid';
+                this.certZipText = `✓ Đã giải nén: ${p12File.name}, ${mobileprovisionFile.name}`;
+                
+            } catch (error) {
+                console.error('Error extracting zip file:', error);
+                alert('Có lỗi xảy ra khi giải nén file zip!');
+                this.certZipCss = 'invalid';
+                this.certZipText = 'Lỗi giải nén - chọn file khác...';
+            }
+            
+            this.isExtractingZip = false;
         },
         
         async upload() {
             // Validate required fields
-            if (!this.ipa || !this.p12 || !this.mobileprovision || !this.password) {
+            if (!this.ipa || !this.certZip || !this.password) {
                 alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            // Check if zip extraction was successful
+            if (!this.p12 || !this.mobileprovision) {
+                alert('File zip không chứa đủ file cần thiết (.p12 và .mobileprovision)!');
                 return;
             }
             
@@ -298,6 +360,12 @@ new Vue({
     watch: {
         password(val) { 
             this.pwdCss = val.length ? 'valid' : 'invalid'; 
+        },
+        certZip(val) {
+            if (!val) {
+                this.p12 = null;
+                this.mobileprovision = null;
+            }
         }
     }
 });
