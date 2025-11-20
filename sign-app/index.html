@@ -118,8 +118,8 @@
                                 
                                 <!-- Password -->
                                 <div class="form-group">
-                                    <label class="form-label">Mật khẩu file .p12</label>
-                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu .p12" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
+                                    <label class="form-label">Mật khẩu chứng chỉ</label>
+                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
                                     <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
                                         <span class="password-suggestion" v-for="suggestion in passwordSuggestions" :key="suggestion" @click="selectPassword(suggestion)">
                                             {{ suggestion }}
