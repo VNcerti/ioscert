@@ -206,7 +206,7 @@ new Vue({
                 this.mobileprovision = mobileprovisionFile;
                 
                 this.certZipCss = 'valid';
-                this.certZipText = `✓ Đã giải nén: ${p12File.name}, ${mobileprovisionFile.name}`;
+                this.certZipText = `✓ Đã xác minh : ${p12File.name}, ${mobileprovisionFile.name}`;
                 
             } catch (error) {
                 console.error('Error extracting zip file:', error);
