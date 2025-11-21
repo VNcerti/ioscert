@@ -3,361 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - AppHub</title>
+    <title>Admin Panel - Upload Ứng Dụng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- ============================================= -->
-    <!-- CSS STYLES -->
-    <!-- ============================================= -->
     <style>
-        /* ===== RESET & VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        
+
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
-            --background: #f8fafc;
-            --surface: #ffffff;
+            --primary-light: #dbeafe;
+            --secondary: #f59e0b;
+            --background: #ffffff;
+            --surface: #f8fafc;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
             --text-muted: #94a3b8;
             --border: #e2e8f0;
-            --error: #ef4444;
             --success: #10b981;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --danger: #ef4444;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        
-        /* ===== BASE STYLES ===== */
+
         body {
             background: var(--background);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 16px;
             flex: 1;
         }
-        
-        /* ===== HEADER STYLES ===== */
-        header {
-            background: var(--surface);
+
+        /* Header */
+        .header {
+            background: var(--background);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        
+
         .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 12px 0;
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
+            gap: 8px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--primary);
             text-decoration: none;
         }
-        
-        .back-btn {
-            background: var(--primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.3s ease;
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            color: white;
         }
-        
-        .back-btn:hover {
-            background: var(--primary-dark);
-        }
-        
-        /* ===== LOGIN SECTION STYLES ===== */
-        .login-section {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: var(--card-shadow);
-            max-width: 400px;
-            margin: 2rem auto;
-        }
-        
-        .login-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--primary);
-        }
-        
-        .error-message {
-            color: var(--error);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
-        
-        /* ===== ADMIN PANEL STYLES ===== */
-        .admin-panel {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 2rem;
-        }
-        
-        .admin-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            text-align: center;
-        }
-        
-        /* ===== FORM STYLES ===== */
-        .admin-form {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        .form-group {
+
+        .back-btn {
             display: flex;
-            flex-direction: column;
-        }
-        
-        .form-label {
-            margin-bottom: 0.5rem;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
             font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* Form */
+        .upload-form {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
             color: var(--text-primary);
         }
-        
+
         .form-input {
-            padding: 0.75rem;
+            width: 100%;
+            padding: 12px 16px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--background);
         }
-        
+
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-        
+
         .form-textarea {
+            min-height: 100px;
             resize: vertical;
-            min-height: 80px;
         }
-        
-        /* ===== CHECKBOX STYLES ===== */
-        .checkbox-group {
+
+        .categories-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 0.75rem;
-            margin-top: 0.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
         }
-        
-        .checkbox-item {
+
+        .category-checkbox {
+            display: none;
+        }
+
+        .category-label {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-        
-        .checkbox-item label {
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-        
-        /* ===== BUTTON STYLES ===== */
-        .admin-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-        }
-        
-        .admin-btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        
-        .admin-btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .admin-btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-        
-        .admin-btn-secondary {
-            background: var(--background);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .admin-btn-secondary:hover {
-            background: var(--border);
-        }
-        
-        /* ===== APPS LIST STYLES ===== */
-        .apps-list {
-            margin-top: 2rem;
-        }
-        
-        .apps-grid {
-            display: grid;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .app-management-card {
-            background: var(--surface);
+            gap: 8px;
+            padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--background);
+        }
+
+        .category-label:hover {
+            border-color: var(--primary);
+        }
+
+        .category-checkbox:checked + .category-label {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .category-icon {
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 8px;
+            font-size: 16px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
         }
-        
-        .app-management-icon {
-            width: 50px;
-            height: 50px;
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Preview */
+        .preview-section {
+            margin-top: 32px;
+        }
+
+        .preview-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .preview-card {
+            background: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .preview-content {
+            padding: 16px;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .preview-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             object-fit: cover;
             flex-shrink: 0;
         }
-        
-        .app-management-info {
+
+        .preview-info {
             flex: 1;
+            min-width: 0;
         }
-        
-        .app-management-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+
+        .preview-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        .app-management-details {
-            font-size: 0.85rem;
+
+        .preview-developer {
             color: var(--text-secondary);
+            font-size: 11px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        .app-management-actions {
+
+        .preview-meta {
             display: flex;
-            gap: 0.5rem;
+            gap: 8px;
+            font-size: 10px;
+            color: var(--text-muted);
         }
-        
-        .delete-btn {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: opacity 0.3s ease;
+
+        .preview-description {
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-        
-        .delete-btn:hover {
-            opacity: 0.9;
+
+        .preview-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
         }
-        
-        /* ===== FOOTER STYLES ===== */
-        footer {
+
+        .preview-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        /* Messages */
+        .message {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .message-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Footer */
+        .footer {
             background: var(--surface);
             border-top: 1px solid var(--border);
-            padding: 2rem 0 1rem;
-            margin-top: auto;
+            padding: 20px 0;
+            margin-top: 40px;
         }
-        
-        .copyright {
+
+        .footer-content {
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        
-        /* ===== LOADING STYLES ===== */
-        .loading {
-            text-align: center;
-            padding: 2rem;
             color: var(--text-secondary);
+            font-size: 14px;
         }
-        
-        .loading-spinner {
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* ===== RESPONSIVE STYLES ===== */
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .admin-actions {
-                flex-direction: column;
+            .container {
+                padding: 0 12px;
             }
             
-            .checkbox-group {
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .upload-form {
+                padding: 20px;
+            }
+            
+            .categories-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 22px;
+            }
+            
+            .upload-form {
+                padding: 16px;
+            }
+            
+            .categories-group {
                 grid-template-columns: 1fr;
-            }
-            
-            .app-management-card {
-                flex-direction: column;
-                text-align: center;
             }
         }
     </style>
 </head>
-
 <body>
-    <!-- ============================================= -->
-    <!-- HEADER SECTION -->
-    <!-- ============================================= -->
-    <header>
+    <!-- Header -->
+    <header class="header">
         <div class="container">
             <div class="header-content">
                 <a href="#" class="logo">
-                    <i class="fas fa-cube"></i>
-                    AppHub Admin
+                    <div class="logo-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    APP PREMIUM
                 </a>
                 <a href="index.html" class="back-btn">
                     <i class="fas fa-arrow-left"></i>
@@ -367,316 +418,179 @@
         </div>
     </header>
 
-    <!-- ============================================= -->
-    <!-- MAIN CONTENT -->
-    <!-- ============================================= -->
+    <!-- Main Content -->
     <main class="container">
-        <!-- LOGIN SECTION -->
-        <div class="login-section" id="loginSection">
-            <h3 class="login-title">Đăng nhập Admin</h3>
-            <form class="admin-form" id="loginForm">
-                <div class="form-group">
-                    <label class="form-label">Tài khoản</label>
-                    <input type="text" class="form-input" id="username" placeholder="Nhập tài khoản" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mật khẩu</label>
-                    <input type="password" class="form-input" id="password" placeholder="Nhập mật khẩu" required>
-                    <div class="error-message" id="loginError">Tài khoản hoặc mật khẩu không chính xác</div>
-                </div>
-                <div class="admin-actions">
-                    <button type="submit" class="admin-btn admin-btn-primary">Đăng nhập</button>
-                </div>
-            </form>
-        </div>
+        <div class="main-content">
+            <h1 class="page-title">Admin Panel</h1>
+            <p class="page-subtitle">Upload ứng dụng lên kho ứng dụng</p>
 
-        <!-- ADMIN PANEL SECTION -->
-        <div class="admin-panel" id="adminPanel" style="display: none;">
-            <h2 class="admin-title">Quản lý Ứng dụng</h2>
+            <!-- Messages -->
+            <div id="successMessage" class="message message-success">
+                <i class="fas fa-check-circle"></i> Ứng dụng đã được upload thành công!
+            </div>
             
-            <!-- FORM THÊM ỨNG DỤNG -->
-            <form class="admin-form" id="adminForm">
-                <!-- URL Ảnh -->
+            <div id="errorMessage" class="message message-error">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Đã xảy ra lỗi khi upload ứng dụng.</span>
+            </div>
+
+            <!-- Upload Form -->
+            <form class="upload-form" id="uploadForm">
                 <div class="form-group">
-                    <label class="form-label">URL Ảnh Ứng dụng</label>
-                    <input type="url" class="form-input" id="appImage" placeholder="https://example.com/app-icon.png" required>
+                    <label class="form-label" for="imageUrl">URL ảnh ứng dụng</label>
+                    <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-image.jpg" required>
                 </div>
-                
-                <!-- Tên ứng dụng -->
+
                 <div class="form-group">
-                    <label class="form-label">Tên Ứng dụng</label>
-                    <input type="text" class="form-input" id="appName" placeholder="Nhập tên ứng dụng" required>
+                    <label class="form-label" for="appName">Tên ứng dụng</label>
+                    <input type="text" id="appName" class="form-input" placeholder="Nhập tên ứng dụng" required>
                 </div>
-                
-                <!-- Nhà phát triển -->
+
                 <div class="form-group">
-                    <label class="form-label">Nhà phát triển</label>
-                    <input type="text" class="form-input" id="appDeveloper" placeholder="Tên nhà phát triển" required>
+                    <label class="form-label" for="appDeveloper">Nhà phát triển</label>
+                    <input type="text" id="appDeveloper" class="form-input" placeholder="Nhập tên nhà phát triển" required>
                 </div>
-                
-                <!-- Phiên bản -->
+
                 <div class="form-group">
-                    <label class="form-label">Phiên bản</label>
-                    <input type="text" class="form-input" id="appVersion" placeholder="Ví dụ: 1.0.0" required>
+                    <label class="form-label" for="appVersion">Phiên bản ứng dụng</label>
+                    <input type="text" id="appVersion" class="form-input" placeholder="Ví dụ: 1.0.0" required>
                 </div>
-                
-                <!-- Mô tả -->
+
                 <div class="form-group">
-                    <label class="form-label">Mô tả Ứng dụng</label>
-                    <textarea class="form-input form-textarea" id="appDescription" placeholder="Mô tả ngắn về ứng dụng..." required></textarea>
+                    <label class="form-label" for="appDescription">Mô tả ứng dụng</label>
+                    <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." required></textarea>
                 </div>
-                
-                <!-- Link tải -->
+
                 <div class="form-group">
-                    <label class="form-label">Link Tải Ứng dụng</label>
-                    <input type="url" class="form-input" id="appDownloadLink" placeholder="https://example.com/download.ipa" required>
+                    <label class="form-label" for="downloadLink">Liên kết tải ứng dụng</label>
+                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
                 </div>
-                
-                <!-- Thể loại -->
+
                 <div class="form-group">
-                    <label class="form-label">Thể loại (CÓ THỂ CHỌN NHIỀU)</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="category-game" value="game">
-                            <label for="category-game">Trò chơi</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="category-social" value="social">
-                            <label for="category-social">Mạng xã hội</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="category-photo" value="photo">
-                            <label for="category-photo">Chụp ảnh</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="category-clone" value="clone">
-                            <label for="category-clone">Ứng dụng nhân bản</label>
-                        </div>
+                    <label class="form-label">Danh mục ứng dụng</label>
+                    <div class="categories-group">
+                        <input type="checkbox" id="category-game" class="category-checkbox" value="game">
+                        <label for="category-game" class="category-label">
+                            <i class="fas fa-gamepad category-icon"></i>
+                            <span>Trò chơi</span>
+                        </label>
+
+                        <input type="checkbox" id="category-social" class="category-checkbox" value="social">
+                        <label for="category-social" class="category-label">
+                            <i class="fas fa-users category-icon"></i>
+                            <span>Mạng xã hội</span>
+                        </label>
+
+                        <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
+                        <label for="category-photo" class="category-label">
+                            <i class="fas fa-camera category-icon"></i>
+                            <span>Chụp ảnh</span>
+                        </label>
+
+                        <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
+                        <label for="category-clone" class="category-label">
+                            <i class="fas fa-copy category-icon"></i>
+                            <span>Nhân bản</span>
+                        </label>
                     </div>
                 </div>
-                
-                <!-- Actions -->
-                <div class="admin-actions">
-                    <button type="button" class="admin-btn admin-btn-secondary" id="cancelBtn">Hủy bỏ</button>
-                    <button type="submit" class="admin-btn admin-btn-primary">Đăng Ứng dụng</button>
-                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-upload"></i>
+                    Tải ứng dụng lên
+                </button>
             </form>
 
-            <!-- DANH SÁCH ỨNG DỤNG ĐÃ ĐĂNG -->
-            <div class="apps-list">
-                <h3>Ứng dụng đã đăng</h3>
-                <div class="apps-grid" id="appsList">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                        <p>Đang tải danh sách ứng dụng...</p>
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h3 class="preview-title">Xem trước ứng dụng</h3>
+                <div class="preview-card" id="appPreview">
+                    <img src="https://via.placeholder.com/300x150/2563eb/FFFFFF?text=Preview+Image" alt="Preview" class="preview-image" id="previewImage">
+                    <div class="preview-content">
+                        <div class="preview-header">
+                            <img src="https://via.placeholder.com/40/2563eb/FFFFFF?text=App" alt="App Icon" class="preview-icon" id="previewIcon">
+                            <div class="preview-info">
+                                <h3 class="preview-name" id="previewName">Tên ứng dụng</h3>
+                                <div class="preview-developer" id="previewDeveloper">Nhà phát triển</div>
+                                <div class="preview-meta">
+                                    <span id="previewVersion">Phiên bản</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
+                        <div class="preview-tags" id="previewTags">
+                            <!-- Tags will be added here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- ============================================= -->
-    <!-- FOOTER -->
-    <!-- ============================================= -->
-    <footer>
+    <!-- Footer -->
+    <footer class="footer">
         <div class="container">
-            <div class="copyright">
-                &copy; 2024 AppHub. Tất cả các quyền được bảo lưu.
+            <div class="footer-content">
+                <p>&copy; 2023 Kho Ứng Dụng Premium. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- ============================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================= -->
     <script>
-        // =============================================
-        // CẤU HÌNH VÀ BIẾN
-        // =============================================
-        
-        // URL Google Apps Script - THAY BẰNG URL CỦA BẠN
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8KKcYWBQo4v189psIykH3_8S3iGSzFnKiRVQETqXFB7o6ElghM-P_xHkjWzy-STY6NQ/exec';
+        // URL Google Apps Script của bạn
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJpKu27IB_-Dbb8vA9P2aMtBe1PDnBhOOd-CynZX6-CBhn2-nlixvLvK_y49lKP0rC/exec';
 
         // Lấy các phần tử DOM
-        const loginSection = document.getElementById('loginSection');
-        const adminPanel = document.getElementById('adminPanel');
-        const loginForm = document.getElementById('loginForm');
-        const adminForm = document.getElementById('adminForm');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const appsList = document.getElementById('appsList');
-        const loginError = document.getElementById('loginError');
-
-        // Biến lưu thông tin đăng nhập
-        let currentUsername = '';
-        let currentPassword = '';
-
-        // =============================================
-        // SỰ KIỆN ĐĂNG NHẬP
-        // =============================================
+        const uploadForm = document.getElementById('uploadForm');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const appNameInput = document.getElementById('appName');
+        const appDeveloperInput = document.getElementById('appDeveloper');
+        const appVersionInput = document.getElementById('appVersion');
+        const appDescriptionInput = document.getElementById('appDescription');
+        const downloadLinkInput = document.getElementById('downloadLink');
+        const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+        const submitBtn = document.getElementById('submitBtn');
         
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            console.log('🔐 THỬ ĐĂNG NHẬP');
-            console.log('Username:', username);
-            console.log('Password:', password);
-            
-            try {
-                const requestBody = {
-                    action: 'login',
-                    username: username,
-                    password: password
-                };
-                
-                console.log('📤 Gửi request đăng nhập:', requestBody);
-                
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-                
-                console.log('📥 Response status:', response.status);
-                
-                const result = await response.json();
-                console.log('📋 Kết quả từ server:', result);
-                
-                if (result.success) {
-                    // ĐĂNG NHẬP THÀNH CÔNG
-                    currentUsername = username;
-                    currentPassword = password;
-                    
-                    // Lưu thông tin đăng nhập
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    localStorage.setItem('adminUsername', username);
-                    
-                    // Hiển thị admin panel
-                    loginSection.style.display = 'none';
-                    adminPanel.style.display = 'block';
-                    loginError.style.display = 'none';
-                    
-                    // Tải danh sách app
-                    loadAppsList();
-                    
-                    console.log('✅ ĐĂNG NHẬP THÀNH CÔNG!');
-                } else {
-                    // ĐĂNG NHẬP THẤT BẠI
-                    loginError.style.display = 'block';
-                    console.log('❌ ĐĂNG NHẬP THẤT BẠI:', result.message);
-                }
-            } catch (error) {
-                loginError.style.display = 'block';
-                console.error('💥 LỖI KẾT NỐI:', error);
+        // Preview elements
+        const previewImage = document.getElementById('previewImage');
+        const previewIcon = document.getElementById('previewIcon');
+        const previewName = document.getElementById('previewName');
+        const previewDeveloper = document.getElementById('previewDeveloper');
+        const previewVersion = document.getElementById('previewVersion');
+        const previewDescription = document.getElementById('previewDescription');
+        const previewTags = document.getElementById('previewTags');
+        
+        // Message elements
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        // Cập nhật preview khi người dùng nhập
+        function updatePreview() {
+            // Cập nhật hình ảnh
+            if (imageUrlInput.value) {
+                previewImage.src = imageUrlInput.value;
+                previewIcon.src = imageUrlInput.value;
             }
-        });
-
-        // =============================================
-        // SỰ KIỆN FORM ADMIN
-        // =============================================
-
-        // Hủy form
-        cancelBtn.addEventListener('click', function() {
-            adminForm.reset();
-            resetCheckboxes();
-        });
-
-        // Submit form thêm app
-        adminForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
             
-            // Lấy các thể loại đã chọn
-            const selectedCategories = getSelectedCategories();
+            // Cập nhật tên ứng dụng
+            previewName.textContent = appNameInput.value || 'Tên ứng dụng';
             
-            if (selectedCategories.length === 0) {
-                alert('⚠️ Vui lòng chọn ít nhất một thể loại!');
-                return;
-            }
-
-            // Tạo object app data
-            const appData = createAppData(selectedCategories);
-
-            try {
-                showLoading(appsList);
-                
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'addApp',
-                        username: currentUsername,
-                        password: currentPassword,
-                        data: appData
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Reset form
-                    adminForm.reset();
-                    resetCheckboxes();
-                    
-                    // Reload danh sách
-                    loadAppsList();
-                    
-                    alert('✅ Ứng dụng đã được đăng thành công!');
-                } else {
-                    throw new Error(result.message || 'Không thể thêm ứng dụng');
-                }
-            } catch (error) {
-                alert('❌ Lỗi khi đăng ứng dụng: ' + error.message);
-                loadAppsList();
-            }
-        });
-
-        // =============================================
-        // HÀM XỬ LÝ DANH SÁCH ỨNG DỤNG
-        // =============================================
-
-        // Tải danh sách ứng dụng
-        async function loadAppsList() {
-            try {
-                showLoading(appsList);
-                
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    displayAppsList(result.data);
-                } else {
-                    throw new Error('Không thể tải danh sách ứng dụng');
-                }
-            } catch (error) {
-                appsList.innerHTML = '<p>❌ Lỗi khi tải danh sách ứng dụng. Vui lòng thử lại sau.</p>';
-            }
+            // Cập nhật nhà phát triển
+            previewDeveloper.textContent = appDeveloperInput.value || 'Nhà phát triển';
+            
+            // Cập nhật phiên bản
+            previewVersion.textContent = appVersionInput.value || 'Phiên bản';
+            
+            // Cập nhật mô tả
+            previewDescription.textContent = appDescriptionInput.value || 'Mô tả ứng dụng sẽ hiển thị ở đây...';
+            
+            // Cập nhật danh mục
+            updatePreviewTags();
         }
 
-        // Hiển thị danh sách ứng dụng
-        function displayAppsList(appsData) {
-            appsList.innerHTML = '';
-            
-            if (appsData.length === 0) {
-                appsList.innerHTML = '<p>📱 Chưa có ứng dụng nào được đăng.</p>';
-                return;
-            }
-            
-            appsData.forEach(app => {
-                const appCard = createAppManagementCard(app);
-                appsList.appendChild(appCard);
-            });
-        }
-
-        // Tạo card quản lý ứng dụng
-        function createAppManagementCard(app) {
-            const card = document.createElement('div');
-            card.className = 'app-management-card';
+        // Cập nhật tags trong preview
+        function updatePreviewTags() {
+            previewTags.innerHTML = '';
             
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -685,129 +599,123 @@
                 'clone': 'Nhân bản'
             };
             
-            const categoriesText = app.categories ? app.categories.map(cat => 
-                categoryLabels[cat] || cat
-            ).join(', ') : 'Chưa phân loại';
-            
-            card.innerHTML = `
-                <img src="${app.image}" alt="${app.name}" class="app-management-icon" 
-                     onerror="this.src='https://via.placeholder.com/50/2563eb/FFFFFF?text=App'">
-                <div class="app-management-info">
-                    <div class="app-management-name">${app.name}</div>
-                    <div class="app-management-details">
-                        <div><strong>Thể loại:</strong> ${categoriesText}</div>
-                        <div><strong>Phiên bản:</strong> ${app.version} • <strong>Cập nhật:</strong> ${app.updatedate}</div>
-                    </div>
-                </div>
-                <div class="app-management-actions">
-                    <button class="delete-btn" data-id="${app.id}">Xóa</button>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // =============================================
-        // SỰ KIỆN XÓA ỨNG DỤNG
-        // =============================================
-        
-        document.addEventListener('click', async function(e) {
-            if (e.target.classList.contains('delete-btn')) {
-                const appId = e.target.getAttribute('data-id');
-                const appName = e.target.closest('.app-management-card').querySelector('.app-management-name').textContent;
-                
-                if (confirm(`Bạn có chắc chắn muốn xóa ứng dụng "${appName}"?`)) {
-                    try {
-                        const response = await fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'deleteApp',
-                                username: currentUsername,
-                                password: currentPassword,
-                                data: {
-                                    id: appId
-                                }
-                            })
-                        });
-                        
-                        const result = await response.json();
-                        
-                        if (result.success) {
-                            loadAppsList();
-                            alert('✅ Ứng dụng đã được xóa thành công!');
-                        } else {
-                            throw new Error(result.message || 'Không thể xóa ứng dụng');
-                        }
-                    } catch (error) {
-                        alert('❌ Lỗi khi xóa ứng dụng. Vui lòng thử lại sau.');
-                    }
+            categoryCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const tag = document.createElement('span');
+                    tag.className = 'preview-tag';
+                    tag.textContent = categoryLabels[checkbox.value] || checkbox.value;
+                    previewTags.appendChild(tag);
                 }
-            }
-        });
-
-        // =============================================
-        // HÀM TIỆN ÍCH
-        // =============================================
-
-        // Hiển thị loading
-        function showLoading(container) {
-            container.innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Đang xử lý...</p>
-                </div>
-            `;
-        }
-
-        // Lấy các thể loại đã chọn
-        function getSelectedCategories() {
-            return Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
-                .map(checkbox => checkbox.value);
-        }
-
-        // Reset checkboxes
-        function resetCheckboxes() {
-            document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
             });
         }
 
-        // Tạo object app data
-        function createAppData(categories) {
-            return {
-                id: Date.now(),
-                name: document.getElementById('appName').value,
-                developer: document.getElementById('appDeveloper').value,
-                version: document.getElementById('appVersion').value,
-                updateDate: new Date().toLocaleDateString('vi-VN'),
-                description: document.getElementById('appDescription').value,
-                image: document.getElementById('appImage').value,
-                downloadLink: document.getElementById('appDownloadLink').value,
-                categories: categories
-            };
+        // Lấy danh mục đã chọn
+        function getSelectedCategories() {
+            const selectedCategories = [];
+            categoryCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedCategories.push(checkbox.value);
+                }
+            });
+            return selectedCategories;
         }
 
-        // =============================================
-        // KHỞI TẠO KHI TRANG LOAD
-        // =============================================
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedLogin = localStorage.getItem('adminLoggedIn');
-            const savedUsername = localStorage.getItem('adminUsername');
+        // Xử lý sự kiện submit form
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            if (savedLogin === 'true' && savedUsername) {
-                // Tự động điền username
-                document.getElementById('username').value = savedUsername;
-                console.log('🔍 Đã tìm thấy thông tin đăng nhập trước đó');
+            // Kiểm tra xem đã chọn ít nhất một danh mục chưa
+            const selectedCategories = getSelectedCategories();
+            if (selectedCategories.length === 0) {
+                showError('Vui lòng chọn ít nhất một danh mục cho ứng dụng.');
+                return;
             }
             
-            // Luôn hiển thị form đăng nhập đầu tiên
-            loginSection.style.display = 'block';
-            adminPanel.style.display = 'none';
+            // Vô hiệu hóa nút submit
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
+            
+            try {
+                // Tạo đối tượng dữ liệu ứng dụng
+                const appData = {
+                    name: appNameInput.value,
+                    developer: appDeveloperInput.value,
+                    version: appVersionInput.value,
+                    description: appDescriptionInput.value,
+                    image: imageUrlInput.value,
+                    downloadlink: downloadLinkInput.value,
+                    categories: selectedCategories.join(','),
+                    updatedate: new Date().toLocaleDateString('vi-VN')
+                };
+                
+                // Gửi dữ liệu đến Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addApp',
+                        data: appData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess();
+                    uploadForm.reset();
+                    updatePreview();
+                } else {
+                    throw new Error(result.message || 'Không thể upload ứng dụng');
+                }
+            } catch (error) {
+                console.error('Lỗi khi upload ứng dụng:', error);
+                showError(error.message || 'Đã xảy ra lỗi khi upload ứng dụng. Vui lòng thử lại.');
+            } finally {
+                // Kích hoạt lại nút submit
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Tải ứng dụng lên';
+            }
         });
+
+        // Hiển thị thông báo thành công
+        function showSuccess() {
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            // Ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Hiển thị thông báo lỗi
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            // Ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Thêm sự kiện cho các input để cập nhật preview
+        imageUrlInput.addEventListener('input', updatePreview);
+        appNameInput.addEventListener('input', updatePreview);
+        appDeveloperInput.addEventListener('input', updatePreview);
+        appVersionInput.addEventListener('input', updatePreview);
+        appDescriptionInput.addEventListener('input', updatePreview);
+        
+        // Thêm sự kiện cho các checkbox danh mục
+        categoryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updatePreview);
+        });
+
+        // Khởi tạo preview khi trang được tải
+        document.addEventListener('DOMContentLoaded', updatePreview);
     </script>
 </body>
 </html>
