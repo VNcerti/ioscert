@@ -364,12 +364,13 @@
         }
 
         function displayAppDetail(app) {
-            const categoryLabels = {
-                'game': 'Trò chơi',
-                'social': 'Mạng xã hội',
-                'photo': 'Chụp ảnh',
-                'clone': 'Nhân bản'
-            };
+          const categoryLabels = {
+    'game': 'Trò chơi',
+    'social': 'Mạng xã hội',
+    'entertainment': 'Giải trí',
+    'photo': 'Chụp ảnh',
+    'clone': 'Nhân bản'
+};
 
             let categories = [];
             if (typeof app.categories === 'string') {
