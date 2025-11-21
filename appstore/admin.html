@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AppHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary-color: #007AFF;
+            --background-color: #F2F2F7;
+            --card-color: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #8E8E93;
+            --border-color: #C6C6C8;
+            --error-color: #FF3B30;
+            --success-color: #34C759;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background-color: #0056CC;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .form-select {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .admin-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .admin-btn-secondary {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Login Section */
+        .login-section {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .login-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Apps List */
+        .apps-list {
+            margin-top: 40px;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .app-management-card {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .app-management-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-management-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .app-management-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .app-management-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .app-management-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-color);
+            padding: 30px 0 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-actions {
+                flex-direction: column;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-cube"></i>
+                    AppHub Admin
+                </a>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Login Section (Hiển thị khi chưa đăng nhập) -->
+        <div class="login-section" id="loginSection">
+            <h3 class="login-title">Đăng nhập Admin</h3>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Tài khoản</label>
+                    <input type="text" class="form-input" id="username" placeholder="Nhập tài khoản" required>
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Mật khẩu</label>
+                    <input type="password" class="form-input" id="password" placeholder="Nhập mật khẩu" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <div class="error-message" id="loginError">Tài khoản hoặc mật khẩu không chính xác</div>
+                <div class="admin-actions">
+                    <button type="submit" class="admin-btn admin-btn-primary">Đăng nhập</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Admin Panel (Hiển thị khi đã đăng nhập) -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h2 class="admin-title">Quản lý Ứng dụng</h2>
+            <form class="admin-form" id="adminForm">
+                <div class="form-group">
+                    <label class="form-label" for="appImage">URL Ảnh Ứng dụng</label>
+                    <input type="url" class="form-input" id="appImage" placeholder="https://example.com/image.png" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appName">Tên Ứng dụng</label>
+                    <input type="text" class="form-input" id="appName" placeholder="Tên ứng dụng" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appDeveloper">Nhà phát triển</label>
+                    <input type="text" class="form-input" id="appDeveloper" placeholder="Tên nhà phát triển" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appVersion">Phiên bản Ứng dụng</label>
+                    <input type="text" class="form-input" id="appVersion" placeholder="Ví dụ: 1.0.0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appDescription">Mô tả Ứng dụng</label>
+                    <textarea class="form-input" id="appDescription" placeholder="Mô tả ngắn về ứng dụng" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appDownloadLink">Link Tải Ứng dụng</label>
+                    <input type="url" class="form-input" id="appDownloadLink" placeholder="https://example.com/download.ipa" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="appCategory">Danh mục</label>
+                    <select class="form-select" id="appCategory" required>
+                        <option value="">Chọn danh mục</option>
+                        <option value="new">Ứng dụng mới</option>
+                        <option value="popular">Ứng dụng phổ biến</option>
+                    </select>
+                </div>
+                <div class="admin-actions">
+                    <button type="button" class="admin-btn admin-btn-secondary" id="cancelBtn">Hủy</button>
+                    <button type="submit" class="admin-btn admin-btn-primary">Đăng Ứng dụng</button>
+                </div>
+            </form>
+
+            <!-- Danh sách ứng dụng đã đăng -->
+            <div class="apps-list">
+                <h3>Ứng dụng đã đăng</h3>
+                <div class="apps-grid" id="appsList">
+                    <!-- Danh sách ứng dụng sẽ được thêm vào đây -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                &copy; 2024 AppHub. Tất cả các quyền được bảo lưu.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Thông tin đăng nhập admin
+        const ADMIN_USERNAME = 'Tunglam@376';
+        const ADMIN_PASSWORD = 'Tunglam@376';
+        
+        // Lấy các phần tử DOM cần thiết
+        const loginSection = document.getElementById('loginSection');
+        const adminPanel = document.getElementById('adminPanel');
+        const loginForm = document.getElementById('loginForm');
+        const adminForm = document.getElementById('adminForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const appsList = document.getElementById('appsList');
+        
+        // Kiểm tra trạng thái đăng nhập
+        let isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        
+        // Hiển thị panel admin nếu đã đăng nhập
+        if (isLoggedIn) {
+            loginSection.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loadAppsList();
+        }
+        
+        // Sự kiện đăng nhập
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                // Đăng nhập thành công
+                isLoggedIn = true;
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                loginSection.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadAppsList();
+            } else {
+                // Đăng nhập thất bại
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+        
+        // Sự kiện hủy form admin
+        cancelBtn.addEventListener('click', function() {
+            adminForm.reset();
+        });
+        
+        // Sự kiện submit form admin
+        adminForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Lấy dữ liệu từ form
+            const appData = {
+                id: Date.now(), // ID duy nhất
+                name: document.getElementById('appName').value,
+                developer: document.getElementById('appDeveloper').value,
+                version: document.getElementById('appVersion').value,
+                updateDate: new Date().toLocaleDateString('vi-VN'),
+                description: document.getElementById('appDescription').value,
+                image: document.getElementById('appImage').value,
+                downloadLink: document.getElementById('appDownloadLink').value
+            };
+            
+            const category = document.getElementById('appCategory').value;
+            
+            // Tải dữ liệu hiện tại
+            let appsData = JSON.parse(localStorage.getItem('appsData') || '{"new":[],"popular":[]}');
+            
+            // Thêm ứng dụng vào danh sách
+            if (appsData[category]) {
+                appsData[category].push(appData);
+            } else {
+                appsData[category] = [appData];
+            }
+            
+            // Lưu dữ liệu
+            localStorage.setItem('appsData', JSON.stringify(appsData));
+            
+            // Reset form
+            adminForm.reset();
+            
+            // Cập nhật danh sách
+            loadAppsList();
+            
+            // Hiển thị thông báo thành công
+            alert('Ứng dụng đã được đăng thành công!');
+        });
+        
+        // Tải danh sách ứng dụng
+        function loadAppsList() {
+            const appsData = JSON.parse(localStorage.getItem('appsData') || '{"new":[],"popular":[]}');
+            appsList.innerHTML = '';
+            
+            // Hiển thị ứng dụng mới
+            if (appsData.new && appsData.new.length > 0) {
+                appsData.new.forEach(app => {
+                    appsList.appendChild(createAppManagementCard(app, 'new'));
+                });
+            }
+            
+            // Hiển thị ứng dụng phổ biến
+            if (appsData.popular && appsData.popular.length > 0) {
+                appsData.popular.forEach(app => {
+                    appsList.appendChild(createAppManagementCard(app, 'popular'));
+                });
+            }
+            
+            if (appsList.innerHTML === '') {
+                appsList.innerHTML = '<p>Chưa có ứng dụng nào được đăng.</p>';
+            }
+        }
+        
+        // Tạo card quản lý ứng dụng
+        function createAppManagementCard(app, category) {
+            const card = document.createElement('div');
+            card.className = 'app-management-card';
+            card.innerHTML = `
+                <div class="app-management-header">
+                    <img src="${app.image}" alt="${app.name}" class="app-management-icon">
+                    <div>
+                        <div class="app-management-name">${app.name}</div>
+                        <div>${category === 'new' ? 'Ứng dụng mới' : 'Ứng dụng phổ biến'}</div>
+                    </div>
+                </div>
+                <div class="app-management-details">
+                    <div>Phiên bản: ${app.version}</div>
+                    <div>Nhà phát triển: ${app.developer}</div>
+                    <div>Ngày đăng: ${app.updateDate}</div>
+                </div>
+                <div class="app-management-actions">
+                    <button class="delete-btn" data-id="${app.id}" data-category="${category}">Xóa</button>
+                </div>
+            `;
+            return card;
+        }
+        
+        // Sự kiện xóa ứng dụng
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) {
+                const appId = parseInt(e.target.getAttribute('data-id'));
+                const category = e.target.getAttribute('data-category');
+                
+                if (confirm('Bạn có chắc chắn muốn xóa ứng dụng này?')) {
+                    // Tải dữ liệu hiện tại
+                    let appsData = JSON.parse(localStorage.getItem('appsData') || '{"new":[],"popular":[]}');
+                    
+                    // Xóa ứng dụng
+                    if (appsData[category]) {
+                        appsData[category] = appsData[category].filter(app => app.id !== appId);
+                    }
+                    
+                    // Lưu dữ liệu
+                    localStorage.setItem('appsData', JSON.stringify(appsData));
+                    
+                    // Cập nhật danh sách
+                    loadAppsList();
+                    
+                    alert('Ứng dụng đã được xóa!');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
