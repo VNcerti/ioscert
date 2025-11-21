@@ -6,6 +6,7 @@
     <title>Admin Panel - Upload Ứng Dụng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* GIỮ NGUYÊN CSS NHƯ TRƯỚC */
         * {
             margin: 0;
             padding: 0;
@@ -536,7 +537,7 @@
     </footer>
 
     <script>
-        // URL Google Apps Script của bạn
+        // THAY THẾ BẰNG URL TRIỂN KHAI MỚI CỦA BẠN
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJpKu27IB_-Dbb8vA9P2aMtBe1PDnBhOOd-CynZX6-CBhn2-nlixvLvK_y49lKP0rC/exec';
 
         // Lấy các phần tử DOM
@@ -620,7 +621,7 @@
             return selectedCategories;
         }
 
-        // Xử lý sự kiện submit form
+        // Xử lý sự kiện submit form - ĐÃ SỬA LỖI
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -648,11 +649,13 @@
                     updatedate: new Date().toLocaleDateString('vi-VN')
                 };
                 
-                // Gửi dữ liệu đến Google Apps Script
+                console.log('Dữ liệu gửi đi:', appData);
+                
+                // Gửi dữ liệu đến Google Apps Script - SỬA LỖI FETCH
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain;charset=utf-8',
                     },
                     body: JSON.stringify({
                         action: 'addApp',
@@ -669,9 +672,10 @@
                 } else {
                     throw new Error(result.message || 'Không thể upload ứng dụng');
                 }
+                
             } catch (error) {
                 console.error('Lỗi khi upload ứng dụng:', error);
-                showError(error.message || 'Đã xảy ra lỗi khi upload ứng dụng. Vui lòng thử lại.');
+                showError(error.message || 'Đã xảy ra lỗi khi upload ứng dụng. Vui lòng kiểm tra URL Script và thử lại.');
             } finally {
                 // Kích hoạt lại nút submit
                 submitBtn.disabled = false;
