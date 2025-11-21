@@ -454,8 +454,8 @@
     </footer>
 
     <script>
-        // URL Google Apps Script của bạn
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzle87PfL3fkBgeGeJUuDnh__7_vgFt4VKHO7zRnz2doVFk_3snR-QUtTdUqAxOWONtuA/exec';
+        // URL Google Apps Script của bạn - ĐÃ SỬA
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd5Fv6YC_VAx3rVYO7TnwPpiGYjhefyWAinNXc7dCNQ_4ygIn1OkggsB0l6pGuUIy7Vg/exec';
 
         // Thông tin đăng nhập admin
         const ADMIN_USERNAME = 'Tunglam@376';
@@ -469,15 +469,8 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const appsList = document.getElementById('appsList');
         
-        // Kiểm tra trạng thái đăng nhập
-        let isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-        
-        // Hiển thị panel admin nếu đã đăng nhập
-        if (isLoggedIn) {
-            loginSection.style.display = 'none';
-            adminPanel.style.display = 'block';
-            loadAppsList();
-        }
+        // Kiểm tra trạng thái đăng nhập - SỬA LẠI: LUÔN BẮT ĐĂNG NHẬP
+        let isLoggedIn = false; // Luôn bắt đầu với false
         
         // Sự kiện đăng nhập
         loginForm.addEventListener('submit', function(e) {
@@ -494,6 +487,8 @@
                 document.getElementById('loginError').style.display = 'none';
             } else {
                 document.getElementById('loginError').style.display = 'block';
+                // Reset form
+                document.getElementById('password').value = '';
             }
         });
         
@@ -505,7 +500,7 @@
             });
         });
         
-        // Sự kiện submit form admin
+        // Sự kiện submit form admin - ĐÃ THÊM DEBUG
         adminForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -534,6 +529,8 @@
                 // Hiển thị loading
                 showLoading(appsList);
                 
+                console.log('Đang gửi dữ liệu app:', appData);
+                
                 // Gửi dữ liệu đến Google Sheets
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -546,7 +543,10 @@
                     })
                 });
                 
+                console.log('Phản hồi từ server:', response);
+                
                 const result = await response.json();
+                console.log('Kết quả:', result);
                 
                 if (result.success) {
                     // Reset form
@@ -560,11 +560,11 @@
                     
                     alert('✅ Ứng dụng đã được đăng thành công! Tất cả người dùng đều có thể thấy ứng dụng này.');
                 } else {
-                    throw new Error('Không thể thêm ứng dụng');
+                    throw new Error(result.data || 'Không thể thêm ứng dụng');
                 }
             } catch (error) {
-                console.error('Lỗi khi thêm ứng dụng:', error);
-                alert('❌ Lỗi khi đăng ứng dụng. Vui lòng thử lại sau.');
+                console.error('Lỗi chi tiết:', error);
+                alert('❌ Lỗi khi đăng ứng dụng: ' + error.message);
                 loadAppsList();
             }
         });
@@ -678,6 +678,21 @@
                         alert('❌ Lỗi khi xóa ứng dụng. Vui lòng thử lại sau.');
                     }
                 }
+            }
+        });
+
+        // KIỂM TRA ĐĂNG NHẬP KHI TRANG LOAD - SỬA LẠI
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLogin = localStorage.getItem('isAdminLoggedIn');
+            if (savedLogin === 'true') {
+                // Vẫn hiển thị login form, yêu cầu đăng nhập lại
+                loginSection.style.display = 'block';
+                adminPanel.style.display = 'none';
+                // Xóa trạng thái đăng nhập cũ
+                localStorage.removeItem('isAdminLoggedIn');
+            } else {
+                loginSection.style.display = 'block';
+                adminPanel.style.display = 'none';
             }
         });
     </script>
