@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppHub - Kho Ứng Dụng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary-color: #007AFF;
+            --background-color: #F2F2F7;
+            --card-color: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #8E8E93;
+            --border-color: #C6C6C8;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Categories */
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .categories {
+            margin-bottom: 50px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* App Sections */
+        .app-section {
+            margin-bottom: 50px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .app-card {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-header {
+            display: flex;
+            padding: 20px;
+            align-items: center;
+        }
+
+        .app-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .app-details {
+            flex: 1;
+        }
+
+        .app-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .app-developer {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .app-version, .app-update {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .app-description {
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .app-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px 20px;
+        }
+
+        .app-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #0056CC;
+        }
+
+        /* Today Tab */
+        .today-tab {
+            margin-bottom: 50px;
+        }
+
+        .today-card {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .today-content {
+            flex: 1;
+        }
+
+        .today-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .today-title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .today-description {
+            margin-bottom: 25px;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .today-image {
+            flex: 0 0 200px;
+            text-align: center;
+        }
+
+        .today-image img {
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .modal-message {
+            margin-bottom: 25px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-color);
+            padding: 50px 0 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+
+            .nav-links {
+                margin: 20px 0;
+            }
+
+            .nav-links li {
+                margin: 0 15px;
+            }
+
+            .search-bar {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .today-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .today-image {
+                margin-top: 30px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-cube"></i>
+                    AppHub
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#">Khám phá</a></li>
+                    <li><a href="#">Hôm nay</a></li>
+                    <li><a href="#">Trò chơi</a></li>
+                    <li><a href="#">Ứng dụng</a></li>
+                    <li><a href="#" id="accountLink">Tài khoản</a></li>
+                </ul>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm ứng dụng...">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Khám phá ứng dụng tuyệt vời</h1>
+            <p>Tải về các ứng dụng và trò chơi hàng đầu được chọn lọc kỹ lưỡng cho thiết bị của bạn.</p>
+            <a href="#" class="cta-button">Tải ứng dụng ngay</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Categories -->
+        <section class="categories">
+            <h2 class="section-title">Danh mục phổ biến</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="category-name">Trò chơi</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="category-name">Sáng tạo</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="category-name">Công việc</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="category-name">Âm nhạc</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="category-name">Chụp ảnh</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="category-name">Sức khỏe</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ứng dụng mới -->
+        <section class="app-section">
+            <h2 class="section-title">Ứng dụng mới</h2>
+            <div class="app-grid" id="newAppsGrid">
+                <!-- Các ứng dụng mới sẽ được thêm vào đây bằng JavaScript -->
+            </div>
+        </section>
+
+        <!-- Ứng dụng phổ biến -->
+        <section class="app-section">
+            <h2 class="section-title">Ứng dụng phổ biến</h2>
+            <div class="app-grid" id="popularAppsGrid">
+                <!-- Các ứng dụng phổ biến sẽ được thêm vào đây bằng JavaScript -->
+            </div>
+        </section>
+
+        <!-- Today Tab -->
+        <section class="today-tab">
+            <h2 class="section-title">Ứng dụng của ngày</h2>
+            <div class="today-card">
+                <div class="today-content">
+                    <div class="today-badge">Ứng dụng của ngày</div>
+                    <h3 class="today-title">PixelArt Studio</h3>
+                    <p class="today-description">Tạo nghệ thuật pixel tuyệt đẹp với bộ công cụ toàn diện. Hoàn hảo cho cả người mới bắt đầu và nghệ sĩ chuyên nghiệp.</p>
+                    <button class="download-btn" data-app="PixelArt Studio">Tải về ngay</button>
+                </div>
+                <div class="today-image">
+                    <img src="https://via.placeholder.com/150/5856D6/FFFFFF?text=PixelArt" alt="PixelArt Studio">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Popup Modal -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <h3 class="modal-title">Tải ứng dụng</h3>
+            <p class="modal-message">
+                Để sử dụng ứng dụng <span id="appName"></span> một cách lâu dài và hiệu quả tránh quảng cáo thì vui lòng sử dụng kho ứng dụng độc quyền UNLOCKIPA
+            </p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-primary" id="buyBtn">Mua kho ứng dụng</button>
+                <button class="modal-btn modal-btn-secondary" id="freeBtn">Tải miễn phí</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Khám phá</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Ứng dụng mới</a></li>
+                        <li><a href="#">Trò chơi nổi bật</a></li>
+                        <li><a href="#">Bảng xếp hạng</a></li>
+                        <li><a href="#">Ưu đãi đặc biệt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Tài khoản</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Quản lý tài khoản</a></li>
+                        <li><a href="#">Lịch sử mua hàng</a></li>
+                        <li><a href="#">Cài đặt</a></li>
+                        <li><a href="#">Trợ giúp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Về AppHub</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Tin tức</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Phát triển</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Trở thành nhà phát triển</a></li>
+                        <li><a href="#">Tài liệu API</a></li>
+                        <li><a href="#">Hướng dẫn đăng ứng dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2024 AppHub. Tất cả các quyền được bảo lưu.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dữ liệu ứng dụng mẫu
+        let appsData = {
+            new: [
+                {
+                    id: 1,
+                    name: "WhatsApp",
+                    developer: "WhatsApp Inc.",
+                    version: "24.2.2",
+                    updateDate: "15/03/2024",
+                    description: "Ứng dụng nhắn tin miễn phí, đơn giản, an toàn và đáng tin cậy, có sẵn trên toàn thế giới.",
+                    image: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7d/7a/42/7d7a42b6-24fa-df7d-7c53-6a8693d044ac/AppIconSMB-0-0-1x_U007ephone-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.jpg",
+                    downloadLink: "https://example.com/download/whatsapp.ipa"
+                }
+            ],
+            popular: [
+                {
+                    id: 101,
+                    name: "Facebook",
+                    developer: "Meta Platforms, Inc.",
+                    version: "435.0",
+                    updateDate: "14/03/2024",
+                    description: "Kết nối với bạn bè, gia đình và những người có cùng sở thích. Chia sẻ ảnh và video.",
+                    image: "https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/0a/a8/2c/0aa82c6b-8fd7-33e5-0a02-6c75e1fa2b43/AppIcon-0-0-1x_U007emarketing-0-7-0-0-85-220-0.png/512x512bb.jpg",
+                    downloadLink: "https://example.com/download/facebook.ipa"
+                }
+            ]
+        };
+
+        // Lưu trữ ứng dụng vào localStorage
+        function saveAppsData() {
+            localStorage.setItem('appsData', JSON.stringify(appsData));
+        }
+
+        // Tải ứng dụng từ localStorage
+        function loadAppsData() {
+            const savedData = localStorage.getItem('appsData');
+            if (savedData) {
+                appsData = JSON.parse(savedData);
+            }
+        }
+
+        // Hiển thị ứng dụng lên giao diện
+        function renderApps() {
+            const newAppsGrid = document.getElementById('newAppsGrid');
+            const popularAppsGrid = document.getElementById('popularAppsGrid');
+            
+            // Xóa nội dung cũ
+            newAppsGrid.innerHTML = '';
+            popularAppsGrid.innerHTML = '';
+            
+            // Hiển thị ứng dụng mới
+            if (appsData.new && appsData.new.length > 0) {
+                appsData.new.forEach(app => {
+                    newAppsGrid.appendChild(createAppCard(app));
+                });
+            } else {
+                newAppsGrid.innerHTML = '<p>Chưa có ứng dụng mới nào.</p>';
+            }
+            
+            // Hiển thị ứng dụng phổ biến
+            if (appsData.popular && appsData.popular.length > 0) {
+                appsData.popular.forEach(app => {
+                    popularAppsGrid.appendChild(createAppCard(app));
+                });
+            } else {
+                popularAppsGrid.innerHTML = '<p>Chưa có ứng dụng phổ biến nào.</p>';
+            }
+        }
+
+        // Tạo card ứng dụng
+        function createAppCard(app) {
+            const appCard = document.createElement('div');
+            appCard.className = 'app-card';
+            appCard.innerHTML = `
+                <div class="app-header">
+                    <img src="${app.image}" alt="${app.name}" class="app-icon">
+                    <div class="app-details">
+                        <h3 class="app-name">${app.name}</h3>
+                        <div class="app-developer">${app.developer}</div>
+                        <div class="app-version">Phiên bản: ${app.version}</div>
+                        <div class="app-update">Ngày cập nhật: ${app.updateDate}</div>
+                    </div>
+                </div>
+                <div class="app-description">
+                    ${app.description}
+                </div>
+                <div class="app-actions">
+                    <div class="app-price">Miễn phí</div>
+                    <button class="download-btn" data-app="${app.name}" data-download="${app.downloadLink}">Tải về</button>
+                </div>
+            `;
+            return appCard;
+        }
+
+        // Lấy các phần tử DOM cần thiết
+        const accountLink = document.getElementById('accountLink');
+        const downloadModal = document.getElementById('downloadModal');
+        const appNameSpan = document.getElementById('appName');
+        const buyBtn = document.getElementById('buyBtn');
+        const freeBtn = document.getElementById('freeBtn');
+        
+        // Sự kiện khi click vào mục Tài khoản
+        accountLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Chuyển hướng đến trang admin
+            window.location.href = 'admin.html';
+        });
+        
+        // Sự kiện cho các nút tải về
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('download-btn')) {
+                const appName = e.target.getAttribute('data-app');
+                const downloadLink = e.target.getAttribute('data-download');
+                appNameSpan.textContent = appName;
+                freeBtn.setAttribute('data-download', downloadLink);
+                downloadModal.style.display = 'flex';
+            }
+        });
+        
+        // Sự kiện cho nút mua kho ứng dụng
+        buyBtn.addEventListener('click', function() {
+            window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
+        });
+        
+        // Sự kiện cho nút tải miễn phí
+        freeBtn.addEventListener('click', function() {
+            const downloadUrl = this.getAttribute('data-download');
+            window.open(downloadUrl, '_blank');
+            downloadModal.style.display = 'none';
+        });
+        
+        // Đóng modal khi click bên ngoài
+        window.addEventListener('click', function(event) {
+            if (event.target === downloadModal) {
+                downloadModal.style.display = 'none';
+            }
+        });
+        
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAppsData();
+            renderApps();
+        });
+    </script>
+</body>
+</html>
