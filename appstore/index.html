@@ -692,7 +692,7 @@
                     Khám phá ngay
                 </button>
                 <img src="https://i.imgur.com/1qBtbYR.png" 
-                     alt="AppHub Store" class="featured-image">
+                     alt="XSPace Store" class="featured-image">
             </div>
         </section>
 
@@ -801,19 +801,19 @@
                     </div>
                     <div class="nav-label">Trò chơi</div>
                 </a>
-                <a href="admin.html" class="nav-item">
+                <a href="https://t.me/m/inBUSKQ1N2E1" class="nav-item" target="_blank">
                     <div class="nav-icon">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-headset"></i>
                     </div>
-                    <div class="nav-label">Tài khoản</div>
+                    <div class="nav-label">Hỗ trợ</div>
                 </a>
             </div>
         </div>
     </nav>
 
     <script>
-        // URL Google Apps Script của bạn
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPpe5X_AyuGAbk1nXUeDPQoF6k2g99qvVMwAJUw2XyD3fA0PD2N5-AEzK7dde7o4JxmQ/exec';
+        // URL Google Apps Script mới của bạn
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJpKu27IB_-Dbb8vA9P2aMtBe1PDnBhOOd-CynZX6-CBhn2-nlixvLvK_y49lKP0rC/exec';
 
         // Lấy các phần tử DOM
         const appsGrid = document.getElementById('appsGrid');
@@ -879,7 +879,8 @@
         // Sự kiện chuyển tab
         navItems.forEach(item => {
             item.addEventListener('click', function(e) {
-                if (this.href.includes('admin.html')) return;
+                // Nếu là link hỗ trợ (mở Telegram) thì không ngăn hành vi mặc định
+                if (this.href.includes('t.me')) return;
                 
                 e.preventDefault();
                 
@@ -966,9 +967,17 @@
                 'clone': 'Nhân bản'
             };
             
-            const tagsHTML = app.categories ? app.categories.map(cat => 
+            // Xử lý categories - có thể là string hoặc array
+            let categories = [];
+            if (typeof app.categories === 'string') {
+                categories = app.categories.split(',');
+            } else if (Array.isArray(app.categories)) {
+                categories = app.categories;
+            }
+            
+            const tagsHTML = categories.map(cat => 
                 `<span class="app-tag">${categoryLabels[cat] || cat}</span>`
-            ).join('') : '';
+            ).join('');
             
             appCard.innerHTML = `
                 <img src="${app.image}" alt="${app.name}" class="app-image" onerror="this.src='https://via.placeholder.com/300x200/2563eb/FFFFFF?text=App'">
