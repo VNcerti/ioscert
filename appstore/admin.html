@@ -363,13 +363,9 @@
             <h3 class="login-title">Đăng nhập Admin</h3>
             <form class="admin-form" id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Tài khoản</label>
-                    <input type="text" class="form-input" id="username" placeholder="Nhập tài khoản" required value="Tunglam@376">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mật khẩu</label>
-                    <input type="password" class="form-input" id="password" placeholder="Nhập mật khẩu" required value="Tunglam@376">
-                    <div class="error-message" id="loginError">Tài khoản hoặc mật khẩu không chính xác</div>
+                    <label class="form-label">Mật khẩu Admin</label>
+                    <input type="password" class="form-input" id="password" placeholder="Nhập mật khẩu admin" required>
+                    <div class="error-message" id="loginError">Mật khẩu không chính xác</div>
                 </div>
                 <div class="admin-actions">
                     <button type="submit" class="admin-btn admin-btn-primary">Đăng nhập</button>
@@ -456,7 +452,7 @@
 
     <script>
         // URL Google Apps Script MỚI của bạn
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHHjgMaiUDAGjkeDsendO-BtgI99B3v6RHDpLuOSKJuKwO4QBbsqkcK13MJsAAyHgx9w/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5hxb-rOmVbVSHn2evopbdG5eyMQJXzfs3K0jxQXTVm_Hb25LYjDuanBTH6_FiuxI0ig/exec';
 
         // Lấy các phần tử DOM
         const loginSection = document.getElementById('loginSection');
@@ -467,25 +463,19 @@
         const appsList = document.getElementById('appsList');
 
         // Biến lưu thông tin đăng nhập
-        let currentUsername = '';
         let currentPassword = '';
 
-        // Sự kiện đăng nhập - THÊM DEBUG CHI TIẾT
+        // Sự kiện đăng nhập - CHỈ CẦN PASSWORD
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
             console.log('=== DEBUG LOGIN ===');
-            console.log('Username input:', username);
             console.log('Password input:', password);
-            console.log('Username length:', username.length);
-            console.log('Password length:', password.length);
             
             try {
                 const requestBody = {
                     action: 'login',
-                    username: username,
                     password: password
                 };
                 
@@ -507,7 +497,6 @@
                 
                 if (result.success) {
                     // Lưu thông tin đăng nhập
-                    currentUsername = username;
                     currentPassword = password;
                     localStorage.setItem('adminLoggedIn', 'true');
                     loginSection.style.display = 'none';
@@ -570,7 +559,6 @@
                     },
                     body: JSON.stringify({
                         action: 'addApp',
-                        username: currentUsername,
                         password: currentPassword,
                         data: appData
                     })
@@ -684,7 +672,6 @@
                             },
                             body: JSON.stringify({
                                 action: 'deleteApp',
-                                username: currentUsername,
                                 password: currentPassword,
                                 data: {
                                     id: appId
