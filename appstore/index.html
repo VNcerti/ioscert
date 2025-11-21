@@ -475,86 +475,6 @@
             font-weight: 500;
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-        }
-
-        .modal-content {
-            background: var(--background);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .modal-icon {
-            font-size: 40px;
-            color: var(--primary);
-            margin-bottom: 12px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .modal-message {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            flex: 1;
-        }
-
-        .modal-btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .modal-btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .modal-btn-secondary {
-            background: var(--surface);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .modal-btn-secondary:hover {
-            background: var(--border);
-        }
-
         /* Loading */
         .loading {
             text-align: center;
@@ -595,10 +515,6 @@
             .featured-image {
                 width: 60px;
                 height: 60px;
-            }
-            
-            .modal-actions {
-                flex-direction: column;
             }
         }
 
@@ -721,6 +637,12 @@
                     </div>
                     <div class="category-name">Mạng xã hội</div>
                 </div>
+                <div class="category-card" data-category="entertainment">
+                    <div class="category-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="category-name">Giải trí</div>
+                </div>
                 <div class="category-card" data-category="photo">
                     <div class="category-icon">
                         <i class="fas fa-camera"></i>
@@ -762,23 +684,6 @@
         </section>
     </main>
 
-    <!-- Download Modal -->
-    <div class="modal" id="downloadModal">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-download"></i>
-            </div>
-            <h3 class="modal-title">Tải ứng dụng</h3>
-            <p class="modal-message">
-                Để sử dụng ứng dụng <span id="appName"></span> một cách lâu dài và hiệu quả tránh quảng cáo thì vui lòng sử dụng kho ứng dụng độc quyền UNLOCKIPA
-            </p>
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-primary" id="buyBtn">Mua kho ứng dụng</button>
-                <button class="modal-btn modal-btn-secondary" id="freeBtn">Tải miễn phí</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="container">
@@ -812,27 +717,19 @@
     </nav>
 
     <script>
-        // URL Google Apps Script mới của bạn
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJpKu27IB_-Dbb8vA9P2aMtBe1PDnBhOOd-CynZX6-CBhn2-nlixvLvK_y49lKP0rC/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0yJ_Eh9TClhpfyQBkY9LUxXIXD1zD2R2aeFsjuXCBH2yFj60M__UjHW8DHGYMGoSJSQ/exec';
 
-        // Lấy các phần tử DOM
         const appsGrid = document.getElementById('appsGrid');
         const gamesGrid = document.getElementById('gamesGrid');
         const categoryCards = document.querySelectorAll('.category-card');
-        const downloadModal = document.getElementById('downloadModal');
-        const appNameSpan = document.getElementById('appName');
-        const buyBtn = document.getElementById('buyBtn');
-        const freeBtn = document.getElementById('freeBtn');
         const todayTab = document.getElementById('todayTab');
         const gamesTab = document.getElementById('gamesTab');
         const navItems = document.querySelectorAll('.nav-item');
 
-        // Biến lưu trạng thái
         let currentCategory = 'all';
         let currentView = 'home';
         let allApps = [];
 
-        // Tải ứng dụng từ Google Sheets
         async function loadAppsFromSheets() {
             try {
                 showLoading(appsGrid);
@@ -851,7 +748,6 @@
             }
         }
 
-        // Hiển thị loading
         function showLoading(container) {
             container.innerHTML = `
                 <div class="loading">
@@ -861,7 +757,6 @@
             `;
         }
 
-        // Sự kiện lọc theo thể loại
         categoryCards.forEach(card => {
             card.addEventListener('click', function() {
                 const category = this.dataset.category;
@@ -876,10 +771,8 @@
             });
         });
 
-        // Sự kiện chuyển tab
         navItems.forEach(item => {
             item.addEventListener('click', function(e) {
-                // Nếu là link hỗ trợ (mở Telegram) thì không ngăn hành vi mặc định
                 if (this.href.includes('t.me')) return;
                 
                 e.preventDefault();
@@ -904,7 +797,6 @@
             });
         });
 
-        // Hiển thị ứng dụng theo view và category
         function renderApps() {
             let filteredApps = allApps;
             
@@ -940,7 +832,6 @@
             }
         }
 
-        // Hiển thị danh sách ứng dụng
         function displayApps(apps, container) {
             container.innerHTML = '';
             
@@ -955,7 +846,6 @@
             });
         }
 
-        // Tạo card ứng dụng
         function createAppCard(app) {
             const appCard = document.createElement('div');
             appCard.className = 'app-card';
@@ -963,11 +853,11 @@
             const categoryLabels = {
                 'game': 'Trò chơi',
                 'social': 'Mạng xã hội',
+                'entertainment': 'Giải trí',
                 'photo': 'Chụp ảnh',
                 'clone': 'Nhân bản'
             };
             
-            // Xử lý categories - có thể là string hoặc array
             let categories = [];
             if (typeof app.categories === 'string') {
                 categories = app.categories.split(',');
@@ -996,7 +886,7 @@
                     <div class="app-tags">${tagsHTML}</div>
                     <div class="app-actions">
                         <div class="app-price">Miễn phí</div>
-                        <button class="download-btn" data-app="${app.name}" data-download="${app.downloadlink}">
+                        <button class="download-btn" onclick="window.location.href='app-detail.html?id=${app.id}'">
                             <i class="fas fa-download"></i>
                             Tải
                         </button>
@@ -1007,39 +897,6 @@
             return appCard;
         }
 
-        // Sự kiện cho nút tải về
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.download-btn')) {
-                const button = e.target.closest('.download-btn');
-                const appName = button.dataset.app;
-                const downloadLink = button.dataset.download;
-                
-                appNameSpan.textContent = appName;
-                freeBtn.onclick = function() {
-                    if (downloadLink && downloadLink !== '#' && downloadLink !== '') {
-                        window.open(downloadLink, '_blank');
-                    } else {
-                        alert('Link tải ứng dụng đang được cập nhật...');
-                    }
-                    downloadModal.style.display = 'none';
-                };
-                downloadModal.style.display = 'flex';
-            }
-        });
-
-        // Sự kiện cho nút mua kho ứng dụng
-        buyBtn.addEventListener('click', function() {
-            window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
-        });
-
-        // Đóng modal khi click bên ngoài
-        window.addEventListener('click', function(e) {
-            if (e.target === downloadModal) {
-                downloadModal.style.display = 'none';
-            }
-        });
-
-        // Khởi tạo
         document.addEventListener('DOMContentLoaded', function() {
             loadAppsFromSheets();
         });
