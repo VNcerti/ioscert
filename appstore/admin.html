@@ -26,7 +26,6 @@
             --border: #e2e8f0;
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #f59e0b;
             --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
@@ -119,28 +118,6 @@
             margin-bottom: 32px;
         }
 
-        /* Connection Status */
-        .connection-status {
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .connection-status.connected {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .connection-status.disconnected {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
         /* Form */
         .upload-form {
             background: var(--surface);
@@ -148,7 +125,6 @@
             padding: 24px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
-            margin-bottom: 24px;
         }
 
         .form-group {
@@ -181,13 +157,6 @@
         .form-textarea {
             min-height: 100px;
             resize: vertical;
-        }
-
-        .form-help {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            display: block;
         }
 
         .categories-group {
@@ -256,83 +225,20 @@
             transform: none;
         }
 
-        /* Delete Section */
-        .delete-section {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 24px;
+        /* Preview */
+        .preview-section {
+            margin-top: 32px;
         }
 
-        .section-title {
+        .preview-title {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: var(--text-primary);
-        }
-
-        .delete-btn {
-            background: var(--danger);
-        }
-
-        .delete-btn:hover {
-            background: #dc2626;
-        }
-
-        .delete-btn:disabled {
-            background: var(--text-muted);
-        }
-
-        /* Stats Section */
-        .stats-section {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 24px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-        }
-
-        .stat-card {
-            background: var(--background);
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
             text-align: center;
         }
 
-        .stat-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Preview */
-        .preview-section {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-        }
-
         .preview-card {
-            background: var(--background);
+            background: var(--surface);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--card-shadow);
@@ -431,8 +337,6 @@
             border-radius: 10px;
             margin-bottom: 20px;
             display: none;
-            align-items: center;
-            gap: 8px;
         }
 
         .message-success {
@@ -445,12 +349,6 @@
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
             border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .message-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
         /* Footer */
@@ -467,28 +365,6 @@
             font-size: 14px;
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-        }
-
-        .loading-spinner {
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -499,15 +375,11 @@
                 font-size: 24px;
             }
             
-            .upload-form, .delete-section, .stats-section, .preview-section {
+            .upload-form {
                 padding: 20px;
             }
             
             .categories-group {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -517,25 +389,12 @@
                 font-size: 22px;
             }
             
-            .upload-form, .delete-section, .stats-section, .preview-section {
+            .upload-form {
                 padding: 16px;
             }
             
             .categories-group {
                 grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .logo {
-                font-size: 18px;
             }
         }
     </style>
@@ -547,9 +406,9 @@
             <div class="header-content">
                 <a href="#" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-rocket"></i>
                     </div>
-                    ADMIN PANEL
+                    APP PREMIUM
                 </a>
                 <a href="index.html" class="back-btn">
                     <i class="fas fa-arrow-left"></i>
@@ -563,162 +422,92 @@
     <main class="container">
         <div class="main-content">
             <h1 class="page-title">Admin Panel</h1>
-            <p class="page-subtitle">Quản lý và upload ứng dụng lên kho ứng dụng</p>
-
-            <!-- Connection Status -->
-            <div id="connectionStatus" class="connection-status">
-                <i class="fas fa-wifi"></i>
-                <span id="connectionText">Đang kiểm tra kết nối...</span>
-            </div>
+            <p class="page-subtitle">Upload ứng dụng lên kho ứng dụng</p>
 
             <!-- Messages -->
             <div id="successMessage" class="message message-success">
-                <i class="fas fa-check-circle"></i>
-                <span id="successText">Thành công!</span>
+                <i class="fas fa-check-circle"></i> Ứng dụng đã được upload thành công!
             </div>
             
             <div id="errorMessage" class="message message-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <span id="errorText">Đã xảy ra lỗi!</span>
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Đã xảy ra lỗi khi upload ứng dụng.</span>
             </div>
 
-            <!-- Stats Section -->
-            <section class="stats-section">
-                <h3 class="section-title">Thống kê</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalApps">0</div>
-                        <div class="stat-label">Tổng ứng dụng</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="todayApps">0</div>
-                        <div class="stat-label">Hôm nay</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="gamesCount">0</div>
-                        <div class="stat-label">Trò chơi</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="socialCount">0</div>
-                        <div class="stat-label">Mạng xã hội</div>
-                    </div>
-                </div>
-            </section>
-
             <!-- Upload Form -->
-            <section class="upload-form">
-                <h3 class="section-title">Upload ứng dụng mới</h3>
-                <form id="uploadForm">
-                    <div class="form-group">
-                        <label class="form-label" for="imageUrl">
-                            URL ảnh ứng dụng
-                            <span class="form-help">(Hỗ trợ JPG, PNG, GIF)</span>
-                        </label>
-                        <input type="url" id="imageUrl" class="form-input" 
-                               placeholder="https://example.com/app-image.jpg" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="appName">Tên ứng dụng</label>
-                        <input type="text" id="appName" class="form-input" 
-                               placeholder="Nhập tên ứng dụng" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="appDeveloper">Nhà phát triển</label>
-                        <input type="text" id="appDeveloper" class="form-input" 
-                               placeholder="Nhập tên nhà phát triển" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="appVersion">Phiên bản ứng dụng</label>
-                        <input type="text" id="appVersion" class="form-input" 
-                               placeholder="Ví dụ: 1.0.0" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="appDescription">Mô tả ứng dụng</label>
-                        <textarea id="appDescription" class="form-input form-textarea" 
-                                  placeholder="Mô tả chi tiết về ứng dụng, tính năng, yêu cầu hệ thống..." 
-                                  required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="downloadLink">
-                            Liên kết tải ứng dụng
-                            <span class="form-help">(Phải là link trực tiếp đến file, không phải trang GitHub)</span>
-                        </label>
-                        <input type="url" id="downloadLink" class="form-input" 
-                               placeholder="https://example.com/app-download.zip" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Danh mục ứng dụng</label>
-                        <div class="categories-group">
-                            <input type="checkbox" id="category-game" class="category-checkbox" value="game">
-                            <label for="category-game" class="category-label">
-                                <i class="fas fa-gamepad category-icon"></i>
-                                <span>Trò chơi</span>
-                            </label>
-
-                            <input type="checkbox" id="category-social" class="category-checkbox" value="social">
-                            <label for="category-social" class="category-label">
-                                <i class="fas fa-users category-icon"></i>
-                                <span>Mạng xã hội</span>
-                            </label>
-
-                            <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
-                            <label for="category-entertainment" class="category-label">
-                                <i class="fas fa-film category-icon"></i>
-                                <span>Giải trí</span>
-                            </label>
-
-                            <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
-                            <label for="category-photo" class="category-label">
-                                <i class="fas fa-camera category-icon"></i>
-                                <span>Chụp ảnh</span>
-                            </label>
-
-                            <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
-                            <label for="category-clone" class="category-label">
-                                <i class="fas fa-copy category-icon"></i>
-                                <span>Nhân bản</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <i class="fas fa-upload"></i>
-                        Tải ứng dụng lên
-                    </button>
-                </form>
-            </section>
-
-            <!-- Delete Section -->
-            <section class="delete-section">
-                <h3 class="section-title">Quản lý ứng dụng</h3>
+            <form class="upload-form" id="uploadForm">
                 <div class="form-group">
-                    <label class="form-label" for="appList">Chọn ứng dụng để xoá</label>
-                    <select id="appList" class="form-input">
-                        <option value="">Đang tải danh sách ứng dụng...</option>
-                    </select>
+                    <label class="form-label" for="imageUrl">URL ảnh ứng dụng</label>
+                    <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-image.jpg" required>
                 </div>
-                <button type="button" class="submit-btn delete-btn" id="deleteBtn">
-                    <i class="fas fa-trash"></i>
-                    Xoá ứng dụng
+
+                <div class="form-group">
+                    <label class="form-label" for="appName">Tên ứng dụng</label>
+                    <input type="text" id="appName" class="form-input" placeholder="Nhập tên ứng dụng" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appDeveloper">Nhà phát triển</label>
+                    <input type="text" id="appDeveloper" class="form-input" placeholder="Nhập tên nhà phát triển" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appVersion">Phiên bản ứng dụng</label>
+                    <input type="text" id="appVersion" class="form-input" placeholder="Ví dụ: 1.0.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appDescription">Mô tả ứng dụng</label>
+                    <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="downloadLink">Liên kết tải ứng dụng</label>
+                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Danh mục ứng dụng</label>
+                    <div class="categories-group">
+                        <input type="checkbox" id="category-game" class="category-checkbox" value="game">
+                        <label for="category-game" class="category-label">
+                            <i class="fas fa-gamepad category-icon"></i>
+                            <span>Trò chơi</span>
+                        </label>
+
+                        <input type="checkbox" id="category-social" class="category-checkbox" value="social">
+                        <label for="category-social" class="category-label">
+                            <i class="fas fa-users category-icon"></i>
+                            <span>Mạng xã hội</span>
+                        </label>
+
+                        <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
+                        <label for="category-photo" class="category-label">
+                            <i class="fas fa-camera category-icon"></i>
+                            <span>Chụp ảnh</span>
+                        </label>
+
+                        <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
+                        <label for="category-clone" class="category-label">
+                            <i class="fas fa-copy category-icon"></i>
+                            <span>Nhân bản</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-upload"></i>
+                    Tải ứng dụng lên
                 </button>
-            </section>
+            </form>
 
             <!-- Preview Section -->
-            <section class="preview-section">
-                <h3 class="section-title">Xem trước ứng dụng</h3>
+            <div class="preview-section">
+                <h3 class="preview-title">Xem trước ứng dụng</h3>
                 <div class="preview-card" id="appPreview">
-                    <img src="https://via.placeholder.com/300x150/2563eb/FFFFFF?text=Preview+Image" 
-                         alt="Preview" class="preview-image" id="previewImage">
+                    <img src="https://via.placeholder.com/300x150/2563eb/FFFFFF?text=Preview+Image" alt="Preview" class="preview-image" id="previewImage">
                     <div class="preview-content">
                         <div class="preview-header">
-                            <img src="https://via.placeholder.com/40/2563eb/FFFFFF?text=App" 
-                                 alt="App Icon" class="preview-icon" id="previewIcon">
+                            <img src="https://via.placeholder.com/40/2563eb/FFFFFF?text=App" alt="App Icon" class="preview-icon" id="previewIcon">
                             <div class="preview-info">
                                 <h3 class="preview-name" id="previewName">Tên ứng dụng</h3>
                                 <div class="preview-developer" id="previewDeveloper">Nhà phát triển</div>
@@ -727,15 +516,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="preview-description" id="previewDescription">
-                            Mô tả ứng dụng sẽ hiển thị ở đây...
-                        </div>
+                        <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
                         <div class="preview-tags" id="previewTags">
                             <!-- Tags will be added here -->
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </main>
 
@@ -743,25 +530,16 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p><i class="fas fa-shield-alt"></i> Admin Panel - Kho Ứng Dụng Premium &copy; 2024</p>
+                <p>&copy; 2023 Kho Ứng Dụng Premium. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // URL Google Apps Script - THAY THẾ BẰNG URL CỦA BẠN
+        // THAY THẾ BẰNG URL TRIỂN KHAI MỚI CỦA BẠN - SẼ KHÁC URL HIỆN TẠI
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJpKu27IB_-Dbb8vA9P2aMtBe1PDnBhOOd-CynZX6-CBhn2-nlixvLvK_y49lKP0rC/exec';
 
-        // Biến toàn cục
-        let allApps = [];
-
         // Lấy các phần tử DOM
-        const connectionStatus = document.getElementById('connectionStatus');
-        const connectionText = document.getElementById('connectionText');
-        const successMessage = document.getElementById('successMessage');
-        const successText = document.getElementById('successText');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
         const uploadForm = document.getElementById('uploadForm');
         const imageUrlInput = document.getElementById('imageUrl');
         const appNameInput = document.getElementById('appName');
@@ -771,12 +549,6 @@
         const downloadLinkInput = document.getElementById('downloadLink');
         const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
         const submitBtn = document.getElementById('submitBtn');
-        const appList = document.getElementById('appList');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const totalAppsEl = document.getElementById('totalApps');
-        const todayAppsEl = document.getElementById('todayApps');
-        const gamesCountEl = document.getElementById('gamesCount');
-        const socialCountEl = document.getElementById('socialCount');
         
         // Preview elements
         const previewImage = document.getElementById('previewImage');
@@ -786,190 +558,43 @@
         const previewVersion = document.getElementById('previewVersion');
         const previewDescription = document.getElementById('previewDescription');
         const previewTags = document.getElementById('previewTags');
+        
+        // Message elements
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
 
-        // ==================== UTILITY FUNCTIONS ====================
-
-        // Hiển thị thông báo
-        function showMessage(type, message, duration = 5000) {
-            // Ẩn tất cả message trước
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            
-            if (type === 'success') {
-                successText.textContent = message;
-                successMessage.style.display = 'flex';
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                }, duration);
-            } else if (type === 'error') {
-                errorText.textContent = message;
-                errorMessage.style.display = 'flex';
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        // Cập nhật trạng thái kết nối
-        function updateConnectionStatus(connected, message = '') {
-            connectionStatus.style.display = 'flex';
-            if (connected) {
-                connectionStatus.className = 'connection-status connected';
-                connectionText.innerHTML = '<i class="fas fa-wifi"></i> Đã kết nối đến Google Sheets';
-            } else {
-                connectionStatus.className = 'connection-status disconnected';
-                connectionText.innerHTML = `<i class="fas fa-wifi-slash"></i> ${message || 'Mất kết nối'}`;
-            }
-        }
-
-        // Hàm gửi request với retry và timeout
-        async function sendRequest(url, options = {}, retries = 3, timeout = 10000) {
-            for (let attempt = 1; attempt <= retries; attempt++) {
-                try {
-                    console.log(`📡 Thử gửi request lần ${attempt}...`);
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), timeout);
-                    
-                    const response = await fetch(url, {
-                        ...options,
-                        signal: controller.signal
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const text = await response.text();
-                    console.log('✅ Response nhận được:', text.substring(0, 200) + '...');
-                    
-                    try {
-                        return JSON.parse(text);
-                    } catch (parseError) {
-                        throw new Error('Phản hồi không phải JSON hợp lệ: ' + text.substring(0, 100));
-                    }
-                    
-                } catch (error) {
-                    console.error(`❌ Lỗi lần ${attempt}:`, error.message);
-                    
-                    if (attempt === retries) {
-                        throw new Error(`Thất bại sau ${retries} lần thử: ${error.message}`);
-                    }
-                    
-                    // Đợi trước khi thử lại (exponential backoff)
-                    await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-                }
-            }
-        }
-
-        // ==================== CORE FUNCTIONS ====================
-
-        // Kiểm tra kết nối
-        async function checkConnection() {
-            try {
-                updateConnectionStatus(false, 'Đang kiểm tra kết nối...');
-                
-                const result = await sendRequest(`${GOOGLE_SCRIPT_URL}?action=getApps`, {}, 2, 8000);
-                
-                if (result && result.success) {
-                    updateConnectionStatus(true);
-                    return true;
-                } else {
-                    throw new Error(result?.message || 'Phản hồi không thành công');
-                }
-            } catch (error) {
-                updateConnectionStatus(false, `Lỗi kết nối: ${error.message}`);
-                return false;
-            }
-        }
-
-        // Tải danh sách ứng dụng
-        async function loadApps() {
-            try {
-                console.log('🔄 Đang tải danh sách ứng dụng...');
-                appList.innerHTML = '<option value="">Đang tải...</option>';
-                
-                const result = await sendRequest(`${GOOGLE_SCRIPT_URL}?action=getApps`);
-                
-                if (result.success) {
-                    allApps = result.data || [];
-                    updateAppsList();
-                    updateStats();
-                    console.log(`✅ Đã tải ${allApps.length} ứng dụng`);
-                    return allApps;
-                } else {
-                    throw new Error(result.message || 'Không thể tải danh sách ứng dụng');
-                }
-            } catch (error) {
-                console.error('❌ Lỗi tải ứng dụng:', error);
-                appList.innerHTML = '<option value="">Lỗi khi tải danh sách</option>';
-                showMessage('error', 'Không thể tải danh sách ứng dụng: ' + error.message);
-                return [];
-            }
-        }
-
-        // Cập nhật danh sách ứng dụng cho xoá
-        function updateAppsList() {
-            appList.innerHTML = '<option value="">Chọn ứng dụng để xoá...</option>';
-            
-            if (allApps.length === 0) {
-                appList.innerHTML = '<option value="">Không có ứng dụng nào</option>';
-                return;
-            }
-            
-            allApps.forEach(app => {
-                const option = document.createElement('option');
-                option.value = app.id;
-                option.textContent = `${app.name} (${app.developer}) - v${app.version}`;
-                appList.appendChild(option);
-            });
-        }
-
-        // Cập nhật thống kê
-        function updateStats() {
-            const today = new Date().toLocaleDateString('vi-VN');
-            
-            totalAppsEl.textContent = allApps.length;
-            todayAppsEl.textContent = allApps.filter(app => app.updatedate === today).length;
-            gamesCountEl.textContent = allApps.filter(app => 
-                app.categories && app.categories.includes('game')
-            ).length;
-            socialCountEl.textContent = allApps.filter(app => 
-                app.categories && app.categories.includes('social')
-            ).length;
-        }
-
-        // ==================== PREVIEW FUNCTIONS ====================
-
+        // Cập nhật preview khi người dùng nhập
         function updatePreview() {
             // Cập nhật hình ảnh
             if (imageUrlInput.value) {
                 previewImage.src = imageUrlInput.value;
                 previewIcon.src = imageUrlInput.value;
-            } else {
-                previewImage.src = 'https://via.placeholder.com/300x150/2563eb/FFFFFF?text=Preview+Image';
-                previewIcon.src = 'https://via.placeholder.com/40/2563eb/FFFFFF?text=App';
             }
             
-            // Cập nhật thông tin
+            // Cập nhật tên ứng dụng
             previewName.textContent = appNameInput.value || 'Tên ứng dụng';
+            
+            // Cập nhật nhà phát triển
             previewDeveloper.textContent = appDeveloperInput.value || 'Nhà phát triển';
+            
+            // Cập nhật phiên bản
             previewVersion.textContent = appVersionInput.value || 'Phiên bản';
+            
+            // Cập nhật mô tả
             previewDescription.textContent = appDescriptionInput.value || 'Mô tả ứng dụng sẽ hiển thị ở đây...';
             
-            // Cập nhật tags
+            // Cập nhật danh mục
             updatePreviewTags();
         }
 
+        // Cập nhật tags trong preview
         function updatePreviewTags() {
             previewTags.innerHTML = '';
             
             const categoryLabels = {
                 'game': 'Trò chơi',
                 'social': 'Mạng xã hội',
-                'entertainment': 'Giải trí',
                 'photo': 'Chụp ảnh',
                 'clone': 'Nhân bản'
             };
@@ -984,6 +609,7 @@
             });
         }
 
+        // Lấy danh mục đã chọn
         function getSelectedCategories() {
             const selectedCategories = [];
             categoryCheckboxes.forEach(checkbox => {
@@ -994,50 +620,38 @@
             return selectedCategories;
         }
 
-        // ==================== EVENT HANDLERS ====================
-
-        // Xử lý upload form
+        // Xử lý sự kiện submit form
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validate
-            const downloadLink = downloadLinkInput.value;
-            if (downloadLink.includes('github.com')) {
-                showMessage('error', 'Link download không được trỏ đến GitHub. Vui lòng sử dụng link trực tiếp đến file.');
-                return;
-            }
-            
-            if (!downloadLink.startsWith('http://') && !downloadLink.startsWith('https://')) {
-                showMessage('error', 'Link download phải bắt đầu với http:// hoặc https://');
-                return;
-            }
-            
+            // Kiểm tra xem đã chọn ít nhất một danh mục chưa
             const selectedCategories = getSelectedCategories();
             if (selectedCategories.length === 0) {
-                showMessage('error', 'Vui lòng chọn ít nhất một danh mục cho ứng dụng.');
+                showError('Vui lòng chọn ít nhất một danh mục cho ứng dụng.');
                 return;
             }
             
-            // Disable button và hiển thị loading
-            const originalText = submitBtn.innerHTML;
+            // Vô hiệu hóa nút submit
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<div class="loading-spinner"></div> Đang tải lên...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
             
             try {
+                // Tạo đối tượng dữ liệu ứng dụng
                 const appData = {
-                    name: appNameInput.value.trim(),
-                    developer: appDeveloperInput.value.trim(),
-                    version: appVersionInput.value.trim(),
-                    description: appDescriptionInput.value.trim(),
-                    image: imageUrlInput.value.trim(),
-                    downloadlink: downloadLinkInput.value.trim(),
+                    name: appNameInput.value,
+                    developer: appDeveloperInput.value,
+                    version: appVersionInput.value,
+                    description: appDescriptionInput.value,
+                    image: imageUrlInput.value,
+                    downloadlink: downloadLinkInput.value,
                     categories: selectedCategories.join(','),
                     updatedate: new Date().toLocaleDateString('vi-VN')
                 };
                 
-                console.log('📤 Đang upload dữ liệu:', appData);
+                console.log('Dữ liệu gửi đi:', appData);
                 
-                const result = await sendRequest(GOOGLE_SCRIPT_URL, {
+                // Gửi dữ liệu đến Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1048,137 +662,63 @@
                     })
                 });
                 
-                console.log('📥 Kết quả upload:', result);
+                const result = await response.json();
                 
                 if (result.success) {
-                    showMessage('success', `✅ ${result.message} (ID: ${result.appId})`);
+                    showSuccess();
                     uploadForm.reset();
                     updatePreview();
-                    
-                    // Tải lại danh sách
-                    await loadApps();
                 } else {
                     throw new Error(result.message || 'Không thể upload ứng dụng');
                 }
                 
             } catch (error) {
-                console.error('❌ Lỗi upload:', error);
-                showMessage('error', `❌ Lỗi upload: ${error.message}`);
+                console.error('Lỗi khi upload ứng dụng:', error);
+                showError('Lỗi kết nối: ' + error.message + '. Vui lòng kiểm tra URL Script và tạo triển khai mới.');
             } finally {
+                // Kích hoạt lại nút submit
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Tải ứng dụng lên';
             }
         });
 
-        // Xử lý xoá ứng dụng
-        deleteBtn.addEventListener('click', async function() {
-            const selectedAppId = appList.value;
-            if (!selectedAppId) {
-                showMessage('error', 'Vui lòng chọn ứng dụng để xoá');
-                return;
-            }
-
-            const selectedApp = allApps.find(app => app.id == selectedAppId);
-            if (!selectedApp) {
-                showMessage('error', 'Không tìm thấy ứng dụng được chọn');
-                return;
-            }
-
-            if (!confirm(`Bạn có CHẮC CHẮN muốn xoá ứng dụng:\n\n"${selectedApp.name}"\nPhiên bản: ${selectedApp.version}\nNhà phát triển: ${selectedApp.developer}\n\nHành động này không thể hoàn tác!`)) {
-                return;
-            }
-
-            // Disable button và hiển thị loading
-            const originalText = deleteBtn.innerHTML;
-            deleteBtn.disabled = true;
-            deleteBtn.innerHTML = '<div class="loading-spinner"></div> Đang xoá...';
-
-            try {
-                console.log('🗑️ Đang xoá app với ID:', selectedAppId);
-                
-                const result = await sendRequest(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'deleteApp',
-                        appId: selectedAppId
-                    })
-                });
-
-                console.log('📥 Kết quả xoá:', result);
-                
-                if (result.success) {
-                    showMessage('success', `✅ ${result.message}`);
-                    await loadApps();
-                } else {
-                    throw new Error(result.message || 'Lỗi không xác định khi xoá');
-                }
-            } catch (error) {
-                console.error('❌ Lỗi xoá:', error);
-                showMessage('error', `❌ Lỗi khi xoá: ${error.message}`);
-            } finally {
-                deleteBtn.disabled = false;
-                deleteBtn.innerHTML = originalText;
-            }
-        });
-
-        // ==================== INITIALIZATION ====================
-
-        // Khởi tạo event listeners
-        function initializeEventListeners() {
-            // Preview updates
-            imageUrlInput.addEventListener('input', updatePreview);
-            appNameInput.addEventListener('input', updatePreview);
-            appDeveloperInput.addEventListener('input', updatePreview);
-            appVersionInput.addEventListener('input', updatePreview);
-            appDescriptionInput.addEventListener('input', updatePreview);
+        // Hiển thị thông báo thành công
+        function showSuccess() {
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
             
-            // Category changes
-            categoryCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updatePreview);
-            });
-
-            // Refresh button (ẩn)
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.key === 'r') {
-                    e.preventDefault();
-                    location.reload();
-                }
-            });
+            // Ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
         }
 
-        // Khởi tạo ứng dụng
-        async function initializeApp() {
-            console.log('🚀 Đang khởi tạo Admin Panel...');
+        // Hiển thị thông báo lỗi
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
             
-            // Khởi tạo event listeners
-            initializeEventListeners();
-            
-            // Cập nhật preview ban đầu
-            updatePreview();
-            
-            // Kiểm tra kết nối
-            const connected = await checkConnection();
-            
-            if (connected) {
-                // Tải danh sách ứng dụng
-                await loadApps();
-                showMessage('success', '✅ Hệ thống đã sẵn sàng!');
-            } else {
-                showMessage('error', '❌ Không thể kết nối đến server. Vui lòng kiểm tra kết nối internet và thử lại.');
-            }
+            // Ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
         }
 
-        // Khởi chạy khi trang loaded
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
-        // Global error handler
-        window.addEventListener('error', function(e) {
-            console.error('💥 Global error:', e.error);
+        // Thêm sự kiện cho các input để cập nhật preview
+        imageUrlInput.addEventListener('input', updatePreview);
+        appNameInput.addEventListener('input', updatePreview);
+        appDeveloperInput.addEventListener('input', updatePreview);
+        appVersionInput.addEventListener('input', updatePreview);
+        appDescriptionInput.addEventListener('input', updatePreview);
+        
+        // Thêm sự kiện cho các checkbox danh mục
+        categoryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updatePreview);
         });
 
+        // Khởi tạo preview khi trang được tải
+        document.addEventListener('DOMContentLoaded', updatePreview);
     </script>
 </body>
 </html>
