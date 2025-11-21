@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kho Ứng Dụng Premium</title>
+    <title>Admin Panel - Upload Ứng Dụng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -25,22 +25,25 @@
             --text-muted: #94a3b8;
             --border: #e2e8f0;
             --success: #10b981;
+            --danger: #ef4444;
             --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --nav-height: 60px;
         }
 
         body {
             background: var(--background);
             color: var(--text-primary);
             line-height: 1.5;
-            padding-bottom: var(--nav-height);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 0 16px;
+            flex: 1;
         }
 
         /* Header */
@@ -81,216 +84,201 @@
             color: white;
         }
 
-        .search-bar {
+        .back-btn {
             display: flex;
             align-items: center;
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 8px 16px;
-            flex: 1;
-            max-width: 400px;
-            margin: 0 20px;
-            gap: 8px;
-        }
-
-        .search-bar input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            color: var(--text-secondary);
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .icon-btn:hover {
-            background: var(--primary-light);
+            gap: 6px;
             color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+        .back-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* Main Content */
+        .main-content {
             padding: 40px 0;
-            margin-bottom: 24px;
-            border-radius: 0 0 24px 24px;
         }
 
-        .hero-content {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 24px;
+        .page-title {
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 12px;
-            line-height: 1.3;
+            margin-bottom: 8px;
+            text-align: center;
         }
 
-        .hero p {
-            font-size: 14px;
-            opacity: 0.9;
+        .page-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* Form */
+        .upload-form {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        .cta-button {
-            background: white;
-            color: var(--primary);
-            padding: 10px 20px;
-            border-radius: 20px;
-            text-decoration: none;
+        .form-label {
+            display: block;
             font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Categories */
-        .categories-section {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: between;
         }
 
-        .view-all {
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             font-size: 14px;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
+            transition: all 0.3s ease;
+            background: var(--background);
         }
 
-        .categories-scroll {
-            display: flex;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .categories-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
-            overflow-x: auto;
-            padding: 4px 0;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            margin-top: 8px;
         }
 
-        .categories-scroll::-webkit-scrollbar {
+        .category-checkbox {
             display: none;
         }
 
-        .category-card {
-            background: var(--surface);
+        .category-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 12px;
-            text-align: center;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex-shrink: 0;
-            width: 100px;
+            background: var(--background);
         }
 
-        .category-card:hover,
-        .category-card.active {
+        .category-label:hover {
             border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
         }
 
-        .category-card.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .category-icon {
-            font-size: 20px;
-            margin-bottom: 8px;
+        .category-checkbox:checked + .category-label {
+            background: var(--primary-light);
+            border-color: var(--primary);
             color: var(--primary);
         }
 
-        .category-card.active .category-icon {
+        .category-icon {
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
             color: white;
-        }
-
-        .category-name {
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
         }
 
-        /* Apps Grid */
-        .apps-section {
-            margin-bottom: 24px;
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
+        .submit-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .app-card {
+        /* Delete Section */
+        .delete-section {
+            margin-top: 40px;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Preview */
+        .preview-section {
+            margin-top: 32px;
+        }
+
+        .preview-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .preview-card {
             background: var(--surface);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
             border: 1px solid var(--border);
+            max-width: 300px;
+            margin: 0 auto;
         }
 
-        .app-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .app-image {
+        .preview-image {
             width: 100%;
-            height: 100px;
+            height: 150px;
             object-fit: cover;
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        .app-content {
-            padding: 12px;
+        .preview-content {
+            padding: 16px;
         }
 
-        .app-header {
+        .preview-header {
             display: flex;
             align-items: flex-start;
             gap: 8px;
             margin-bottom: 8px;
         }
 
-        .app-icon {
+        .preview-icon {
             width: 40px;
             height: 40px;
             border-radius: 10px;
@@ -298,12 +286,12 @@
             flex-shrink: 0;
         }
 
-        .app-info {
+        .preview-info {
             flex: 1;
             min-width: 0;
         }
 
-        .app-name {
+        .preview-name {
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 2px;
@@ -313,7 +301,7 @@
             text-overflow: ellipsis;
         }
 
-        .app-developer {
+        .preview-developer {
             color: var(--text-secondary);
             font-size: 11px;
             margin-bottom: 4px;
@@ -322,14 +310,14 @@
             text-overflow: ellipsis;
         }
 
-        .app-meta {
+        .preview-meta {
             display: flex;
             gap: 8px;
             font-size: 10px;
             color: var(--text-muted);
         }
 
-        .app-description {
+        .preview-description {
             color: var(--text-secondary);
             font-size: 11px;
             line-height: 1.4;
@@ -340,14 +328,14 @@
             overflow: hidden;
         }
 
-        .app-tags {
+        .preview-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
             margin-bottom: 8px;
         }
 
-        .app-tag {
+        .preview-tag {
             background: var(--primary-light);
             color: var(--primary);
             padding: 2px 6px;
@@ -356,203 +344,70 @@
             font-weight: 500;
         }
 
-        .app-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Messages */
+        .message {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
         }
 
-        .app-price {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 12px;
+        .message-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
-        .download-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
+        .message-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
-        .download-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Featured Section */
-        .featured-section {
-            margin-bottom: 24px;
-        }
-
-        .featured-card {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 16px;
-            padding: 20px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .featured-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 12px;
-            display: inline-block;
-        }
-
-        .featured-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .featured-description {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .featured-image {
-            position: absolute;
-            right: 20px;
-            bottom: 20px;
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--background);
+        /* Footer */
+        .footer {
+            background: var(--surface);
             border-top: 1px solid var(--border);
-            padding: 8px 0;
-            z-index: 1000;
+            padding: 20px 0;
+            margin-top: 40px;
         }
 
-        .nav-items {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            flex: 1;
-            padding: 8px 0;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 10px;
-            font-weight: 500;
-        }
-
-        /* Loading */
-        .loading {
+        .footer-content {
             text-align: center;
-            padding: 40px 20px;
             color: var(--text-secondary);
-        }
-
-        .loading-spinner {
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            font-size: 14px;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .search-bar {
-                margin: 0 12px;
-            }
-            
-            .hero h1 {
-                font-size: 22px;
-            }
-            
-            .apps-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 12px;
-            }
-            
-            .featured-image {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        @media (max-width: 480px) {
             .container {
                 padding: 0 12px;
             }
             
-            .logo {
-                font-size: 18px;
+            .page-title {
+                font-size: 24px;
             }
             
-            .logo-icon {
-                width: 28px;
-                height: 28px;
+            .upload-form {
+                padding: 20px;
             }
             
-            .search-bar {
-                margin: 0 8px;
-                padding: 6px 12px;
-            }
-            
-            .hero {
-                padding: 32px 0;
-            }
-            
-            .hero h1 {
-                font-size: 20px;
-            }
-            
-            .apps-grid {
+            .categories-group {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 22px;
             }
             
-            .category-card {
-                width: 90px;
-                padding: 12px 8px;
+            .upload-form {
+                padding: 16px;
+            }
+            
+            .categories-group {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -568,281 +423,190 @@
                     </div>
                     APP PREMIUM
                 </a>
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm ứng dụng...">
-                </div>
-                <div class="user-actions">
-                    <button class="icon-btn">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                </div>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại trang chủ
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Khám phá ứng dụng tuyệt vời</h1>
-                <p>Tải về các ứng dụng và trò chơi hàng đầu được chọn lọc kỹ lưỡng</p>
-                <a href="#" class="cta-button">
-                    <i class="fas fa-download"></i>
-                    Bắt đầu ngay
-                </a>
-            </div>
-        </div>
-    </section>
-
     <!-- Main Content -->
     <main class="container">
-        <!-- Featured App -->
-        <section class="featured-section">
-            <div class="featured-card">
-                <div class="featured-badge">Ứng dụng nổi bật</div>
-                <h3 class="featured-title">XSPace Store</h3>
-                <p class="featured-description">Kho ứng dụng cao cấp với hàng ngàn app độc quyền</p>
-                <button class="download-btn">
-                    <i class="fas fa-download"></i>
-                    Khám phá ngay
+        <div class="main-content">
+            <h1 class="page-title">Admin Panel</h1>
+            <p class="page-subtitle">Upload ứng dụng lên kho ứng dụng</p>
+
+            <!-- Messages -->
+            <div id="successMessage" class="message message-success">
+                <i class="fas fa-check-circle"></i> Ứng dụng đã được upload thành công!
+            </div>
+            
+            <div id="errorMessage" class="message message-error">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Đã xảy ra lỗi khi upload ứng dụng.</span>
+            </div>
+
+            <!-- Upload Form -->
+            <form class="upload-form" id="uploadForm">
+                <div class="form-group">
+                    <label class="form-label" for="imageUrl">URL ảnh ứng dụng</label>
+                    <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-image.jpg" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appName">Tên ứng dụng</label>
+                    <input type="text" id="appName" class="form-input" placeholder="Nhập tên ứng dụng" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appDeveloper">Nhà phát triển</label>
+                    <input type="text" id="appDeveloper" class="form-input" placeholder="Nhập tên nhà phát triển" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appVersion">Phiên bản ứng dụng</label>
+                    <input type="text" id="appVersion" class="form-input" placeholder="Ví dụ: 1.0.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="appDescription">Mô tả ứng dụng</label>
+                    <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="downloadLink">Liên kết tải ứng dụng</label>
+                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Danh mục ứng dụng</label>
+                    <div class="categories-group">
+                        <input type="checkbox" id="category-game" class="category-checkbox" value="game">
+                        <label for="category-game" class="category-label">
+                            <i class="fas fa-gamepad category-icon"></i>
+                            <span>Trò chơi</span>
+                        </label>
+
+                        <input type="checkbox" id="category-social" class="category-checkbox" value="social">
+                        <label for="category-social" class="category-label">
+                            <i class="fas fa-users category-icon"></i>
+                            <span>Mạng xã hội</span>
+                        </label>
+
+                        <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
+                        <label for="category-photo" class="category-label">
+                            <i class="fas fa-camera category-icon"></i>
+                            <span>Chụp ảnh</span>
+                        </label>
+
+                        <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
+                        <label for="category-clone" class="category-label">
+                            <i class="fas fa-copy category-icon"></i>
+                            <span>Nhân bản</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-upload"></i>
+                    Tải ứng dụng lên
                 </button>
-                <img src="https://i.imgur.com/1qBtbYR.png" 
-                     alt="XSPace Store" class="featured-image">
-            </div>
-        </section>
+            </form>
 
-        <!-- Categories -->
-        <section class="categories-section">
-            <div class="section-title">
-                <span>Thể loại</span>
-                <a href="#" class="view-all">Xem tất cả</a>
-            </div>
-            <div class="categories-scroll">
-                <div class="category-card active" data-category="all">
-                    <div class="category-icon">
-                        <i class="fas fa-star"></i>
+            <!-- Delete Section -->
+            <div class="delete-section">
+                <h3 class="preview-title">Quản lý ứng dụng</h3>
+                <div class="upload-form">
+                    <div class="form-group">
+                        <label class="form-label" for="appList">Danh sách ứng dụng</label>
+                        <select id="appList" class="form-input">
+                            <option value="">Chọn ứng dụng để xoá...</option>
+                        </select>
                     </div>
-                    <div class="category-name">Tất cả</div>
-                </div>
-                <div class="category-card" data-category="game">
-                    <div class="category-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="category-name">Trò chơi</div>
-                </div>
-                <div class="category-card" data-category="social">
-                    <div class="category-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="category-name">Mạng xã hội</div>
-                </div>
-                <div class="category-card" data-category="photo">
-                    <div class="category-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <div class="category-name">Chụp ảnh</div>
-                </div>
-                <div class="category-card" data-category="clone">
-                    <div class="category-icon">
-                        <i class="fas fa-copy"></i>
-                    </div>
-                    <div class="category-name">Nhân bản</div>
+                    <button type="button" class="submit-btn delete-btn" id="deleteBtn">
+                        <i class="fas fa-trash"></i>
+                        Xoá ứng dụng
+                    </button>
                 </div>
             </div>
-        </section>
 
-        <!-- Apps Section -->
-        <section class="apps-section">
-            <div class="section-title">
-                <span>Ứng dụng mới</span>
-                <a href="#" class="view-all">Xem thêm</a>
-            </div>
-            <div class="apps-grid" id="appsGrid">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Đang tải ứng dụng...</p>
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h3 class="preview-title">Xem trước ứng dụng</h3>
+                <div class="preview-card" id="appPreview">
+                    <img src="https://via.placeholder.com/300x150/2563eb/FFFFFF?text=Preview+Image" alt="Preview" class="preview-image" id="previewImage">
+                    <div class="preview-content">
+                        <div class="preview-header">
+                            <img src="https://via.placeholder.com/40/2563eb/FFFFFF?text=App" alt="App Icon" class="preview-icon" id="previewIcon">
+                            <div class="preview-info">
+                                <h3 class="preview-name" id="previewName">Tên ứng dụng</h3>
+                                <div class="preview-developer" id="previewDeveloper">Nhà phát triển</div>
+                                <div class="preview-meta">
+                                    <span id="previewVersion">Phiên bản</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
+                        <div class="preview-tags" id="previewTags">
+                            <!-- Tags will be added here -->
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Popular Games -->
-        <section class="apps-section">
-            <div class="section-title">
-                <span>Trò chơi phổ biến</span>
-                <a href="#" class="view-all">Xem thêm</a>
-            </div>
-            <div class="apps-grid" id="gamesGrid">
-                <!-- Games will be loaded here -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <div class="container">
-            <div class="nav-items">
-                <a href="#" class="nav-item active">
-                    <div class="nav-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <div class="nav-label">Trang chủ</div>
-                </a>
-                <a href="#" class="nav-item" id="todayTab">
-                    <div class="nav-icon">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div class="nav-label">Hôm nay</div>
-                </a>
-                <a href="#" class="nav-item" id="gamesTab">
-                    <div class="nav-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="nav-label">Trò chơi</div>
-                </a>
-                <a href="https://t.me/m/inBUSKQ1N2E1" class="nav-item" target="_blank">
-                    <div class="nav-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <div class="nav-label">Hỗ trợ</div>
-                </a>
             </div>
         </div>
-    </nav>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2023 Kho Ứng Dụng Premium. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0yJ_Eh9TClhpfyQBkY9LUxXIXD1zD2R2aeFsjuXCBH2yFj60M__UjHW8DHGYMGoSJSQ/exec';
 
-        const appsGrid = document.getElementById('appsGrid');
-        const gamesGrid = document.getElementById('gamesGrid');
-        const categoryCards = document.querySelectorAll('.category-card');
-        const todayTab = document.getElementById('todayTab');
-        const gamesTab = document.getElementById('gamesTab');
-        const navItems = document.querySelectorAll('.nav-item');
+        const uploadForm = document.getElementById('uploadForm');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const appNameInput = document.getElementById('appName');
+        const appDeveloperInput = document.getElementById('appDeveloper');
+        const appVersionInput = document.getElementById('appVersion');
+        const appDescriptionInput = document.getElementById('appDescription');
+        const downloadLinkInput = document.getElementById('downloadLink');
+        const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+        const submitBtn = document.getElementById('submitBtn');
+        const appList = document.getElementById('appList');
+        const deleteBtn = document.getElementById('deleteBtn');
+        
+        const previewImage = document.getElementById('previewImage');
+        const previewIcon = document.getElementById('previewIcon');
+        const previewName = document.getElementById('previewName');
+        const previewDeveloper = document.getElementById('previewDeveloper');
+        const previewVersion = document.getElementById('previewVersion');
+        const previewDescription = document.getElementById('previewDescription');
+        const previewTags = document.getElementById('previewTags');
+        
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
 
-        let currentCategory = 'all';
-        let currentView = 'home';
-        let allApps = [];
-
-        async function loadAppsFromSheets() {
-            try {
-                showLoading(appsGrid);
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    allApps = result.data;
-                    renderApps();
-                } else {
-                    throw new Error('Không thể tải dữ liệu');
-                }
-            } catch (error) {
-                console.error('Lỗi khi tải ứng dụng:', error);
-                appsGrid.innerHTML = '<div class="loading"><p>Lỗi khi tải ứng dụng. Vui lòng thử lại sau.</p></div>';
-            }
-        }
-
-        function showLoading(container) {
-            container.innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Đang tải ứng dụng...</p>
-                </div>
-            `;
-        }
-
-        categoryCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const category = this.dataset.category;
-                
-                currentCategory = category;
-                
-                categoryCards.forEach(c => {
-                    c.classList.toggle('active', c.dataset.category === category);
-                });
-                
-                renderApps();
-            });
-        });
-
-        navItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (this.href.includes('t.me')) return;
-                
-                e.preventDefault();
-                
-                navItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-                
-                const label = this.querySelector('.nav-label').textContent;
-                switch(label) {
-                    case 'Trang chủ':
-                        currentView = 'home';
-                        break;
-                    case 'Hôm nay':
-                        currentView = 'today';
-                        break;
-                    case 'Trò chơi':
-                        currentView = 'games';
-                        break;
-                }
-                
-                renderApps();
-            });
-        });
-
-        function renderApps() {
-            let filteredApps = allApps;
-            
-            switch(currentView) {
-                case 'today':
-                    const today = new Date().toLocaleDateString('vi-VN');
-                    filteredApps = allApps.filter(app => app.updatedate === today);
-                    break;
-                case 'games':
-                    filteredApps = allApps.filter(app => 
-                        app.categories && app.categories.includes('game')
-                    );
-                    break;
-                case 'home':
-                default:
-                    if (currentCategory !== 'all') {
-                        filteredApps = allApps.filter(app => 
-                            app.categories && app.categories.includes(currentCategory)
-                        );
-                    }
-                    break;
+        function updatePreview() {
+            if (imageUrlInput.value) {
+                previewImage.src = imageUrlInput.value;
+                previewIcon.src = imageUrlInput.value;
             }
             
-            displayApps(filteredApps, appsGrid);
-            
-            if (currentView === 'home') {
-                const games = allApps.filter(app => 
-                    app.categories && app.categories.includes('game')
-                );
-                displayApps(games, gamesGrid);
-            } else {
-                gamesGrid.innerHTML = '';
-            }
+            previewName.textContent = appNameInput.value || 'Tên ứng dụng';
+            previewDeveloper.textContent = appDeveloperInput.value || 'Nhà phát triển';
+            previewVersion.textContent = appVersionInput.value || 'Phiên bản';
+            previewDescription.textContent = appDescriptionInput.value || 'Mô tả ứng dụng sẽ hiển thị ở đây...';
+            updatePreviewTags();
         }
 
-        function displayApps(apps, container) {
-            container.innerHTML = '';
-            
-            if (apps.length === 0) {
-                container.innerHTML = '<div class="loading"><p>Không có ứng dụng nào.</p></div>';
-                return;
-            }
-            
-            apps.forEach(app => {
-                const appCard = createAppCard(app);
-                container.appendChild(appCard);
-            });
-        }
-
-        function createAppCard(app) {
-            const appCard = document.createElement('div');
-            appCard.className = 'app-card';
+        function updatePreviewTags() {
+            previewTags.innerHTML = '';
             
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -851,47 +615,171 @@
                 'clone': 'Nhân bản'
             };
             
-            let categories = [];
-            if (typeof app.categories === 'string') {
-                categories = app.categories.split(',');
-            } else if (Array.isArray(app.categories)) {
-                categories = app.categories;
-            }
-            
-            const tagsHTML = categories.map(cat => 
-                `<span class="app-tag">${categoryLabels[cat] || cat}</span>`
-            ).join('');
-            
-            appCard.innerHTML = `
-                <img src="${app.image}" alt="${app.name}" class="app-image" onerror="this.src='https://via.placeholder.com/300x200/2563eb/FFFFFF?text=App'">
-                <div class="app-content">
-                    <div class="app-header">
-                        <img src="${app.image}" alt="${app.name}" class="app-icon" onerror="this.src='https://via.placeholder.com/40/2563eb/FFFFFF?text=App'">
-                        <div class="app-info">
-                            <h3 class="app-name">${app.name}</h3>
-                            <div class="app-developer">${app.developer}</div>
-                            <div class="app-meta">
-                                <span>${app.updatedate || 'Chưa cập nhật'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-description">${app.description}</div>
-                    <div class="app-tags">${tagsHTML}</div>
-                    <div class="app-actions">
-                        <div class="app-price">Miễn phí</div>
-                        <button class="download-btn" onclick="window.location.href='app-detail.html?id=${app.id}'">
-                            <i class="fas fa-download"></i>
-                            Tải
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            return appCard;
+            categoryCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const tag = document.createElement('span');
+                    tag.className = 'preview-tag';
+                    tag.textContent = categoryLabels[checkbox.value] || checkbox.value;
+                    previewTags.appendChild(tag);
+                }
+            });
         }
 
+        function getSelectedCategories() {
+            const selectedCategories = [];
+            categoryCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedCategories.push(checkbox.value);
+                }
+            });
+            return selectedCategories;
+        }
+
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const selectedCategories = getSelectedCategories();
+            if (selectedCategories.length === 0) {
+                showError('Vui lòng chọn ít nhất một danh mục cho ứng dụng.');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
+            
+            try {
+                const appData = {
+                    name: appNameInput.value,
+                    developer: appDeveloperInput.value,
+                    version: appVersionInput.value,
+                    description: appDescriptionInput.value,
+                    image: imageUrlInput.value,
+                    downloadlink: downloadLinkInput.value,
+                    categories: selectedCategories.join(','),
+                    updatedate: new Date().toLocaleDateString('vi-VN')
+                };
+                
+                console.log('Dữ liệu gửi đi:', appData);
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addApp',
+                        data: appData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess();
+                    uploadForm.reset();
+                    updatePreview();
+                    loadAppsForDelete();
+                } else {
+                    throw new Error(result.message || 'Không thể upload ứng dụng');
+                }
+                
+            } catch (error) {
+                console.error('Lỗi khi upload ứng dụng:', error);
+                showError('Lỗi kết nối: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Tải ứng dụng lên';
+            }
+        });
+
+        async function loadAppsForDelete() {
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    appList.innerHTML = '<option value="">Chọn ứng dụng để xoá...</option>';
+                    result.data.forEach(app => {
+                        const option = document.createElement('option');
+                        option.value = app.id;
+                        option.textContent = `${app.name} (${app.developer}) - ${app.version}`;
+                        appList.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải danh sách ứng dụng:', error);
+            }
+        }
+
+        deleteBtn.addEventListener('click', async function() {
+            const selectedAppId = appList.value;
+            if (!selectedAppId) {
+                alert('Vui lòng chọn ứng dụng để xoá');
+                return;
+            }
+
+            if (!confirm('Bạn có chắc chắn muốn xoá ứng dụng này?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'deleteApp',
+                        appId: selectedAppId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Đã xoá ứng dụng thành công');
+                    loadAppsForDelete();
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Lỗi khi xoá ứng dụng:', error);
+                alert('Lỗi khi xoá ứng dụng: ' + error.message);
+            }
+        });
+
+        function showSuccess() {
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        imageUrlInput.addEventListener('input', updatePreview);
+        appNameInput.addEventListener('input', updatePreview);
+        appDeveloperInput.addEventListener('input', updatePreview);
+        appVersionInput.addEventListener('input', updatePreview);
+        appDescriptionInput.addEventListener('input', updatePreview);
+        
+        categoryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updatePreview);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
-            loadAppsFromSheets();
+            updatePreview();
+            loadAppsForDelete();
         });
     </script>
 </body>
