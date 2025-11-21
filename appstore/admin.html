@@ -481,6 +481,12 @@
                 <div class="form-group">
                     <label class="form-label">Danh mục ứng dụng</label>
                     <div class="categories-group">
+                        <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
+<label for="category-entertainment" class="category-label">
+    <i class="fas fa-film category-icon"></i>
+    <span>Giải trí</span>
+</label>
+                        
                         <input type="checkbox" id="category-game" class="category-checkbox" value="game">
                         <label for="category-game" class="category-label">
                             <i class="fas fa-gamepad category-icon"></i>
@@ -608,12 +614,13 @@
         function updatePreviewTags() {
             previewTags.innerHTML = '';
             
-            const categoryLabels = {
-                'game': 'Trò chơi',
-                'social': 'Mạng xã hội',
-                'photo': 'Chụp ảnh',
-                'clone': 'Nhân bản'
-            };
+           const categoryLabels = {
+    'game': 'Trò chơi',
+    'social': 'Mạng xã hội',
+    'entertainment': 'Giải trí',
+    'photo': 'Chụp ảnh',
+    'clone': 'Nhân bản'
+};
             
             categoryCheckboxes.forEach(checkbox => {
                 if (checkbox.checked) {
