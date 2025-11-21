@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết ứng dụng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --secondary: #f59e0b;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* App Detail */
+        .app-detail {
+            padding: 40px 0;
+        }
+
+        .app-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+
+        .app-icon-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            flex: 1;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .app-developer {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .app-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .app-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .download-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .download-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .download-btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .download-btn-secondary:hover {
+            background: var(--border);
+            transform: translateY(-2px);
+        }
+
+        /* Description Section */
+        .description-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .app-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+
+        /* Screenshots */
+        .screenshots-section {
+            margin-bottom: 30px;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .screenshot {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: var(--surface);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .app-icon-large {
+                align-self: center;
+            }
+            
+            .download-options {
+                flex-direction: column;
+            }
+            
+            .download-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    APP PREMIUM
+                </a>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Detail -->
+    <main class="container">
+        <div class="app-detail">
+            <div id="appContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Đang tải thông tin ứng dụng...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0yJ_Eh9TClhpfyQBkY9LUxXIXD1zD2R2aeFsjuXCBH2yFj60M__UjHW8DHGYMGoSJSQ/exec';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('id');
+
+        async function loadAppDetail() {
+            if (!appId) {
+                document.getElementById('appContent').innerHTML = '<div class="loading"><p>Không tìm thấy ứng dụng</p></div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const app = result.data.find(app => app.id == appId);
+                    if (app) {
+                        displayAppDetail(app);
+                    } else {
+                        document.getElementById('appContent').innerHTML = '<div class="loading"><p>Không tìm thấy ứng dụng</p></div>';
+                    }
+                } else {
+                    throw new Error('Không thể tải dữ liệu');
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải ứng dụng:', error);
+                document.getElementById('appContent').innerHTML = '<div class="loading"><p>Lỗi khi tải ứng dụng</p></div>';
+            }
+        }
+
+        function displayAppDetail(app) {
+            const categoryLabels = {
+                'game': 'Trò chơi',
+                'social': 'Mạng xã hội',
+                'photo': 'Chụp ảnh',
+                'clone': 'Nhân bản'
+            };
+
+            let categories = [];
+            if (typeof app.categories === 'string') {
+                categories = app.categories.split(',');
+            } else if (Array.isArray(app.categories)) {
+                categories = app.categories;
+            }
+
+            const tagsHTML = categories.map(cat => 
+                `<span class="app-tag">${categoryLabels[cat] || cat}</span>`
+            ).join('');
+
+            document.getElementById('appContent').innerHTML = `
+                <div class="app-header">
+                    <img src="${app.image}" alt="${app.name}" class="app-icon-large" onerror="this.src='https://via.placeholder.com/100/2563eb/FFFFFF?text=App'">
+                    <div class="app-info">
+                        <h1 class="app-title">${app.name}</h1>
+                        <div class="app-developer">${app.developer}</div>
+                        <div class="app-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Phiên bản</span>
+                                <span class="meta-value">${app.version}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Cập nhật</span>
+                                <span class="meta-value">${app.updatedate || 'Chưa cập nhật'}</span>
+                            </div>
+                        </div>
+                        <div class="app-tags">${tagsHTML}</div>
+                    </div>
+                </div>
+
+                <div class="download-section">
+                    <h2 class="download-title">Tải ứng dụng</h2>
+                    <div class="download-options">
+                        <button class="download-btn" onclick="downloadApp('${app.downloadlink}')">
+                            <i class="fas fa-download"></i>
+                            Tải miễn phí
+                        </button>
+                        <button class="download-btn download-btn-secondary" onclick="buyPremium()">
+                            <i class="fas fa-crown"></i>
+                            Mua bản Premium
+                        </button>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h2 class="section-title">Mô tả ứng dụng</h2>
+                    <div class="app-description">${app.description}</div>
+                </div>
+
+                <div class="screenshots-section">
+                    <h2 class="section-title">Hình ảnh</h2>
+                    <div class="screenshots-grid">
+                        <img src="${app.image}" alt="Screenshot 1" class="screenshot" onerror="this.src='https://via.placeholder.com/300x400/2563eb/FFFFFF?text=Screenshot'">
+                        <img src="${app.image}" alt="Screenshot 2" class="screenshot" onerror="this.src='https://via.placeholder.com/300x400/2563eb/FFFFFF?text=Screenshot'">
+                        <img src="${app.image}" alt="Screenshot 3" class="screenshot" onerror="this.src='https://via.placeholder.com/300x400/2563eb/FFFFFF?text=Screenshot'">
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadApp(downloadLink) {
+            if (downloadLink && downloadLink !== '#' && downloadLink !== '') {
+                window.open(downloadLink, '_blank');
+            } else {
+                alert('Link tải ứng dụng đang được cập nhật...');
+            }
+        }
+
+        function buyPremium() {
+            window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAppDetail);
+    </script>
+</body>
+</html>
