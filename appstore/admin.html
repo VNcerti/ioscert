@@ -454,7 +454,7 @@
     </footer>
 
     <script>
-        // URL Google Apps Script của bạn - ĐÃ SỬA
+        // URL Google Apps Script của bạn
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd5Fv6YC_VAx3rVYO7TnwPpiGYjhefyWAinNXc7dCNQ_4ygIn1OkggsB0l6pGuUIy7Vg/exec';
 
         // Thông tin đăng nhập admin
@@ -469,8 +469,8 @@
         const cancelBtn = document.getElementById('cancelBtn');
         const appsList = document.getElementById('appsList');
         
-        // Kiểm tra trạng thái đăng nhập - SỬA LẠI: LUÔN BẮT ĐĂNG NHẬP
-        let isLoggedIn = false; // Luôn bắt đầu với false
+        // Kiểm tra trạng thái đăng nhập
+        let isLoggedIn = false;
         
         // Sự kiện đăng nhập
         loginForm.addEventListener('submit', function(e) {
@@ -487,7 +487,6 @@
                 document.getElementById('loginError').style.display = 'none';
             } else {
                 document.getElementById('loginError').style.display = 'block';
-                // Reset form
                 document.getElementById('password').value = '';
             }
         });
@@ -500,7 +499,7 @@
             });
         });
         
-        // Sự kiện submit form admin - ĐÃ THÊM DEBUG
+        // Sự kiện submit form admin - ĐÃ SỬA LỖI
         adminForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -531,7 +530,7 @@
                 
                 console.log('Đang gửi dữ liệu app:', appData);
                 
-                // Gửi dữ liệu đến Google Sheets
+                // Gửi dữ liệu đến Google Sheets - SỬA LẠI CÁCH NÀY
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
@@ -544,6 +543,10 @@
                 });
                 
                 console.log('Phản hồi từ server:', response);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
                 const result = await response.json();
                 console.log('Kết quả:', result);
@@ -583,7 +586,15 @@
         async function loadAppsList() {
             try {
                 showLoading(appsList);
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
+                
+                // THÊM TIMESTAMP ĐỂ TRÁNH CACHE
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${timestamp}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {
@@ -681,7 +692,7 @@
             }
         });
 
-        // KIỂM TRA ĐĂNG NHẬP KHI TRANG LOAD - SỬA LẠI
+        // KIỂM TRA ĐĂNG NHẬP KHI TRANG LOAD
         document.addEventListener('DOMContentLoaded', function() {
             const savedLogin = localStorage.getItem('isAdminLoggedIn');
             if (savedLogin === 'true') {
