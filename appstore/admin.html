@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Upload Ứng Dụng</title>
-      <link rel="icon" href="https://i.imgur.com/k0zikhA.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* GIỮ NGUYÊN CSS */
         * {
             margin: 0;
             padding: 0;
@@ -237,6 +237,10 @@
 
         .delete-btn:hover {
             background: #dc2626;
+        }
+
+        .delete-btn:disabled {
+            background: var(--text-muted);
         }
 
         /* Preview */
@@ -477,17 +481,14 @@
                 <div class="form-group">
                     <label class="form-label" for="downloadLink">Liên kết tải ứng dụng</label>
                     <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
+                    <small style="color: var(--text-muted); font-size: 12px; margin-top: 4px; display: block;">
+                        ⚠️ Không sử dụng link GitHub. Phải là link trực tiếp đến file download.
+                    </small>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Danh mục ứng dụng</label>
                     <div class="categories-group">
-                        <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
-<label for="category-entertainment" class="category-label">
-    <i class="fas fa-film category-icon"></i>
-    <span>Giải trí</span>
-</label>
-                        
                         <input type="checkbox" id="category-game" class="category-checkbox" value="game">
                         <label for="category-game" class="category-label">
                             <i class="fas fa-gamepad category-icon"></i>
@@ -498,6 +499,12 @@
                         <label for="category-social" class="category-label">
                             <i class="fas fa-users category-icon"></i>
                             <span>Mạng xã hội</span>
+                        </label>
+
+                        <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
+                        <label for="category-entertainment" class="category-label">
+                            <i class="fas fa-film category-icon"></i>
+                            <span>Giải trí</span>
                         </label>
 
                         <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
@@ -573,7 +580,7 @@
     </footer>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0yJ_Eh9TClhpfyQBkY9LUxXIXD1zD2R2aeFsjuXCBH2yFj60M__UjHW8DHGYMGoSJSQ/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxj9UqT6OSwIcl9Uh3qjkYOViuVD1kWecurJT9XAkfiKTd3PCEE4j6Wr7EFUyXeoHR5Aw/exec';
 
         const uploadForm = document.getElementById('uploadForm');
         const imageUrlInput = document.getElementById('imageUrl');
@@ -615,13 +622,13 @@
         function updatePreviewTags() {
             previewTags.innerHTML = '';
             
-           const categoryLabels = {
-    'game': 'Trò chơi',
-    'social': 'Mạng xã hội',
-    'entertainment': 'Giải trí',
-    'photo': 'Chụp ảnh',
-    'clone': 'Nhân bản'
-};
+            const categoryLabels = {
+                'game': 'Trò chơi',
+                'social': 'Mạng xã hội',
+                'entertainment': 'Giải trí',
+                'photo': 'Chụp ảnh',
+                'clone': 'Nhân bản'
+            };
             
             categoryCheckboxes.forEach(checkbox => {
                 if (checkbox.checked) {
@@ -645,6 +652,18 @@
 
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Validate link download
+            const downloadLink = downloadLinkInput.value;
+            if (downloadLink.includes('github.com')) {
+                showError('Link download không được trỏ đến GitHub. Vui lòng sử dụng link trực tiếp đến file.');
+                return;
+            }
+            
+            if (!downloadLink.startsWith('http://') && !downloadLink.startsWith('https://')) {
+                showError('Link download phải bắt đầu với http:// hoặc https://');
+                return;
+            }
             
             const selectedCategories = getSelectedCategories();
             if (selectedCategories.length === 0) {
@@ -726,11 +745,17 @@
                 return;
             }
 
-            if (!confirm('Bạn có chắc chắn muốn xoá ứng dụng này?')) {
+            const selectedAppText = appList.options[appList.selectedIndex].text;
+            if (!confirm(`Bạn có chắc chắn muốn xoá ứng dụng:\n"${selectedAppText}"?`)) {
                 return;
             }
 
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xoá...';
+
             try {
+                console.log('Đang xoá app với ID:', selectedAppId);
+                
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
@@ -742,17 +767,25 @@
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const result = await response.json();
+                console.log('Kết quả xoá:', result);
                 
                 if (result.success) {
-                    alert('Đã xoá ứng dụng thành công');
+                    alert('✅ Đã xoá ứng dụng thành công');
                     loadAppsForDelete();
                 } else {
-                    throw new Error(result.message);
+                    throw new Error(result.message || 'Lỗi không xác định khi xoá');
                 }
             } catch (error) {
                 console.error('Lỗi khi xoá ứng dụng:', error);
-                alert('Lỗi khi xoá ứng dụng: ' + error.message);
+                alert('❌ Lỗi khi xoá ứng dụng: ' + error.message);
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Xoá ứng dụng';
             }
         });
 
