@@ -455,12 +455,8 @@
 
     <script>
         // URL Google Apps Script của bạn
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd5Fv6YC_VAx3rVYO7TnwPpiGYjhefyWAinNXc7dCNQ_4ygIn1OkggsB0l6pGuUIy7Vg/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS67O5WI305zC7wDJzrtFanv0zffmpE1Bf1KZwqaNexWBX2CeJ-G8Zgx4EyjuNiBK9/exec';
 
-        // Thông tin đăng nhập admin
-        const ADMIN_USERNAME = 'Tunglam@376';
-        const ADMIN_PASSWORD = 'Tunglam@376';
-        
         // Lấy các phần tử DOM
         const loginSection = document.getElementById('loginSection');
         const adminPanel = document.getElementById('adminPanel');
@@ -468,29 +464,48 @@
         const adminForm = document.getElementById('adminForm');
         const cancelBtn = document.getElementById('cancelBtn');
         const appsList = document.getElementById('appsList');
-        
-        // Kiểm tra trạng thái đăng nhập
-        let isLoggedIn = false;
-        
+
+        // Biến lưu trạng thái
+        let sessionToken = '';
+
         // Sự kiện đăng nhập
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                isLoggedIn = true;
-                localStorage.setItem('isAdminLoggedIn', 'true');
-                loginSection.style.display = 'none';
-                adminPanel.style.display = 'block';
-                loadAppsList();
-                document.getElementById('loginError').style.display = 'none';
-            } else {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    sessionToken = result.token;
+                    localStorage.setItem('adminSession', sessionToken);
+                    loginSection.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    loadAppsList();
+                    document.getElementById('loginError').style.display = 'none';
+                } else {
+                    document.getElementById('loginError').style.display = 'block';
+                    document.getElementById('password').value = '';
+                }
+            } catch (error) {
                 document.getElementById('loginError').style.display = 'block';
                 document.getElementById('password').value = '';
             }
         });
-        
+
         // Sự kiện hủy form admin
         cancelBtn.addEventListener('click', function() {
             adminForm.reset();
@@ -498,8 +513,8 @@
                 checkbox.checked = false;
             });
         });
-        
-        // Sự kiện submit form admin - ĐÃ SỬA LỖI
+
+        // Sự kiện submit form admin
         adminForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -528,9 +543,7 @@
                 // Hiển thị loading
                 showLoading(appsList);
                 
-                console.log('Đang gửi dữ liệu app:', appData);
-                
-                // Gửi dữ liệu đến Google Sheets - SỬA LẠI CÁCH NÀY
+                // Gửi dữ liệu đến Google Sheets với token xác thực
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
@@ -538,18 +551,16 @@
                     },
                     body: JSON.stringify({
                         action: 'addApp',
+                        token: sessionToken,
                         data: appData
                     })
                 });
-                
-                console.log('Phản hồi từ server:', response);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('Kết quả:', result);
                 
                 if (result.success) {
                     // Reset form
@@ -571,7 +582,7 @@
                 loadAppsList();
             }
         });
-        
+
         // Hiển thị loading
         function showLoading(container) {
             container.innerHTML = `
@@ -581,13 +592,12 @@
                 </div>
             `;
         }
-        
+
         // Tải danh sách ứng dụng từ Google Sheets
         async function loadAppsList() {
             try {
                 showLoading(appsList);
                 
-                // THÊM TIMESTAMP ĐỂ TRÁNH CACHE
                 const timestamp = new Date().getTime();
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${timestamp}`);
                 
@@ -607,7 +617,7 @@
                 appsList.innerHTML = '<p>❌ Lỗi khi tải danh sách ứng dụng. Vui lòng thử lại sau.</p>';
             }
         }
-        
+
         // Hiển thị danh sách ứng dụng
         function displayAppsList(appsData) {
             appsList.innerHTML = '';
@@ -622,7 +632,7 @@
                 appsList.appendChild(appCard);
             });
         }
-        
+
         // Tạo card quản lý ứng dụng
         function createAppManagementCard(app) {
             const card = document.createElement('div');
@@ -655,7 +665,7 @@
             
             return card;
         }
-        
+
         // Sự kiện xóa ứng dụng
         document.addEventListener('click', async function(e) {
             if (e.target.classList.contains('delete-btn')) {
@@ -670,6 +680,7 @@
                             },
                             body: JSON.stringify({
                                 action: 'deleteApp',
+                                token: sessionToken,
                                 data: {
                                     id: appId
                                 }
@@ -694,18 +705,48 @@
 
         // KIỂM TRA ĐĂNG NHẬP KHI TRANG LOAD
         document.addEventListener('DOMContentLoaded', function() {
-            const savedLogin = localStorage.getItem('isAdminLoggedIn');
-            if (savedLogin === 'true') {
-                // Vẫn hiển thị login form, yêu cầu đăng nhập lại
-                loginSection.style.display = 'block';
-                adminPanel.style.display = 'none';
-                // Xóa trạng thái đăng nhập cũ
-                localStorage.removeItem('isAdminLoggedIn');
+            const savedSession = localStorage.getItem('adminSession');
+            if (savedSession) {
+                // Kiểm tra session còn hợp lệ không
+                checkSession(savedSession);
             } else {
                 loginSection.style.display = 'block';
                 adminPanel.style.display = 'none';
             }
         });
+
+        // Kiểm tra session
+        async function checkSession(token) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'checkSession',
+                        token: token
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    sessionToken = token;
+                    loginSection.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    loadAppsList();
+                } else {
+                    localStorage.removeItem('adminSession');
+                    loginSection.style.display = 'block';
+                    adminPanel.style.display = 'none';
+                }
+            } catch (error) {
+                localStorage.removeItem('adminSession');
+                loginSection.style.display = 'block';
+                adminPanel.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
