@@ -1056,7 +1056,7 @@
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
                 // Hiển thị thông báo
-                if (confirm(`Bạn sắp tải xuống ứng dụng: ${appName}\n\nTiếp tục tải xuống?`)) {
+                if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA`)) {
                     // Mở link trong tab mới
                     window.open(downloadLink, '_blank');
                     
