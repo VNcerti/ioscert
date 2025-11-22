@@ -285,6 +285,7 @@
             box-shadow: var(--card-shadow-hover);
         }
 
+        /* ĐÃ SỬA: Logo căn giữa và không bị thụt xuống */
         .app-logo {
             width: 90px;
             height: 90px;
@@ -292,6 +293,7 @@
             object-fit: contain;
             flex-shrink: 0;
             padding: 4px;
+            align-self: center; /* Thêm dòng này để căn giữa theo chiều dọc */
         }
 
         .app-content {
@@ -305,7 +307,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 6px;
+            margin-bottom: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
         }
 
         .app-info {
@@ -327,7 +329,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
-            margin-bottom: 6px;
+            margin-bottom: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
         }
 
         .app-tag {
@@ -344,7 +346,7 @@
             gap: 12px;
             font-size: 10px;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 2px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
         }
 
         .app-meta-item {
@@ -358,6 +360,7 @@
             width: 12px;
         }
 
+        /* ĐÃ SỬA: Mô tả dịch sát lên trên hơn */
         .app-description {
             color: var(--text-secondary);
             font-size: 11px;
@@ -367,12 +370,13 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             flex: 1;
+            margin-top: 2px; /* ĐÃ SỬA: Thêm margin-top nhỏ để gần hơn với phần trên */
         }
 
         .app-actions {
             display: flex;
             justify-content: flex-end;
-            margin-top: 6px;
+            margin-top: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
         }
 
         .download-btn {
@@ -437,6 +441,65 @@
             width: 50px;
             height: 50px;
             border-radius: 10px;
+        }
+
+        /* Search Modal */
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .search-modal-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--background);
+            border-radius: 0 0 20px 20px;
+            padding: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-modal-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--surface);
+            outline: none;
+        }
+
+        .search-modal-input:focus {
+            border-color: var(--primary);
+        }
+
+        .close-search {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .search-results {
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         /* Bottom Navigation */
@@ -539,13 +602,14 @@
             width: 90px;
             height: 90px;
             border-radius: 21px;
+            align-self: center; /* ĐÃ SỬA: Căn giữa skeleton logo */
         }
 
         .skeleton-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px; /* ĐÃ SỬA: Giảm khoảng cách giữa các phần tử skeleton */
         }
 
         .skeleton-title {
@@ -676,6 +740,10 @@
                 width: 65px;
                 padding: 8px 6px;
             }
+
+            .nav-label {
+                font-size: 8px;
+            }
         }
     </style>
 </head>
@@ -803,6 +871,21 @@
         </section>
     </main>
 
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-content">
+            <div class="search-modal-header">
+                <button class="close-search" id="closeSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+                <input type="text" class="search-modal-input" id="searchModalInput" placeholder="Tìm kiếm ứng dụng...">
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
+            </div>
+        </div>
+    </div>
+
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="container">
@@ -818,6 +901,12 @@
                         <i class="fas fa-calendar-day"></i>
                     </div>
                     <div class="nav-label">Hôm nay</div>
+                </a>
+                <a href="#" class="nav-item" data-view="search" id="searchNavItem">
+                    <div class="nav-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="nav-label">Tìm kiếm</div>
                 </a>
                 <a href="#" class="nav-item" data-view="games">
                     <div class="nav-icon">
@@ -848,6 +937,11 @@
         const searchInput = document.getElementById('searchInput');
         const categoryCards = document.querySelectorAll('.category-card');
         const navItems = document.querySelectorAll('.nav-item[data-view]');
+        const searchModal = document.getElementById('searchModal');
+        const searchModalInput = document.getElementById('searchModalInput');
+        const closeSearch = document.getElementById('closeSearch');
+        const searchResults = document.getElementById('searchResults');
+        const searchNavItem = document.getElementById('searchNavItem');
 
         let currentCategory = 'all';
         let currentView = 'home';
@@ -861,7 +955,7 @@
                 skeletonHTML += `
                     <div class="app-card skeleton-app-card">
                         <div class="skeleton skeleton-logo"></div>
-                        <div class="app-content">
+                        <div class="app-content skeleton-content">
                             <div class="app-header">
                                 <div class="app-info">
                                     <div class="skeleton skeleton-title"></div>
@@ -992,10 +1086,55 @@
             `;
         }
 
-        // Xử lý tìm kiếm
+        // Mở modal tìm kiếm
+        function openSearchModal() {
+            searchModal.style.display = 'block';
+            setTimeout(() => {
+                searchModalInput.focus();
+            }, 100);
+        }
+
+        // Đóng modal tìm kiếm
+        function closeSearchModal() {
+            searchModal.style.display = 'none';
+            searchModalInput.value = '';
+            searchResults.innerHTML = '';
+        }
+
+        // Tìm kiếm ứng dụng
+        function searchApps(searchTerm) {
+            if (!searchTerm.trim()) {
+                searchResults.innerHTML = '<div class="no-results"><p>Nhập từ khóa để tìm kiếm</p></div>';
+                return;
+            }
+
+            const filteredApps = allApps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (app.description && app.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+
+            if (filteredApps.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>Không tìm thấy ứng dụng nào với từ khóa "${searchTerm}"</p>
+                    </div>
+                `;
+            } else {
+                displayApps(filteredApps, searchResults);
+            }
+        }
+
+        // Xử lý tìm kiếm từ header
         searchInput.addEventListener('input', function(e) {
             searchTerm = e.target.value.toLowerCase().trim();
             renderApps();
+        });
+
+        // Xử lý tìm kiếm từ modal
+        searchModalInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            searchApps(searchTerm);
         });
 
         // Xử lý category
@@ -1020,6 +1159,11 @@
                 
                 const view = this.dataset.view;
                 
+                if (view === 'search') {
+                    openSearchModal();
+                    return;
+                }
+                
                 // Cập nhật active state
                 navItems.forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
@@ -1028,6 +1172,16 @@
                 renderApps();
             });
         });
+
+        // Đóng modal khi click ra ngoài
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) {
+                closeSearchModal();
+            }
+        });
+
+        // Đóng modal bằng nút close
+        closeSearch.addEventListener('click', closeSearchModal);
 
         // Render ứng dụng
         function renderApps() {
