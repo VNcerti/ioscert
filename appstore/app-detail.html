@@ -509,7 +509,8 @@
             try {
                 console.log('Đang tải ứng dụng với ID:', appId);
                 
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApp&id=${appId}`);
+                // Tải toàn bộ danh sách ứng dụng
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -519,7 +520,13 @@
                 console.log('Kết quả tải ứng dụng:', result);
                 
                 if (result.success) {
-                    displayAppDetail(result.data);
+                    // Tìm ứng dụng theo ID trong danh sách
+                    const app = result.data.find(app => app.id == appId || app.id === appId);
+                    if (app) {
+                        displayAppDetail(app);
+                    } else {
+                        throw new Error('Không tìm thấy ứng dụng với ID: ' + appId);
+                    }
                 } else {
                     throw new Error(result.message || 'Không thể tải thông tin ứng dụng');
                 }
