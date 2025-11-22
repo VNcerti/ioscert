@@ -358,7 +358,7 @@
         .app-meta-item i {
             font-size: 9px;
             width: 12px;
-                margin-right: -4px;
+            margin-right: -4px;
         }
 
         /* ĐÃ SỬA HOÀN TOÀN: Mô tả hiển thị xuống dòng đúng */
@@ -372,9 +372,55 @@
             overflow: hidden;
             flex: 1;
             margin-top: -4px;
-margin-bottom: -8px;
+            margin-bottom: -8px;
             white-space: pre-line; /* QUAN TRỌNG: Giữ nguyên xuống dòng */
             word-break: break-word; /* Ngắt từ khi cần thiết */
+        }
+
+        /* MỚI: Style cho description với icon check có nền tròn */
+        .app-description-check {
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+            margin-top: -4px;
+            margin-bottom: -8px;
+        }
+
+        .description-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .check-icon-container {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background-color: #2663eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .check-icon-container i {
+            font-size: 6px;
+            color: #ffffff;
+
+        }
+
+        .description-text {
+            flex: 1;
+            line-height: 1.3;
+margin-left : -3.65px;
+margin-top : -1px;
         }
 
         .app-actions {
@@ -689,7 +735,7 @@ margin-bottom: -8px;
             .featured-image {
                 width: 45px;
                 height: 45px;
-margin-bottom : -12px;
+                margin-bottom: -12px;
             }
         }
 
@@ -1345,6 +1391,29 @@ margin-bottom : -12px;
                 }
             }
             
+            // Tạo mô tả với icon check có nền tròn
+            let descriptionHTML = '';
+            if (app.description) {
+                // Tách các dòng mô tả
+                const descriptionLines = app.description.split('\n');
+                descriptionHTML = '<div class="app-description-check">';
+                descriptionLines.forEach(line => {
+                    if (line.trim()) {
+                        descriptionHTML += `
+                            <div class="description-item">
+                                <div class="check-icon-container">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <span class="description-text">${line.trim()}</span>
+                            </div>
+                        `;
+                    }
+                });
+                descriptionHTML += '</div>';
+            } else {
+                descriptionHTML = '<div class="app-description">Mô tả ứng dụng...</div>';
+            }
+            
             appCard.innerHTML = `
                 <img src="${app.image}" alt="${app.name}" class="app-logo" 
                      loading="lazy"
@@ -1368,7 +1437,7 @@ margin-bottom : -12px;
                             </button>
                         </div>
                     </div>
-                    <div class="app-description">${app.description || 'Mô tả ứng dụng...'}</div>
+                    ${descriptionHTML}
                 </div>
             `;
             
