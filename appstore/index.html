@@ -291,7 +291,6 @@
             border-radius: 21px;
             object-fit: contain;
             flex-shrink: 0;
-      
             padding: 4px;
         }
 
@@ -521,6 +520,73 @@
             color: var(--text-muted);
         }
 
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        .skeleton-app-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            height: 110px;
+        }
+
+        .skeleton-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 21px;
+        }
+
+        .skeleton-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skeleton-title {
+            height: 16px;
+            width: 70%;
+        }
+
+        .skeleton-tags {
+            display: flex;
+            gap: 4px;
+        }
+
+        .skeleton-tag {
+            height: 14px;
+            width: 40px;
+            border-radius: 4px;
+        }
+
+        .skeleton-meta {
+            height: 12px;
+            width: 50%;
+        }
+
+        .skeleton-description {
+            height: 12px;
+            width: 90%;
+        }
+
+        .skeleton-description.short {
+            width: 60%;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .apps-grid {
@@ -721,10 +787,7 @@
                 <a href="#" class="view-all">Xem thêm</a>
             </div>
             <div class="apps-grid" id="appsGrid">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Đang tải ứng dụng...</p>
-                </div>
+                <!-- Skeleton loading sẽ được thêm bằng JavaScript -->
             </div>
         </section>
 
@@ -774,6 +837,9 @@
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTpJOSVLfa_8EzUMctCFOicNU6QwG5uPBtIUDrgG7urIdBZ5PhkwZEw0Lq7QTYKOCRXw/exec';
+        const CACHE_KEY = 'xspace_apps_cache';
+        const CACHE_TIMESTAMP_KEY = 'xspace_cache_timestamp';
+        const CACHE_DURATION = 30 * 60 * 1000; // 30 phút
 
         const appsGrid = document.getElementById('appsGrid');
         const gamesGrid = document.getElementById('gamesGrid');
@@ -788,22 +854,123 @@
         let allApps = [];
         let searchTerm = '';
 
-        // Tải ứng dụng từ Google Sheets
+        // Hiển thị skeleton loading
+        function showSkeletonLoading(container, count = 6) {
+            let skeletonHTML = '';
+            for (let i = 0; i < count; i++) {
+                skeletonHTML += `
+                    <div class="app-card skeleton-app-card">
+                        <div class="skeleton skeleton-logo"></div>
+                        <div class="app-content">
+                            <div class="app-header">
+                                <div class="app-info">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="app-tags skeleton-tags">
+                                        <div class="skeleton skeleton-tag"></div>
+                                        <div class="skeleton skeleton-tag"></div>
+                                    </div>
+                                    <div class="app-meta">
+                                        <div class="skeleton skeleton-meta"></div>
+                                    </div>
+                                </div>
+                                <div class="app-actions">
+                                    <div class="skeleton download-btn" style="width: 70px; height: 28px; border-radius: 8px;"></div>
+                                </div>
+                            </div>
+                            <div class="skeleton skeleton-description"></div>
+                            <div class="skeleton skeleton-description short"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = skeletonHTML;
+        }
+
+        // Kiểm tra cache có hợp lệ không
+        function isCacheValid() {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+            if (!timestamp) return false;
+            
+            const now = Date.now();
+            const cacheTime = parseInt(timestamp);
+            return (now - cacheTime) < CACHE_DURATION;
+        }
+
+        // Lấy dữ liệu từ cache
+        function getFromCache() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                return cached ? JSON.parse(cached) : null;
+            } catch (e) {
+                console.error('Lỗi khi đọc cache:', e);
+                return null;
+            }
+        }
+
+        // Lưu dữ liệu vào cache
+        function saveToCache(data) {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+            } catch (e) {
+                console.error('Lỗi khi lưu cache:', e);
+            }
+        }
+
+        // Tải ứng dụng từ Google Sheets với cache
         async function loadAppsFromSheets() {
             try {
-                showLoading(appsGrid);
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
+                // Hiển thị skeleton loading ngay lập tức
+                showSkeletonLoading(appsGrid);
+                
+                // Kiểm tra cache trước
+                if (isCacheValid()) {
+                    const cachedApps = getFromCache();
+                    if (cachedApps && cachedApps.length > 0) {
+                        console.log('✅ Đang tải từ cache...');
+                        allApps = cachedApps;
+                        renderApps();
+                        
+                        // Vẫn fetch dữ liệu mới trong nền
+                        fetchFreshData();
+                        return;
+                    }
+                }
+                
+                // Nếu không có cache hợp lệ, fetch từ server
+                await fetchFreshData();
+                
+            } catch (error) {
+                console.error('Lỗi khi tải ứng dụng:', error);
+                // Thử tải từ cache như là fallback
+                const cachedApps = getFromCache();
+                if (cachedApps && cachedApps.length > 0) {
+                    allApps = cachedApps;
+                    renderApps();
+                } else {
+                    appsGrid.innerHTML = '<div class="loading"><p>Lỗi khi tải ứng dụng. Vui lòng thử lại sau.</p></div>';
+                }
+            }
+        }
+
+        // Fetch dữ liệu mới từ server
+        async function fetchFreshData() {
+            try {
+                console.log('🔄 Đang tải dữ liệu mới từ server...');
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${Date.now()}`);
                 const result = await response.json();
                 
                 if (result.success) {
                     allApps = result.data;
+                    saveToCache(result.data);
                     renderApps();
+                    console.log('✅ Dữ liệu mới đã được tải và cache');
                 } else {
                     throw new Error('Không thể tải dữ liệu');
                 }
             } catch (error) {
-                console.error('Lỗi khi tải ứng dụng:', error);
-                appsGrid.innerHTML = '<div class="loading"><p>Lỗi khi tải ứng dụng. Vui lòng thử lại sau.</p></div>';
+                console.error('Lỗi khi fetch dữ liệu mới:', error);
+                // Không hiển thị lỗi vì có thể đang dùng cache
             }
         }
 
@@ -1010,7 +1177,9 @@
             }
             
             appCard.innerHTML = `
-                <img src="${app.image}" alt="${app.name}" class="app-logo" onerror="this.src='https://via.placeholder.com/70/2563eb/FFFFFF?text=App'">
+                <img src="${app.image}" alt="${app.name}" class="app-logo" 
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/70/2563eb/FFFFFF?text=App'">
                 <div class="app-content">
                     <div class="app-header">
                         <div class="app-info">
