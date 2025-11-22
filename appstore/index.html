@@ -286,12 +286,12 @@
         }
 
         .app-logo {
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
             border-radius: 12px;
             object-fit: contain;
             flex-shrink: 0;
-       
+      
             padding: 4px;
         }
 
@@ -508,6 +508,19 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-results i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .apps-grid {
@@ -530,8 +543,8 @@
             }
             
             .app-logo {
-                width: 80px;
-                height: 80px;
+                width: 90px;
+                height: 90px;
             }
             
             .app-name {
@@ -581,8 +594,8 @@
             }
             
             .app-logo {
-                width: 80px;
-                height: 80px;
+                width: 90px;
+                height: 90px;
             }
             
             .app-name {
@@ -609,11 +622,11 @@
                     <div class="logo-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    APP PREMIUM
+                    XSpace Store
                 </a>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm ứng dụng...">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm ứng dụng...">
                 </div>
                 <div class="user-actions">
                     <button class="icon-btn">
@@ -704,7 +717,7 @@
         <!-- Apps Section -->
         <section class="apps-section">
             <div class="section-title">
-                <span>Ứng dụng mới</span>
+                <span id="sectionTitle">Ứng dụng mới</span>
                 <a href="#" class="view-all">Xem thêm</a>
             </div>
             <div class="apps-grid" id="appsGrid">
@@ -716,7 +729,7 @@
         </section>
 
         <!-- Popular Games -->
-        <section class="apps-section">
+        <section class="apps-section" id="gamesSection">
             <div class="section-title">
                 <span>Trò chơi phổ biến</span>
                 <a href="#" class="view-all">Xem thêm</a>
@@ -731,19 +744,19 @@
     <nav class="bottom-nav">
         <div class="container">
             <div class="nav-items">
-                <a href="#" class="nav-item active">
+                <a href="#" class="nav-item active" data-view="home">
                     <div class="nav-icon">
                         <i class="fas fa-home"></i>
                     </div>
                     <div class="nav-label">Trang chủ</div>
                 </a>
-                <a href="#" class="nav-item" id="todayTab">
+                <a href="#" class="nav-item" data-view="today">
                     <div class="nav-icon">
                         <i class="fas fa-calendar-day"></i>
                     </div>
                     <div class="nav-label">Hôm nay</div>
                 </a>
-                <a href="#" class="nav-item" id="gamesTab">
+                <a href="#" class="nav-item" data-view="games">
                     <div class="nav-icon">
                         <i class="fas fa-gamepad"></i>
                     </div>
@@ -764,15 +777,18 @@
 
         const appsGrid = document.getElementById('appsGrid');
         const gamesGrid = document.getElementById('gamesGrid');
+        const gamesSection = document.getElementById('gamesSection');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const searchInput = document.getElementById('searchInput');
         const categoryCards = document.querySelectorAll('.category-card');
-        const todayTab = document.getElementById('todayTab');
-        const gamesTab = document.getElementById('gamesTab');
-        const navItems = document.querySelectorAll('.nav-item');
+        const navItems = document.querySelectorAll('.nav-item[data-view]');
 
         let currentCategory = 'all';
         let currentView = 'home';
         let allApps = [];
+        let searchTerm = '';
 
+        // Tải ứng dụng từ Google Sheets
         async function loadAppsFromSheets() {
             try {
                 showLoading(appsGrid);
@@ -800,6 +816,22 @@
             `;
         }
 
+        function showNoResults(container, message = 'Không tìm thấy ứng dụng nào.') {
+            container.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Xử lý tìm kiếm
+        searchInput.addEventListener('input', function(e) {
+            searchTerm = e.target.value.toLowerCase().trim();
+            renderApps();
+        });
+
+        // Xử lý category
         categoryCards.forEach(card => {
             card.addEventListener('click', function() {
                 const category = this.dataset.category;
@@ -814,39 +846,58 @@
             });
         });
 
+        // Xử lý navigation
         navItems.forEach(item => {
             item.addEventListener('click', function(e) {
-                if (this.href.includes('t.me')) return;
-                
                 e.preventDefault();
                 
+                const view = this.dataset.view;
+                
+                // Cập nhật active state
                 navItems.forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
                 
-                const label = this.querySelector('.nav-label').textContent;
-                switch(label) {
-                    case 'Trang chủ':
-                        currentView = 'home';
-                        break;
-                    case 'Hôm nay':
-                        currentView = 'today';
-                        break;
-                    case 'Trò chơi':
-                        currentView = 'games';
-                        break;
-                }
-                
+                currentView = view;
                 renderApps();
             });
         });
 
+        // Render ứng dụng
         function renderApps() {
+            let filteredApps = filterApps();
+            
+            // Cập nhật tiêu đề section
+            updateSectionTitle();
+            
+            // Hiển thị ứng dụng chính
+            displayApps(filteredApps, appsGrid);
+            
+            // Hiển thị games section chỉ khi ở trang chủ
+            if (currentView === 'home' && currentCategory === 'all' && !searchTerm) {
+                gamesSection.style.display = 'block';
+                const games = allApps.filter(app => 
+                    app.categories && app.categories.includes('game')
+                );
+                displayApps(games, gamesGrid);
+            } else {
+                gamesSection.style.display = 'none';
+                gamesGrid.innerHTML = '';
+            }
+        }
+
+        // Filter ứng dụng
+        function filterApps() {
             let filteredApps = allApps;
             
+            // Filter theo view
             switch(currentView) {
                 case 'today':
                     const today = new Date().toLocaleDateString('vi-VN');
-                    filteredApps = allApps.filter(app => app.updatedate === today);
+                    filteredApps = allApps.filter(app => {
+                        if (!app.updatedate) return false;
+                        const appDate = new Date(app.updatedate).toLocaleDateString('vi-VN');
+                        return appDate === today;
+                    });
                     break;
                 case 'games':
                     filteredApps = allApps.filter(app => 
@@ -855,6 +906,7 @@
                     break;
                 case 'home':
                 default:
+                    // Filter theo category
                     if (currentCategory !== 'all') {
                         filteredApps = allApps.filter(app => 
                             app.categories && app.categories.includes(currentCategory)
@@ -863,23 +915,56 @@
                     break;
             }
             
-            displayApps(filteredApps, appsGrid);
-            
-            if (currentView === 'home') {
-                const games = allApps.filter(app => 
-                    app.categories && app.categories.includes('game')
+            // Filter theo search term
+            if (searchTerm) {
+                filteredApps = filteredApps.filter(app => 
+                    app.name.toLowerCase().includes(searchTerm) ||
+                    (app.description && app.description.toLowerCase().includes(searchTerm))
                 );
-                displayApps(games, gamesGrid);
-            } else {
-                gamesGrid.innerHTML = '';
             }
+            
+            return filteredApps;
         }
 
+        // Cập nhật tiêu đề section
+        function updateSectionTitle() {
+            let title = 'Ứng dụng mới';
+            
+            if (searchTerm) {
+                title = `Kết quả tìm kiếm: "${searchTerm}"`;
+            } else if (currentView === 'today') {
+                title = 'Ứng dụng hôm nay';
+            } else if (currentView === 'games') {
+                title = 'Trò chơi';
+            } else if (currentCategory !== 'all') {
+                const categoryNames = {
+                    'game': 'Trò chơi',
+                    'social': 'Mạng xã hội',
+                    'entertainment': 'Giải trí',
+                    'photo': 'Chụp ảnh',
+                    'clone': 'Nhân bản'
+                };
+                title = categoryNames[currentCategory] || currentCategory;
+            }
+            
+            sectionTitle.textContent = title;
+        }
+
+        // Hiển thị ứng dụng
         function displayApps(apps, container) {
             container.innerHTML = '';
             
             if (apps.length === 0) {
-                container.innerHTML = '<div class="loading"><p>Không có ứng dụng nào.</p></div>';
+                let message = 'Không có ứng dụng nào.';
+                
+                if (searchTerm) {
+                    message = `Không tìm thấy ứng dụng nào với từ khóa "${searchTerm}"`;
+                } else if (currentView === 'today') {
+                    const today = new Date().toLocaleDateString('vi-VN');
+                    message = `Không có ứng dụng nào được đăng vào ${today}`;
+                }
+                
+                showNoResults(container, message);
                 return;
             }
             
@@ -889,6 +974,7 @@
             });
         }
 
+        // Tạo card ứng dụng
         function createAppCard(app) {
             const appCard = document.createElement('div');
             appCard.className = 'app-card';
@@ -951,6 +1037,7 @@
             return appCard;
         }
 
+        // Khởi tạo
         document.addEventListener('DOMContentLoaded', function() {
             loadAppsFromSheets();
         });
