@@ -192,18 +192,18 @@
             display: block;
         }
 
-        /* Stats Cards - Thu nhỏ */
+        /* Stats Cards - Thu nhỏ và cùng 1 dòng */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
             margin-bottom: 25px;
         }
 
         .stat-card {
             background: var(--surface);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 15px;
             text-align: center;
             border: 1px solid var(--border);
             box-shadow: var(--card-shadow);
@@ -216,14 +216,14 @@
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 12px;
-            font-size: 16px;
+            margin: 0 auto 8px;
+            font-size: 14px;
         }
 
         .stat-icon.primary {
@@ -247,19 +247,19 @@
         }
 
         .stat-number {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: var(--text-primary);
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        /* Form Section - Mỗi input 1 dòng */
+        /* Form Section - Mỗi input 1 dòng (CHỈ ÁP DỤNG Ở UPLOAD) */
         .form-section {
             background: var(--surface);
             border-radius: 12px;
@@ -665,6 +665,12 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -767,7 +773,7 @@
                     </div>
                 </div>
 
-                <!-- Upload Form - Mỗi input 1 dòng -->
+                <!-- Upload Form - Mỗi input 1 dòng (CHỈ Ở UPLOAD) -->
                 <section class="form-section">
                     <h2 class="section-title">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -898,7 +904,7 @@
 
             <!-- Analytics Tab Content -->
             <div class="tab-content" id="analyticsTab">
-                <!-- Stats Cards - Chỉ giữ lại Tổng lượt truy cập và Hôm nay -->
+                <!-- Stats Cards - CÙNG 1 DÒNG (6 cột) -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon primary">
