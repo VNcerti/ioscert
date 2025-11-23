@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - XSpace Store</title>
+    <link rel="icon" href="https://i.imgur.com/fMrOKWc.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -194,15 +195,15 @@
         /* Stats Cards - Thu nhỏ */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
             margin-bottom: 25px;
         }
 
         .stat-card {
             background: var(--surface);
             border-radius: 10px;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
             border: 1px solid var(--border);
             box-shadow: var(--card-shadow);
@@ -215,14 +216,14 @@
         }
 
         .stat-icon {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 8px;
-            font-size: 14px;
+            margin: 0 auto 12px;
+            font-size: 16px;
         }
 
         .stat-icon.primary {
@@ -245,21 +246,16 @@
             color: white;
         }
 
-        .stat-icon.danger {
-            background: var(--danger);
-            color: white;
-        }
-
         .stat-number {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 800;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             color: var(--text-primary);
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
         }
 
@@ -553,47 +549,22 @@
             background: var(--primary-dark);
         }
 
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .chart-container {
-            background: var(--background);
-            border-radius: 8px;
-            padding: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .chart-placeholder {
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 12px;
-            background: var(--surface);
-            border-radius: 6px;
-            border: 1px dashed var(--border);
-        }
-
         .recent-visits {
             background: var(--background);
             border-radius: 8px;
             padding: 15px;
             border: 1px solid var(--border);
-            max-height: 200px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .visit-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 0;
+            gap: 12px;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border);
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .visit-item:last-child {
@@ -601,15 +572,15 @@
         }
 
         .visit-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 6px;
             background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 10px;
+            font-size: 12px;
             flex-shrink: 0;
         }
 
@@ -621,11 +592,23 @@
         .visit-time {
             color: var(--text-primary);
             font-weight: 600;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
+            font-size: 11px;
         }
 
-        .visit-platform {
+        .visit-details {
+            display: flex;
+            gap: 12px;
+            font-size: 10px;
             color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .visit-ip {
+            background: var(--surface-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
         }
 
         /* Messages */
@@ -915,7 +898,7 @@
 
             <!-- Analytics Tab Content -->
             <div class="tab-content" id="analyticsTab">
-                <!-- Stats Cards -->
+                <!-- Stats Cards - Chỉ giữ lại Tổng lượt truy cập và Hôm nay -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon primary">
@@ -960,28 +943,14 @@
                         <div class="stat-number" id="todayVisits">0</div>
                         <div class="stat-label">Hôm nay</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon warning">
-                            <i class="fas fa-user-clock"></i>
-                        </div>
-                        <div class="stat-number" id="uniqueVisitors">0</div>
-                        <div class="stat-label">Người dùng duy nhất</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon danger">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="stat-number" id="avgDailyVisits">0</div>
-                        <div class="stat-label">TB/ngày (7 ngày)</div>
-                    </div>
                 </div>
 
-                <!-- Analytics Section -->
+                <!-- Analytics Section - Chỉ giữ lại Lượt truy cập gần đây -->
                 <section class="analytics-section">
                     <div class="analytics-header">
                         <h2 class="section-title">
                             <i class="fas fa-chart-bar"></i>
-                            Phân tích lượt truy cập
+                            Lượt truy cập gần đây
                         </h2>
                         <button class="refresh-btn" id="refreshAnalytics">
                             <i class="fas fa-sync-alt"></i>
@@ -989,24 +958,11 @@
                         </button>
                     </div>
                     
-                    <div class="analytics-grid">
-                        <div class="chart-container">
-                            <h4 style="margin-bottom: 10px; font-size: 13px;">Lượt truy cập 7 ngày gần nhất</h4>
-                            <div class="chart-placeholder" id="visitsChart">
-                                <div style="text-align: center;">
-                                    <i class="fas fa-chart-bar" style="font-size: 24px; margin-bottom: 8px; opacity: 0.5;"></i>
-                                    <p style="font-size: 11px;">Biểu đồ lượt truy cập</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="recent-visits">
-                            <h4 style="margin-bottom: 12px; font-size: 13px;">Lượt truy cập gần đây</h4>
-                            <div id="recentVisitsList">
-                                <div class="visit-item">
-                                    <div class="visit-info">
-                                        <div class="visit-time">Đang tải dữ liệu...</div>
-                                    </div>
+                    <div class="recent-visits">
+                        <div id="recentVisitsList">
+                            <div class="visit-item">
+                                <div class="visit-info">
+                                    <div class="visit-time">Đang tải dữ liệu...</div>
                                 </div>
                             </div>
                         </div>
@@ -1085,8 +1041,6 @@
         const totalEntertainmentElement = document.getElementById('totalEntertainment');
         const totalVisitsElement = document.getElementById('totalVisits');
         const todayVisitsElement = document.getElementById('todayVisits');
-        const uniqueVisitorsElement = document.getElementById('uniqueVisitors');
-        const avgDailyVisitsElement = document.getElementById('avgDailyVisits');
 
         // Tab switching functionality
         navTabs.forEach(tab => {
@@ -1165,63 +1119,74 @@
                 totalVisitsElement.textContent = totalVisits.toLocaleString();
                 console.log('Tổng lượt truy cập:', totalVisits);
                 
-                // Lấy lượt truy cập hôm nay
-                const todayVisitsSnapshot = await database.ref('analytics/todayVisits').once('value');
-                const todayVisits = todayVisitsSnapshot.val() || 0;
+                // Lấy lượt truy cập hôm nay (từ 00:00 đến 23:59:59)
+                const todayVisits = await getTodayVisits();
                 todayVisitsElement.textContent = todayVisits.toLocaleString();
                 console.log('Lượt truy cập hôm nay:', todayVisits);
                 
-                // Tính người dùng duy nhất từ danh sách visits
-                const visitsSnapshot = await database.ref('analytics/visits').once('value');
-                const visits = visitsSnapshot.val() || {};
-                
-                // Đếm số lượt truy cập duy nhất (dựa trên IP)
-                const uniqueIPs = new Set();
-                Object.values(visits).forEach(visit => {
-                    if (visit.ip) {
-                        uniqueIPs.add(visit.ip);
-                    }
-                });
-                uniqueVisitorsElement.textContent = uniqueIPs.size.toLocaleString();
-                console.log('Người dùng duy nhất:', uniqueIPs.size);
-                
-                // Tính trung bình lượt truy cập 7 ngày
-                const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-                const recentVisits = Object.values(visits).filter(visit => 
-                    visit.timestamp && visit.timestamp >= sevenDaysAgo
-                );
-                const avgDaily = recentVisits.length / 7;
-                avgDailyVisitsElement.textContent = Math.round(avgDaily).toLocaleString();
-                console.log('Trung bình lượt/ngày:', avgDaily);
-                
                 // Tải lượt truy cập gần đây
-                await loadRecentVisits(visits);
+                await loadRecentVisits();
                 
             } catch (error) {
                 console.error('Lỗi khi tải thống kê lượt truy cập:', error);
                 // Hiển thị giá trị mặc định khi có lỗi
                 totalVisitsElement.textContent = '0';
                 todayVisitsElement.textContent = '0';
-                uniqueVisitorsElement.textContent = '0';
-                avgDailyVisitsElement.textContent = '0';
+            }
+        }
+
+        // Lấy lượt truy cập hôm nay (từ 00:00 đến 23:59:59)
+        async function getTodayVisits() {
+            try {
+                if (!database) {
+                    return 0;
+                }
+                
+                const today = new Date();
+                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+                const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+                
+                const visitsSnapshot = await database.ref('analytics/visits').once('value');
+                const visits = visitsSnapshot.val() || {};
+                
+                // Đếm số lượt truy cập trong ngày hôm nay
+                let todayCount = 0;
+                Object.values(visits).forEach(visit => {
+                    if (visit.timestamp && visit.timestamp >= todayStart.getTime() && visit.timestamp <= todayEnd.getTime()) {
+                        todayCount++;
+                    }
+                });
+                
+                return todayCount;
+            } catch (error) {
+                console.error('Error getting today visits:', error);
+                return 0;
             }
         }
 
         // Tải lượt truy cập gần đây
-        async function loadRecentVisits(visits) {
+        async function loadRecentVisits() {
             try {
+                if (!database) {
+                    console.error('Firebase Database chưa được khởi tạo');
+                    return;
+                }
+                
+                const visitsSnapshot = await database.ref('analytics/visits').once('value');
+                const visits = visitsSnapshot.val() || {};
+                
                 const recentVisitsList = document.getElementById('recentVisitsList');
                 recentVisitsList.innerHTML = '';
                 
-                if (!visits || Object.keys(visits).length === 0) {
+                if (Object.keys(visits).length === 0) {
                     recentVisitsList.innerHTML = '<div class="visit-item"><div class="visit-info">Chưa có lượt truy cập nào</div></div>';
                     return;
                 }
                 
-                // Sắp xếp visits theo thời gian giảm dần và lấy 5 cái gần nhất
+                // Sắp xếp visits theo thời gian giảm dần và lấy 10 cái gần nhất
                 const sortedVisits = Object.entries(visits)
                     .sort(([,a], [,b]) => (b.timestamp || 0) - (a.timestamp || 0))
-                    .slice(0, 5);
+                    .slice(0, 10);
                 
                 sortedVisits.forEach(([key, visit]) => {
                     const visitItem = createVisitItem(visit);
@@ -1263,7 +1228,11 @@
                 </div>
                 <div class="visit-info">
                     <div class="visit-time">${timeString}</div>
-                    <div class="visit-platform">${visitData.platform || 'Unknown'} • IP: ${visitData.ip || 'N/A'}</div>
+                    <div class="visit-details">
+                        <span class="visit-ip">IP: ${visitData.ip || 'N/A'}</span>
+                        <span>${visitData.platform || 'Unknown Platform'}</span>
+                        <span>${visitData.language || 'Unknown Language'}</span>
+                    </div>
                 </div>
             `;
             
