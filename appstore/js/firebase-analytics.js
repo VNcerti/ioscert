@@ -1,7 +1,8 @@
-// Firebase Configuration - Sử dụng config của bạn
+// Firebase Configuration cho Realtime Database
 const firebaseConfig = {
     apiKey: "AIzaSyC9VMDowjZ05A-ZqycaFYI5CtRcjazdZm4",
     authDomain: "ioscert-appstore.firebaseapp.com",
+    databaseURL: "https://ioscert-appstore-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "ioscert-appstore",
     storageBucket: "ioscert-appstore.firebasestorage.app",
     messagingSenderId: "798453453536",
@@ -9,175 +10,237 @@ const firebaseConfig = {
     measurementId: "G-EP3FHT2B4B"
 };
 
-// Initialize Firebase
-let analytics;
-let db;
-
+// Initialize Firebase với Realtime Database
+let database;
 try {
-    const app = firebase.initializeApp(firebaseConfig);
-    analytics = firebase.analytics();
-    db = firebase.firestore();
-    
-    console.log('Firebase initialized successfully');
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+    console.log('Firebase Realtime Database initialized successfully');
 } catch (error) {
     console.error('Firebase initialization error:', error);
 }
 
-// Track page view
-function trackPageView() {
-    if (typeof firebase === 'undefined') {
-        console.log('Firebase not loaded');
+// Hàm lấy IP của người dùng (sử dụng service miễn phí)
+async function getUserIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error('Error getting IP:', error);
+        return 'unknown';
+    }
+}
+
+// Hàm track page view với Realtime Database
+async function trackPageView() {
+    if (!database) {
+        console.log('Firebase Database not loaded');
         return;
     }
     
-    const visitData = {
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        screen: {
-            width: screen.width,
-            height: screen.height
-        },
-        url: window.location.href,
-        referrer: document.referrer || 'direct',
-        sessionId: getSessionId(),
-        pageTitle: document.title
-    };
+    try {
+        // Lấy IP của người dùng
+        const userIP = await getUserIP();
+        
+        const visitData = {
+            timestamp: Date.now(),
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            platform: navigator.platform,
+            screen: {
+                width: screen.width,
+                height: screen.height
+            },
+            url: window.location.href,
+            referrer: document.referrer || 'direct',
+            ip: userIP
+        };
 
-    // Save to Firestore
-    db.collection('visits').add(visitData)
-        .then((docRef) => {
-            console.log('Visit recorded with ID: ', docRef.id);
-            
-            // Update daily stats
-            updateDailyStats();
-        })
-        .catch((error) => {
-            console.error('Error recording visit: ', error);
-        });
+        console.log('Tracking visit with data:', visitData);
 
-    // Log analytics event
-    analytics.logEvent('page_view', {
-        page_location: window.location.href,
-        page_title: document.title,
-        page_referrer: document.referrer
+        // Tạo key mới cho lượt truy cập
+        const visitKey = 'visit_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const visitRef = database.ref('analytics/visits/' + visitKey);
+        
+        // Lưu thông tin lượt truy cập
+        await visitRef.set(visitData);
+        console.log('Visit data saved with key:', visitKey);
+        
+        // Cập nhật tổng lượt truy cập
+        const totalVisitsRef = database.ref('analytics/totalVisits');
+        const totalVisitsSnapshot = await totalVisitsRef.once('value');
+        const currentTotal = totalVisitsSnapshot.val() || 0;
+        await totalVisitsRef.set(currentTotal + 1);
+        console.log('Total visits updated:', currentTotal + 1);
+        
+        // Cập nhật lượt truy cập hôm nay
+        const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const todayVisitsRef = database.ref('analytics/dailyVisits/' + today);
+        const todayVisitsSnapshot = await todayVisitsRef.once('value');
+        const currentToday = todayVisitsSnapshot.val() || 0;
+        await todayVisitsRef.set(currentToday + 1);
+        console.log('Today visits updated:', currentToday + 1);
+        
+        // Cập nhật lượt truy cập tháng này
+        const currentMonth = new Date().toISOString().slice(0, 7); // Format: YYYY-MM
+        const monthlyVisitsRef = database.ref('analytics/monthlyVisits/' + currentMonth);
+        const monthlyVisitsSnapshot = await monthlyVisitsRef.once('value');
+        const currentMonthly = monthlyVisitsSnapshot.val() || 0;
+        await monthlyVisitsRef.set(currentMonthly + 1);
+        console.log('Monthly visits updated:', currentMonthly + 1);
+        
+        console.log('Visit recorded successfully!');
+        
+    } catch (error) {
+        console.error('Error recording visit: ', error);
+    }
+}
+
+// Hàm track sự kiện tải app
+function trackAppDownload(appName, appId) {
+    if (!database) {
+        console.log('Firebase Database not loaded');
+        return;
+    }
+    
+    try {
+        const downloadData = {
+            timestamp: Date.now(),
+            appName: appName,
+            appId: appId,
+            url: window.location.href
+        };
+        
+        const downloadKey = 'download_' + Date.now();
+        const downloadRef = database.ref('analytics/downloads/' + downloadKey);
+        downloadRef.set(downloadData);
+        
+        console.log('App download tracked:', appName);
+    } catch (error) {
+        console.error('Error tracking download:', error);
+    }
+}
+
+// Hàm track sự kiện tìm kiếm
+function trackSearch(searchTerm, resultsCount) {
+    if (!database) {
+        console.log('Firebase Database not loaded');
+        return;
+    }
+    
+    try {
+        const searchData = {
+            timestamp: Date.now(),
+            searchTerm: searchTerm,
+            resultsCount: resultsCount,
+            url: window.location.href
+        };
+        
+        const searchKey = 'search_' + Date.now();
+        const searchRef = database.ref('analytics/searches/' + searchKey);
+        searchRef.set(searchData);
+        
+        console.log('Search tracked:', searchTerm);
+    } catch (error) {
+        console.error('Error tracking search:', error);
+    }
+}
+
+// Hàm track thời gian session
+function trackSessionTime() {
+    if (!database) {
+        return;
+    }
+    
+    const sessionStart = Date.now();
+    
+    window.addEventListener('beforeunload', function() {
+        const sessionDuration = Date.now() - sessionStart;
+        const sessionData = {
+            timestamp: Date.now(),
+            duration: sessionDuration,
+            url: window.location.href
+        };
+        
+        const sessionKey = 'session_' + sessionStart;
+        const sessionRef = database.ref('analytics/sessions/' + sessionKey);
+        sessionRef.set(sessionData);
+        
+        console.log('Session tracked:', Math.round(sessionDuration / 1000) + 's');
     });
 }
 
-// Generate or get session ID
-function getSessionId() {
-    let sessionId = sessionStorage.getItem('firebase_session_id');
-    if (!sessionId) {
-        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        sessionStorage.setItem('firebase_session_id', sessionId);
+// Hàm kiểm tra trạng thái Firebase
+function checkFirebaseStatus() {
+    if (!database) {
+        console.error('Firebase Database is not initialized');
+        return false;
     }
-    return sessionId;
+    
+    // Test connection
+    const testRef = database.ref('.info/connected');
+    testRef.on('value', function(snap) {
+        if (snap.val() === true) {
+            console.log('Firebase Realtime Database connected');
+        } else {
+            console.log('Firebase Realtime Database disconnected');
+        }
+    });
+    
+    return true;
 }
 
-// Update daily visit statistics
-function updateDailyStats() {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+// Initialize tracking khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing Firebase analytics...');
     
-    const statsRef = db.collection('stats').doc('daily').collection('dates').doc(today);
-    
-    statsRef.get().then((doc) => {
-        if (doc.exists) {
-            // Update existing document
-            statsRef.update({
-                totalVisits: firebase.firestore.FieldValue.increment(1),
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        } else {
-            // Create new document
-            statsRef.set({
-                date: today,
-                totalVisits: 1,
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    // Kiểm tra trạng thái Firebase
+    if (checkFirebaseStatus()) {
+        // Track page view sau 1 giây
+        setTimeout(() => {
+            trackPageView();
+        }, 1000);
+        
+        // Track session time
+        trackSessionTime();
+        
+        // Thêm event listener cho các nút download
+        document.addEventListener('click', function(e) {
+            const downloadBtn = e.target.closest('.download-btn, .app-download-btn');
+            if (downloadBtn) {
+                const appCard = downloadBtn.closest('.app-card');
+                if (appCard) {
+                    const appName = appCard.querySelector('.app-name')?.textContent || 'Unknown App';
+                    const appId = appCard.dataset.appId || 'unknown';
+                    trackAppDownload(appName, appId);
+                }
+            }
+        });
+        
+        // Thêm event listener cho search
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                if (e.target.value.length > 2) {
+                    setTimeout(() => {
+                        const results = document.querySelectorAll('.app-card').length;
+                        trackSearch(e.target.value, results);
+                    }, 500);
+                }
             });
         }
-    }).catch((error) => {
-        console.error('Error updating stats:', error);
-    });
-}
-
-// Track custom events
-function trackCustomEvent(eventName, eventParams = {}) {
-    if (typeof firebase !== 'undefined' && analytics) {
-        analytics.logEvent(eventName, eventParams);
-        
-        // Also save to Firestore for detailed analysis
-        db.collection('events').add({
-            event: eventName,
-            params: eventParams,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            url: window.location.href
-        });
+    } else {
+        console.error('Failed to initialize Firebase analytics');
     }
-}
-
-// Track app downloads
-function trackAppDownload(appName, appId) {
-    trackCustomEvent('app_download', {
-        app_name: appName,
-        app_id: appId
-    });
-}
-
-// Track search events
-function trackSearch(searchTerm, resultsCount) {
-    trackCustomEvent('search', {
-        search_term: searchTerm,
-        results_count: resultsCount
-    });
-}
-
-// Get total visits count
-async function getTotalVisits() {
-    try {
-        const visitsRef = db.collection('visits');
-        const snapshot = await visitsRef.count().get();
-        return snapshot.data().count;
-    } catch (error) {
-        console.error('Error getting total visits:', error);
-        return 0;
-    }
-}
-
-// Get today's visits count
-async function getTodayVisits() {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const todayStart = new Date(today + 'T00:00:00.000Z');
-        const todayEnd = new Date(today + 'T23:59:59.999Z');
-        
-        const visitsRef = db.collection('visits');
-        const snapshot = await visitsRef
-            .where('timestamp', '>=', todayStart)
-            .where('timestamp', '<=', todayEnd)
-            .count()
-            .get();
-            
-        return snapshot.data().count;
-    } catch (error) {
-        console.error('Error getting today visits:', error);
-        return 0;
-    }
-}
-
-// Initialize tracking when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait a bit for Firebase to initialize
-    setTimeout(() => {
-        trackPageView();
-    }, 1000);
 });
 
-// Track when user leaves the page
-window.addEventListener('beforeunload', function() {
-    const duration = Date.now() - performance.timing.navigationStart;
-    trackCustomEvent('session_end', {
-        session_duration: duration,
-        page: window.location.pathname
-    });
-});
+// Export functions để sử dụng trong các file khác
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        trackPageView,
+        trackAppDownload,
+        trackSearch,
+        trackSessionTime
+    };
+}
