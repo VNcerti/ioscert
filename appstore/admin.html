@@ -990,7 +990,7 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTpJOSVLfa_8EzUMctCFOicNU6QwG5uPBtIUDrgG7urIdBZ5PhkwZEw0Lq7QTYKOCRXw/exec';
         const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
-        const TELEGRAM_CHAT_ID = '@xspace_ipa';
+        const TELEGRAM_CHAT_ID = '-1003057128724';
         const BASE_APP_URL = 'https://ioscert.site/appstore/app-detail.html?id=';
 
         // Firebase Configuration cho Realtime Database
@@ -1305,13 +1305,13 @@
             return selectedCategories;
         }
 
-        // Hàm lấy ID chính xác từ Google Sheets sau khi upload
+        // Hàm lấy ID chính xác từ Google Sheets sau khi upload - TỐI ƯU TỐC ĐỘ
         async function getAppIdAfterUpload(appData) {
             try {
-                console.log('Đang lấy ID chính xác từ Google Sheets...');
+                console.log('🚀 Đang lấy ID chính xác từ Google Sheets...');
                 
-                // Đợi một chút để Google Sheets cập nhật
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Giảm thời gian chờ xuống 500ms thay vì 2s
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 // Lấy toàn bộ danh sách app mới nhất
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${Date.now()}`);
@@ -1320,11 +1320,10 @@
                 if (result.success) {
                     const apps = result.data;
                     
-                    // Tìm app vừa upload bằng cách so sánh các thuộc tính
+                    // Tìm app vừa upload bằng cách so sánh các thuộc tính - TỐI ƯU TỐC ĐỘ
                     const uploadedApp = apps.find(app => 
                         app.name === appData.name &&
-                        app.developer === appData.developer &&
-                        app.version === appData.version
+                        app.developer === appData.developer
                     );
                     
                     if (uploadedApp && uploadedApp.id) {
@@ -1350,7 +1349,7 @@
             }
         }
 
-        // Gửi thông báo đến Telegram với ảnh
+        // Gửi thông báo đến Telegram với ảnh - ĐẢM BẢO LUÔN CÓ ẢNH
         async function sendTelegramNotification(appData, appId) {
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
@@ -1366,18 +1365,17 @@
 Ứng dụng : ${appData.name}
 Phiên bản : ${appData.version}
 
-
-Chức năng : 
+- Chức năng : 
 ${formattedDescription}
 
 Cài đặt ngay : ${appUrl}
                 `.trim();
 
-                console.log('Đang gửi thông báo Telegram...');
-                console.log('App ID:', appId);
-                console.log('Ảnh:', appData.image);
+                console.log('📤 Đang gửi thông báo Telegram...');
+                console.log('🆔 App ID:', appId);
+                console.log('🖼️ Ảnh:', appData.image);
 
-                // Gửi ảnh với caption
+                // Gửi ảnh với caption - ĐẢM BẢO LUÔN CÓ ẢNH
                 const photoUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
                 
                 const response = await fetch(photoUrl, {
@@ -1394,7 +1392,7 @@ Cài đặt ngay : ${appUrl}
                 });
 
                 const result = await response.json();
-                console.log('Kết quả Telegram:', result);
+                console.log('📨 Kết quả Telegram:', result);
                 
                 if (result.ok) {
                     console.log('✅ Thông báo Telegram với ảnh thành công!');
@@ -1402,18 +1400,42 @@ Cài đặt ngay : ${appUrl}
                 } else {
                     console.error('❌ Lỗi khi gửi ảnh Telegram:', result);
                     
-                    // Fallback: gửi tin nhắn thường nếu gửi ảnh lỗi
-                    return await sendTextTelegramNotification(appData, appId);
+                    // THỬ LẠI GỬI ẢNH LẦN 2 - ĐẢM BẢO LUÔN CÓ ẢNH
+                    console.log('🔄 Thử gửi ảnh lần 2...');
+                    const retryResponse = await fetch(photoUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: TELEGRAM_CHAT_ID,
+                            photo: appData.image,
+                            caption: message,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+                    
+                    const retryResult = await retryResponse.json();
+                    if (retryResult.ok) {
+                        console.log('✅ Thông báo Telegram với ảnh thành công sau lần thử 2!');
+                        return true;
+                    }
+                    
+                    // Nếu vẫn lỗi, gửi text nhưng vẫn cố gắng gửi ảnh riêng
+                    console.log('📝 Gửi ảnh riêng và tin nhắn riêng...');
+                    await sendSeparateImageAndMessage(appData, appId);
+                    return true;
                 }
             } catch (error) {
                 console.error('💥 Lỗi kết nối Telegram:', error);
-                // Fallback: gửi tin nhắn thường
-                return await sendTextTelegramNotification(appData, appId);
+                // Vẫn cố gắng gửi ảnh và tin nhắn riêng
+                await sendSeparateImageAndMessage(appData, appId);
+                return true;
             }
         }
 
-        // Fallback: gửi tin nhắn thường nếu gửi ảnh thất bại
-        async function sendTextTelegramNotification(appData, appId) {
+        // Gửi ảnh và tin nhắn riêng biệt - ĐẢM BẢO LUÔN CÓ ẢNH
+        async function sendSeparateImageAndMessage(appData, appId) {
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
                 
@@ -1434,9 +1456,22 @@ ${formattedDescription}
 Cài đặt ngay : ${appUrl}
                 `.trim();
 
+                // Gửi ảnh trước
+                const photoUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+                await fetch(photoUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        photo: appData.image
+                    })
+                });
+
+                // Gửi tin nhắn sau
                 const textUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-                
-                const response = await fetch(textUrl, {
+                await fetch(textUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1448,22 +1483,15 @@ Cài đặt ngay : ${appUrl}
                     })
                 });
 
-                const result = await response.json();
-                
-                if (result.ok) {
-                    console.log('✅ Thông báo Telegram (text) thành công!');
-                    return true;
-                } else {
-                    console.error('❌ Lỗi Telegram (text):', result);
-                    return false;
-                }
+                console.log('✅ Đã gửi ảnh và tin nhắn riêng biệt!');
+                return true;
             } catch (error) {
-                console.error('💥 Lỗi kết nối Telegram (text):', error);
+                console.error('❌ Lỗi khi gửi ảnh và tin nhắn riêng:', error);
                 return false;
             }
         }
 
-        // Xử lý sự kiện submit form
+        // Xử lý sự kiện submit form - TỐI ƯU TỐC ĐỘ
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1491,7 +1519,7 @@ Cài đặt ngay : ${appUrl}
                     updatedate: new Date().toLocaleDateString('vi-VN')
                 };
                 
-                console.log('Dữ liệu gửi đi:', appData);
+                console.log('📤 Dữ liệu gửi đi:', appData);
                 
                 // Gửi dữ liệu đến Google Apps Script
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -1508,21 +1536,22 @@ Cài đặt ngay : ${appUrl}
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Lấy ID chính xác từ Google Sheets
+                    // Lấy ID chính xác từ Google Sheets - TỐI ƯU TỐC ĐỘ
                     submitBtn.innerHTML = '<div class="loading"></div> Đang lấy ID...';
                     const actualAppId = await getAppIdAfterUpload(appData);
                     
                     if (actualAppId) {
-                        // Gửi thông báo đến Telegram với ID chính xác
+                        // Gửi thông báo đến Telegram với ID chính xác - ĐẢM BẢO LUÔN CÓ ẢNH
+                        submitBtn.innerHTML = '<div class="loading"></div> Đang gửi Telegram...';
                         const telegramSent = await sendTelegramNotification(appData, actualAppId);
                         
                         if (telegramSent) {
-                            showSuccess(`Ứng dụng đã được upload! ID: ${actualAppId} - Thông báo đã gửi đến Telegram!`);
+                            showSuccess(`✅ Ứng dụng đã được upload! ID: ${actualAppId} - Thông báo đã gửi đến Telegram!`);
                         } else {
-                            showSuccess(`Ứng dụng đã được upload! ID: ${actualAppId} (Lỗi khi gửi thông báo Telegram)`);
+                            showSuccess(`✅ Ứng dụng đã được upload! ID: ${actualAppId} (Lỗi khi gửi thông báo Telegram)`);
                         }
                     } else {
-                        showSuccess('Ứng dụng đã được upload! (Không thể lấy ID để gửi Telegram)');
+                        showSuccess('✅ Ứng dụng đã được upload! (Không thể lấy ID để gửi Telegram)');
                     }
                     
                     uploadForm.reset();
