@@ -9,6 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
+        /* CSS giữ nguyên như trước */
         * {
             margin: 0;
             padding: 0;
@@ -1305,12 +1306,12 @@
             return selectedCategories;
         }
 
-        // Hàm lấy ID chính xác từ Google Sheets sau khi upload - TỐI ƯU TỐC ĐỘ
+        // Hàm lấy ID chính xác từ Google Sheets sau khi upload - FIX LỖI TRÙNG TÊN
         async function getAppIdAfterUpload(appData) {
             try {
                 console.log('🚀 Đang lấy ID chính xác từ Google Sheets...');
                 
-                // Giảm thời gian chờ xuống 500ms thay vì 2s
+                // Giảm thời gian chờ xuống 500ms
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
                 // Lấy toàn bộ danh sách app mới nhất
@@ -1320,20 +1321,26 @@
                 if (result.success) {
                     const apps = result.data;
                     
-                    // Tìm app vừa upload bằng cách so sánh các thuộc tính - TỐI ƯU TỐC ĐỘ
-                    const uploadedApp = apps.find(app => 
+                    // FIX: Tìm app MỚI NHẤT có cùng tên, developer, version và description
+                    // Sắp xếp apps theo ID giảm dần để lấy app mới nhất đầu tiên
+                    const sortedApps = [...apps].sort((a, b) => (b.id || 0) - (a.id || 0));
+                    
+                    // Tìm app vừa upload bằng cách so sánh TẤT CẢ thuộc tính
+                    const uploadedApp = sortedApps.find(app => 
                         app.name === appData.name &&
-                        app.developer === appData.developer
+                        app.developer === appData.developer &&
+                        app.version === appData.version &&
+                        app.description === appData.description
                     );
                     
                     if (uploadedApp && uploadedApp.id) {
-                        console.log('✅ Tìm thấy ID chính xác:', uploadedApp.id);
+                        console.log('✅ Tìm thấy ID chính xác (app mới nhất):', uploadedApp.id);
                         return uploadedApp.id;
                     } else {
                         console.warn('⚠️ Không tìm thấy app vừa upload, thử tìm bằng cách khác...');
                         
-                        // Fallback: tìm app có thời gian gần nhất
-                        const latestApp = apps[apps.length - 1];
+                        // Fallback: tìm app có thời gian gần nhất (app cuối cùng trong danh sách)
+                        const latestApp = sortedApps[0]; // Đã sắp xếp nên app[0] là mới nhất
                         if (latestApp && latestApp.id) {
                             console.log('✅ Sử dụng ID của app mới nhất:', latestApp.id);
                             return latestApp.id;
@@ -1472,8 +1479,7 @@ Cài đặt ngay : ${appUrl}
                 // Gửi tin nhắn sau
                 const textUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
                 await fetch(textUrl, {
-                    method: 'POST',
-                    headers: {
+                    method: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
@@ -1491,7 +1497,7 @@ Cài đặt ngay : ${appUrl}
             }
         }
 
-        // Xử lý sự kiện submit form - TỐI ƯU TỐC ĐỘ
+        // Xử lý sự kiện submit form - FIX LỖI TRÙNG TÊN
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1536,7 +1542,7 @@ Cài đặt ngay : ${appUrl}
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Lấy ID chính xác từ Google Sheets - TỐI ƯU TỐC ĐỘ
+                    // Lấy ID chính xác từ Google Sheets - FIX LỖI TRÙNG TÊN
                     submitBtn.innerHTML = '<div class="loading"></div> Đang lấy ID...';
                     const actualAppId = await getAppIdAfterUpload(appData);
                     
