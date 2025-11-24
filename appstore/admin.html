@@ -1305,21 +1305,48 @@
             return selectedCategories;
         }
 
-        // Hàm lấy ID app tiếp theo
-        async function getNextAppId() {
+        // Hàm lấy ID chính xác từ Google Sheets sau khi upload
+        async function getAppIdAfterUpload(appData) {
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
+                console.log('Đang lấy ID chính xác từ Google Sheets...');
+                
+                // Đợi một chút để Google Sheets cập nhật
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Lấy toàn bộ danh sách app mới nhất
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${Date.now()}`);
                 const result = await response.json();
                 
-                if (result.success && result.data.length > 0) {
-                    // Lấy ID cao nhất và +1
-                    const maxId = Math.max(...result.data.map(app => app.id || 0));
-                    return maxId + 1;
+                if (result.success) {
+                    const apps = result.data;
+                    
+                    // Tìm app vừa upload bằng cách so sánh các thuộc tính
+                    const uploadedApp = apps.find(app => 
+                        app.name === appData.name &&
+                        app.developer === appData.developer &&
+                        app.version === appData.version
+                    );
+                    
+                    if (uploadedApp && uploadedApp.id) {
+                        console.log('✅ Tìm thấy ID chính xác:', uploadedApp.id);
+                        return uploadedApp.id;
+                    } else {
+                        console.warn('⚠️ Không tìm thấy app vừa upload, thử tìm bằng cách khác...');
+                        
+                        // Fallback: tìm app có thời gian gần nhất
+                        const latestApp = apps[apps.length - 1];
+                        if (latestApp && latestApp.id) {
+                            console.log('✅ Sử dụng ID của app mới nhất:', latestApp.id);
+                            return latestApp.id;
+                        }
+                    }
                 }
-                return 18; // Mặc định nếu không có app nào
+                
+                console.error('❌ Không thể lấy ID chính xác');
+                return null;
             } catch (error) {
-                console.error('Lỗi khi lấy ID app:', error);
-                return 18;
+                console.error('Lỗi khi lấy ID chính xác:', error);
+                return null;
             }
         }
 
@@ -1339,7 +1366,8 @@
 Ứng dụng : ${appData.name}
 Phiên bản : ${appData.version}
 
-- Chức năng : 
+
+Chức năng : 
 ${formattedDescription}
 
 Cài đặt ngay : ${appUrl}
@@ -1396,9 +1424,11 @@ Cài đặt ngay : ${appUrl}
                     .join('\n');
 
                 const message = `
-- Ứng dụng : ${appData.name}
-- Phiên bản : ${appData.version}
-- Chức năng : 
+Ứng dụng : ${appData.name}
+Phiên bản : ${appData.version}
+
+
+Chức năng : 
 ${formattedDescription}
 
 Cài đặt ngay : ${appUrl}
@@ -1449,9 +1479,6 @@ Cài đặt ngay : ${appUrl}
             submitBtn.innerHTML = '<div class="loading"></div> Đang upload...';
             
             try {
-                // Lấy ID app tiếp theo
-                const nextId = await getNextAppId();
-                
                 // Tạo đối tượng dữ liệu ứng dụng
                 const appData = {
                     name: appNameInput.value,
@@ -1461,12 +1488,10 @@ Cài đặt ngay : ${appUrl}
                     image: imageUrlInput.value,
                     downloadlink: downloadLinkInput.value,
                     categories: selectedCategories.join(','),
-                    updatedate: new Date().toLocaleDateString('vi-VN'),
-                    id: nextId // Thêm ID vào dữ liệu
+                    updatedate: new Date().toLocaleDateString('vi-VN')
                 };
                 
                 console.log('Dữ liệu gửi đi:', appData);
-                console.log('App ID sẽ là:', nextId);
                 
                 // Gửi dữ liệu đến Google Apps Script
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -1483,13 +1508,21 @@ Cài đặt ngay : ${appUrl}
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Gửi thông báo đến Telegram với ảnh
-                    const telegramSent = await sendTelegramNotification(appData, nextId);
+                    // Lấy ID chính xác từ Google Sheets
+                    submitBtn.innerHTML = '<div class="loading"></div> Đang lấy ID...';
+                    const actualAppId = await getAppIdAfterUpload(appData);
                     
-                    if (telegramSent) {
-                        showSuccess(`Ứng dụng đã được upload! ID: ${nextId} - Thông báo đã gửi đến Telegram!`);
+                    if (actualAppId) {
+                        // Gửi thông báo đến Telegram với ID chính xác
+                        const telegramSent = await sendTelegramNotification(appData, actualAppId);
+                        
+                        if (telegramSent) {
+                            showSuccess(`Ứng dụng đã được upload! ID: ${actualAppId} - Thông báo đã gửi đến Telegram!`);
+                        } else {
+                            showSuccess(`Ứng dụng đã được upload! ID: ${actualAppId} (Lỗi khi gửi thông báo Telegram)`);
+                        }
                     } else {
-                        showSuccess(`Ứng dụng đã được upload! ID: ${nextId} (Lỗi khi gửi thông báo Telegram)`);
+                        showSuccess('Ứng dụng đã được upload! (Không thể lấy ID để gửi Telegram)');
                     }
                     
                     uploadForm.reset();
