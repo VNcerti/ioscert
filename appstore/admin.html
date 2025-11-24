@@ -989,6 +989,8 @@
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTpJOSVLfa_8EzUMctCFOicNU6QwG5uPBtIUDrgG7urIdBZ5PhkwZEw0Lq7QTYKOCRXw/exec';
+        const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
+        const TELEGRAM_CHAT_ID = '@allllluuuuus'; // Thay bằng @username của kênh/group
 
         // Firebase Configuration cho Realtime Database
         const firebaseConfig = {
@@ -1302,6 +1304,53 @@
             return selectedCategories;
         }
 
+        // Gửi thông báo đến Telegram
+        async function sendTelegramNotification(appData) {
+            try {
+                const message = `
+🆕 ỨNG DỤNG MỚI ĐÃ ĐƯỢC UPLOAD!
+
+📱 **${appData.name}**
+👨‍💻 **Nhà phát triển:** ${appData.developer}
+🔖 **Phiên bản:** ${appData.version}
+
+📝 **Mô tả:**
+${appData.description}
+
+⬇️ **Tải ngay tại:** https://ioscert.site/appstore/
+
+#${appData.categories.split(',')[0]} #NewApp
+                `;
+
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.ok) {
+                    console.log('Thông báo Telegram đã được gửi thành công!');
+                    return true;
+                } else {
+                    console.error('Lỗi khi gửi thông báo Telegram:', result);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Lỗi khi gửi thông báo Telegram:', error);
+                return false;
+            }
+        }
+
         // Xử lý sự kiện submit form
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1347,7 +1396,15 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showSuccess();
+                    // Gửi thông báo đến Telegram
+                    const telegramSent = await sendTelegramNotification(appData);
+                    
+                    if (telegramSent) {
+                        showSuccess('Ứng dụng đã được upload và thông báo đã được gửi đến Telegram!');
+                    } else {
+                        showSuccess('Ứng dụng đã được upload! (Lỗi khi gửi thông báo Telegram)');
+                    }
+                    
                     uploadForm.reset();
                     updatePreview();
                     loadAppStats(); // Cập nhật lại thống kê
@@ -1366,7 +1423,8 @@
         });
 
         // Hiển thị thông báo thành công
-        function showSuccess() {
+        function showSuccess(message = 'Ứng dụng đã được upload!') {
+            successMessage.querySelector('div div').textContent = message;
             successMessage.style.display = 'flex';
             errorMessage.style.display = 'none';
             
