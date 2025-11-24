@@ -761,7 +761,7 @@
                     <i class="fas fa-check-circle"></i>
                     <div>
                         <strong>Thành công!</strong>
-                        <div>Ứng dụng đã được upload và thông báo đến Telegram!</div>
+                        <div>Ứng dụng đã được upload!</div>
                     </div>
                 </div>
                 
@@ -990,9 +990,6 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTpJOSVLfa_8EzUMctCFOicNU6QwG5uPBtIUDrgG7urIdBZ5PhkwZEw0Lq7QTYKOCRXw/exec';
 
-        // Telegram Bot Configuration - CHỈ CẦN TOKEN
-        const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
-
         // Firebase Configuration cho Realtime Database
         const firebaseConfig = {
             apiKey: "AIzaSyC9VMDowjZ05A-ZqycaFYI5CtRcjazdZm4",
@@ -1050,110 +1047,6 @@
         const totalEntertainmentElement = document.getElementById('totalEntertainment');
         const totalVisitsElement = document.getElementById('totalVisits');
         const todayVisitsElement = document.getElementById('todayVisits');
-
-        // Hàm gửi thông báo đến Telegram (tự động gửi cho admin)
-        async function sendTelegramNotification(appData) {
-            if (!TELEGRAM_BOT_TOKEN) {
-                console.log('Telegram bot chưa được cấu hình');
-                return;
-            }
-
-            try {
-                // Tạo message format đẹp
-                const message = `
-🆕 **ỨNG DỤNG MỚI ĐÃ ĐƯỢC UPLOAD**
-
-📱 **Tên ứng dụng:** ${appData.name}
-👨‍💻 **Nhà phát triển:** ${appData.developer}
-🔢 **Phiên bản:** ${appData.version}
-📂 **Danh mục:** ${appData.categories.split(',').map(cat => {
-    const categoryLabels = {
-        'game': '🎮 Trò chơi',
-        'social': '👥 Mạng xã hội', 
-        'entertainment': '🎬 Giải trí',
-        'photo': '📷 Chụp ảnh',
-        'clone': '⚡ Nhân bản'
-    };
-    return categoryLabels[cat] || cat;
-}).join(', ')}
-
-📝 **Mô tả:** ${appData.description}
-
-🔗 **Tải về:** [Download Link](${appData.downloadlink})
-🖼️ **Ảnh ứng dụng:** [Xem ảnh](${appData.image})
-
-⏰ **Thời gian upload:** ${new Date().toLocaleString('vi-VN')}
-
-#NewApp #${appData.name.replace(/\s+/g, '')}
-                `.trim();
-
-                // Lấy danh sách các cuộc trò chuyện gần đây với bot
-                try {
-                    const updatesResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
-                    const updatesData = await updatesResponse.json();
-                    
-                    if (updatesData.ok && updatesData.result.length > 0) {
-                        // Gửi thông báo đến tất cả các chat gần đây
-                        const sentChats = new Set();
-                        
-                        for (const update of updatesData.result) {
-                            const chatId = update.message?.chat?.id || update.channel_post?.chat?.id;
-                            
-                            if (chatId && !sentChats.has(chatId)) {
-                                sentChats.add(chatId);
-                                
-                                try {
-                                    // Thử gửi ảnh ứng dụng trước
-                                    if (appData.image) {
-                                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                chat_id: chatId,
-                                                photo: appData.image,
-                                                caption: message,
-                                                parse_mode: 'Markdown'
-                                            })
-                                        });
-                                    } else {
-                                        // Nếu không có ảnh, gửi text thông thường
-                                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                chat_id: chatId,
-                                                text: message,
-                                                parse_mode: 'Markdown'
-                                            })
-                                        });
-                                    }
-                                    console.log(`Đã gửi thông báo đến chat ID: ${chatId}`);
-                                } catch (chatError) {
-                                    console.log(`Không thể gửi đến chat ID: ${chatId}`, chatError);
-                                }
-                            }
-                        }
-                        
-                        if (sentChats.size === 0) {
-                            console.log('Không tìm thấy chat nào để gửi thông báo');
-                        } else {
-                            console.log(`Đã gửi thông báo đến ${sentChats.size} chat`);
-                        }
-                    } else {
-                        console.log('Bot chưa có cuộc trò chuyện nào. Hãy gửi /start cho bot trước.');
-                    }
-                } catch (error) {
-                    console.error('Lỗi khi lấy danh sách chat:', error);
-                }
-
-            } catch (error) {
-                console.error('Lỗi khi gửi thông báo Telegram:', error);
-            }
-        }
 
         // Tab switching functionality
         navTabs.forEach(tab => {
@@ -1458,10 +1351,6 @@
                     uploadForm.reset();
                     updatePreview();
                     loadAppStats(); // Cập nhật lại thống kê
-                    
-                    // GỬI THÔNG BÁO TELEGRAM
-                    await sendTelegramNotification(appData);
-                    
                 } else {
                     throw new Error(result.message || 'Không thể upload ứng dụng');
                 }
