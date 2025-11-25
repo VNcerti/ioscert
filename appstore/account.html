@@ -480,6 +480,10 @@
                         <i class="fas fa-crown"></i>
                         Nâng cấp VIP
                     </button>
+                    <button class="action-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        Làm mới
+                    </button>
                     <button class="action-btn logout" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i>
                         Đăng xuất
@@ -511,6 +515,7 @@
         const registerBtn = document.getElementById('registerBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const upgradeBtn = document.getElementById('upgradeBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const successText = document.getElementById('successText');
@@ -520,7 +525,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const currentUser = getCurrentUser();
             if (currentUser) {
-                showUserInfo(currentUser);
+                loadUserInfo(currentUser);
             }
         });
 
@@ -568,7 +573,7 @@
                         action: 'loginUser',
                         data: {
                             username: username,
-                            password: password // In real app, should hash this
+                            password: password
                         }
                     })
                 });
@@ -578,7 +583,7 @@
                 if (result.success) {
                     // Save user info to localStorage
                     localStorage.setItem('currentUser', JSON.stringify(result.data));
-                    showUserInfo(result.data);
+                    loadUserInfo(result.data);
                     showSuccess('Đăng nhập thành công!');
                 } else {
                     throw new Error(result.message);
@@ -634,7 +639,7 @@
                         action: 'registerUser',
                         data: {
                             username: username,
-                            password: password, // In real app, should hash this
+                            password: password,
                             email: email
                         }
                     })
@@ -666,14 +671,50 @@
             showSuccess('Đã đăng xuất thành công');
         });
 
+        // Refresh user info
+        refreshBtn.addEventListener('click', async function() {
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                refreshBtn.innerHTML = '<div class="loading"></div> Đang làm mới...';
+                try {
+                    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(currentUser.email)}`);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        localStorage.setItem('currentUser', JSON.stringify(result.data));
+                        loadUserInfo(result.data);
+                        showSuccess('Đã cập nhật thông tin tài khoản!');
+                    } else {
+                        throw new Error('Không thể cập nhật thông tin');
+                    }
+                } catch (error) {
+                    showError(error.message || 'Lỗi khi làm mới thông tin');
+                } finally {
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Làm mới';
+                }
+            }
+        });
+
         // Upgrade button
         upgradeBtn.addEventListener('click', function() {
             alert('Liên hệ admin để nâng cấp tài khoản VIP!');
-            // In future, this could open a modal or redirect to payment page
         });
 
         // Utility functions
-        function showUserInfo(userData) {
+        async function loadUserInfo(userData) {
+            // Tải thông tin mới nhất từ server
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(userData.email)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    userData = result.data;
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải thông tin người dùng:', error);
+            }
+            
             document.getElementById('userName').textContent = userData.username;
             document.getElementById('userEmail').textContent = userData.email;
             document.getElementById('userCreatedDate').textContent = userData.createdDate;
