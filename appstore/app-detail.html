@@ -238,6 +238,17 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .download-btn-premium {
+            background: linear-gradient(135deg, #f59e0b, #eab308);
+            color: white;
+        }
+
+        .download-btn-premium:hover {
+            background: linear-gradient(135deg, #eab308, #d97706);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
         .download-btn:disabled {
             background: var(--text-muted);
             cursor: not-allowed;
@@ -328,63 +339,20 @@
             color: var(--danger);
         }
 
-        /* Search Modal */
-        .search-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .search-modal-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--background);
-            border-radius: 0 0 20px 20px;
-            padding: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-modal-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .search-modal-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
+        /* Login Prompt */
+        .login-prompt {
             background: var(--surface);
-            outline: none;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
         }
 
-        .search-modal-input:focus {
-            border-color: var(--primary);
-        }
-
-        .close-search {
-            background: none;
-            border: none;
-            font-size: 20px;
+        .login-prompt p {
+            margin-bottom: 12px;
             color: var(--text-secondary);
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .search-results {
-            max-height: 70vh;
-            overflow-y: auto;
+            font-size: 13px;
         }
 
         /* Bottom Navigation */
@@ -809,26 +777,20 @@
     <!-- App Detail -->
     <main class="container">
         <div class="app-detail">
+            <!-- Login Prompt -->
+            <div class="login-prompt" id="loginPrompt" style="display: none;">
+                <p>Vui lòng đăng nhập để tải ứng dụng</p>
+                <button class="download-btn" onclick="window.location.href='account.html'">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập ngay
+                </button>
+            </div>
+
             <div id="appContent">
                 <!-- Skeleton loading sẽ được thêm bằng JavaScript -->
             </div>
         </div>
     </main>
-
-    <!-- Search Modal -->
-    <div class="search-modal" id="searchModal">
-        <div class="search-modal-content">
-            <div class="search-modal-header">
-                <button class="close-search" id="closeSearch">
-                    <i class="fas fa-times"></i>
-                </button>
-                <input type="text" class="search-modal-input" id="searchModalInput" placeholder="Tìm kiếm ứng dụng...">
-            </div>
-            <div class="search-results" id="searchResults">
-                <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
-            </div>
-        </div>
-    </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
@@ -959,6 +921,31 @@
             }
         }
 
+        // Lấy thông tin user hiện tại
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('currentUser');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        // Kiểm tra user có phải là Premium không
+        function isUserPremium() {
+            const user = getCurrentUser();
+            if (!user) return false;
+            
+            if (user.accountType === 'premium' && isVIPActive(user.vipExpiry)) {
+                return true;
+            }
+            return false;
+        }
+
+        // Kiểm tra VIP còn hiệu lực không
+        function isVIPActive(vipExpiry) {
+            if (!vipExpiry) return false;
+            const expiryDate = new Date(vipExpiry);
+            const today = new Date();
+            return expiryDate >= today;
+        }
+
         // Tải thông tin ứng dụng với cache
         async function loadAppDetail() {
             if (!appId) {
@@ -1054,6 +1041,66 @@
             // Cập nhật title trang
             document.title = `${app.name} - XSpace Store`;
 
+            // Kiểm tra trạng thái đăng nhập
+            const currentUser = getCurrentUser();
+            const isPremium = isUserPremium();
+            
+            // Hiển thị hoặc ẩn login prompt
+            const loginPrompt = document.getElementById('loginPrompt');
+            if (!currentUser) {
+                loginPrompt.style.display = 'block';
+            } else {
+                loginPrompt.style.display = 'none';
+            }
+
+            // Tạo nút tải VIP dựa trên trạng thái user
+            let vipButtonHTML = '';
+            if (!currentUser) {
+                // Chưa đăng nhập
+                vipButtonHTML = `
+                    <button class="download-btn download-btn-premium" onclick="requireLoginForVIP()">
+                        <i class="fas fa-crown"></i>
+                        Tải VIP #1 (Cần đăng nhập)
+                    </button>
+                `;
+            } else if (!isPremium) {
+                // Đã đăng nhập nhưng không phải Premium
+                vipButtonHTML = `
+                    <button class="download-btn download-btn-premium" onclick="requirePremiumForVIP()">
+                        <i class="fas fa-crown"></i>
+                        Tải VIP #1 (Cần nâng cấp)
+                    </button>
+                `;
+            } else {
+                // Đã đăng nhập và là Premium
+                vipButtonHTML = `
+                    <button class="download-btn download-btn-premium" onclick="downloadVIP('${app.viplink1}', '${app.name}')">
+                        <i class="fas fa-crown"></i>
+                        Tải VIP #1
+                    </button>
+                `;
+            }
+
+            // Tạo nút tải miễn phí dựa trên trạng thái user
+            let freeButtonHTML = '';
+            if (!currentUser) {
+                // Chưa đăng nhập
+                freeButtonHTML = `
+                    <button class="download-btn" onclick="requireLoginForFree()">
+                        <i class="fas fa-download"></i>
+                        Tải miễn phí (Cần đăng nhập)
+                    </button>
+                `;
+            } else {
+                // Đã đăng nhập
+                freeButtonHTML = `
+                    <button class="download-btn" onclick="downloadApp('${app.downloadlink}', '${app.name}')">
+                        <i class="fas fa-download"></i>
+                        Tải miễn phí
+                    </button>
+                `;
+            }
+
             // Hiển thị nội dung
             document.getElementById('appContent').innerHTML = `
                 <div class="app-header">
@@ -1080,14 +1127,8 @@
                 <div class="download-section">
                     <h2 class="download-title">Tải ứng dụng</h2>
                     <div class="download-options">
-                        <button class="download-btn" onclick="downloadApp('${app.downloadlink}', '${app.name}')">
-                            <i class="fas fa-download"></i>
-                            Tải miễn phí
-                        </button>
-                        <button class="download-btn download-btn-secondary" onclick="buyPremium()">
-                            <i class="fas fa-crown"></i>
-                            Mua bản Premium
-                        </button>
+                        ${freeButtonHTML}
+                        ${vipButtonHTML}
                     </div>
                     <div style="margin-top: 10px; font-size: 11px; color: var(--text-muted);">
                         <i class="fas fa-info-circle"></i>
@@ -1126,7 +1167,7 @@
             `;
         }
 
-        // Hàm tải ứng dụng
+        // Hàm tải ứng dụng miễn phí
         function downloadApp(downloadLink, appName) {
             console.log('Download link:', downloadLink);
             console.log('App name:', appName);
@@ -1154,9 +1195,51 @@
             }
         }
 
-        // Hàm mua bản premium
-        function buyPremium() {
-            if (confirm('Bạn muốn mua bản Premium để trải nghiệm không quảng cáo và các tính năng cao cấp?\n\nChuyển đến kênh Telegram để đặt mua?')) {
+        // Hàm tải ứng dụng VIP
+        function downloadVIP(downloadLink, appName) {
+            console.log('VIP Download link:', downloadLink);
+            console.log('App name:', appName);
+            
+            // Kiểm tra link hợp lệ
+            if (!downloadLink || downloadLink === '#' || downloadLink === '' || downloadLink.includes('github.com')) {
+                alert('⚠️ Link tải VIP đang được cập nhật hoặc chưa có sẵn.\n\nVui lòng thử lại sau hoặc liên hệ hỗ trợ.');
+                return;
+            }
+            
+            // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
+            if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
+                // Hiển thị thông báo
+                if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA VIP`)) {
+                    // Mở link trong tab mới
+                    window.open(downloadLink, '_blank');
+                    
+                    // Hiển thị thông báo thành công
+                    setTimeout(() => {
+                        alert('✅ Đã bắt đầu tải xuống bản VIP!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
+                    }, 1000);
+                }
+            } else {
+                alert('❌ Link tải VIP không hợp lệ. Vui lòng kiểm tra lại.');
+            }
+        }
+
+        // Yêu cầu đăng nhập để tải miễn phí
+        function requireLoginForFree() {
+            if (confirm('Bạn cần đăng nhập để tải ứng dụng miễn phí.\n\nChuyển đến trang đăng nhập?')) {
+                window.location.href = 'account.html';
+            }
+        }
+
+        // Yêu cầu đăng nhập để tải VIP
+        function requireLoginForVIP() {
+            if (confirm('Bạn cần đăng nhập để tải bản VIP.\n\nChuyển đến trang đăng nhập?')) {
+                window.location.href = 'account.html';
+            }
+        }
+
+        // Yêu cầu nâng cấp để tải VIP
+        function requirePremiumForVIP() {
+            if (confirm('Bạn cần nâng cấp lên tài khoản Premium để tải bản VIP.\n\nChuyển đến kênh Telegram để đặt mua?')) {
                 window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
             }
         }
@@ -1183,115 +1266,6 @@
             `;
         }
 
-        // Mở modal tìm kiếm
-        function openSearchModal() {
-            const searchModal = document.getElementById('searchModal');
-            const searchModalInput = document.getElementById('searchModalInput');
-            
-            searchModal.style.display = 'block';
-            setTimeout(() => {
-                searchModalInput.focus();
-            }, 100);
-        }
-
-        // Đóng modal tìm kiếm
-        function closeSearchModal() {
-            const searchModal = document.getElementById('searchModal');
-            const searchModalInput = document.getElementById('searchModalInput');
-            const searchResults = document.getElementById('searchResults');
-            
-            searchModal.style.display = 'none';
-            searchModalInput.value = '';
-            searchResults.innerHTML = '';
-        }
-
-        // Tìm kiếm ứng dụng
-        async function searchApps(searchTerm) {
-            const searchResults = document.getElementById('searchResults');
-            
-            if (!searchTerm.trim()) {
-                searchResults.innerHTML = '<div class="no-results"><p>Nhập từ khóa để tìm kiếm</p></div>';
-                return;
-            }
-
-            try {
-                let apps = [];
-                
-                // Kiểm tra cache trước
-                if (isCacheValid()) {
-                    const cachedApps = getFromCache();
-                    if (cachedApps && cachedApps.length > 0) {
-                        apps = cachedApps;
-                    }
-                }
-                
-                // Nếu không có cache, fetch từ server
-                if (apps.length === 0) {
-                    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${Date.now()}`);
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        apps = result.data;
-                    } else {
-                        throw new Error('Không thể tải dữ liệu');
-                    }
-                }
-
-                const filteredApps = apps.filter(app => 
-                    app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    (app.description && app.description.toLowerCase().includes(searchTerm.toLowerCase()))
-                );
-
-                if (filteredApps.length === 0) {
-                    searchResults.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-search"></i>
-                            <p>Không tìm thấy ứng dụng nào với từ khóa "${searchTerm}"</p>
-                        </div>
-                    `;
-                } else {
-                    let resultsHTML = '';
-                    filteredApps.forEach(app => {
-                        const categoryLabels = {
-                            'game': 'Trò chơi',
-                            'social': 'Mạng xã hội',
-                            'entertainment': 'Giải trí',
-                            'photo': 'Chụp ảnh',
-                            'clone': 'Nhân bản'
-                        };
-                        
-                        let categories = [];
-                        if (typeof app.categories === 'string') {
-                            categories = app.categories.split(',');
-                        } else if (Array.isArray(app.categories)) {
-                            categories = app.categories;
-                        }
-                        
-                        const tagsHTML = categories.map(cat => 
-                            `<span class="app-tag">${categoryLabels[cat] || cat}</span>`
-                        ).join('');
-                        
-                        resultsHTML += `
-                            <div class="app-card" style="margin-bottom: 12px; cursor: pointer;" onclick="window.location.href='app-detail.html?id=${app.id}'">
-                                <div style="display: flex; gap: 12px; padding: 12px;">
-                                    <img src="${app.image}" alt="${app.name}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/60/2563eb/FFFFFF?text=App'">
-                                    <div style="flex: 1; min-width: 0;">
-                                        <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${app.name}</div>
-                                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">${app.developer || 'Nhà phát triển'}</div>
-                                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">${tagsHTML}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    searchResults.innerHTML = resultsHTML;
-                }
-            } catch (error) {
-                console.error('Lỗi khi tìm kiếm:', error);
-                searchResults.innerHTML = '<div class="no-results"><p>Lỗi khi tìm kiếm. Vui lòng thử lại.</p></div>';
-            }
-        }
-
         // Khởi tạo khi trang được tải
         document.addEventListener('DOMContentLoaded', function() {
             loadAppDetail();
@@ -1308,28 +1282,6 @@
                         button.innerHTML = originalHTML;
                         button.disabled = false;
                     }, 2000);
-                }
-            });
-
-            // Xử lý mở modal tìm kiếm
-            document.getElementById('searchNavItem').addEventListener('click', function(e) {
-                e.preventDefault();
-                openSearchModal();
-            });
-
-            // Xử lý đóng modal
-            document.getElementById('closeSearch').addEventListener('click', closeSearchModal);
-
-            // Xử lý tìm kiếm real-time
-            document.getElementById('searchModalInput').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.trim();
-                searchApps(searchTerm);
-            });
-
-            // Đóng modal khi click ra ngoài
-            document.getElementById('searchModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeSearchModal();
                 }
             });
         });
