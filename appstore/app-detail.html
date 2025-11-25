@@ -831,7 +831,7 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTpJOSVLfa_8EzUMctCFOicNU6QwG5uPBtIUDrgG7urIdBZ5PhkwZEw0Lq7QTYKOCRXw/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
         const CACHE_KEY = 'xspace_apps_cache';
         const CACHE_TIMESTAMP_KEY = 'xspace_cache_timestamp';
         const CACHE_DURATION = 30 * 60 * 1000; // 30 phút
@@ -839,6 +839,19 @@
         // Lấy appId từ URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const appId = urlParams.get('id');
+
+        // Xử lý dữ liệu app để đảm bảo cấu trúc đúng với Google Sheets mới
+        function processAppData(app) {
+            // Đảm bảo app có categories (cột mới trong Google Sheets)
+            if (!app.categories) {
+                app.categories = 'other';
+            }
+            // Đảm bảo app có viplink1 (cột mới trong Google Sheets)
+            if (!app.viplink1) {
+                app.viplink1 = '';
+            }
+            return app;
+        }
 
         // Hiển thị skeleton loading cho trang chi tiết
         function showDetailSkeleton() {
@@ -1003,6 +1016,9 @@
 
         // Hiển thị chi tiết ứng dụng
         function displayAppDetail(app) {
+            // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
+            app = processAppData(app);
+            
             const categoryLabels = {
                 'game': 'Trò chơi',
                 'social': 'Mạng xã hội',
@@ -1060,7 +1076,7 @@
                 vipButtonHTML = `
                     <button class="download-btn download-btn-premium" onclick="requireLoginForVIP()">
                         <i class="fas fa-crown"></i>
-                        Tải VIP #1 (Cần đăng nhập)
+                        Tải VIP #1 
                     </button>
                 `;
             } else if (!isPremium) {
@@ -1088,7 +1104,7 @@
                 freeButtonHTML = `
                     <button class="download-btn" onclick="requireLoginForFree()">
                         <i class="fas fa-download"></i>
-                        Tải miễn phí (Cần đăng nhập)
+                        Tải miễn phí
                     </button>
                 `;
             } else {
@@ -1232,7 +1248,7 @@
 
         // Yêu cầu đăng nhập để tải VIP
         function requireLoginForVIP() {
-            if (confirm('Bạn cần đăng nhập để tải bản VIP.\n\nChuyển đến trang đăng nhập?')) {
+            if (confirm('Bạn cần đăng nhập để tải bản VIP.\n\nĐăng nhập ngay nào bro?')) {
                 window.location.href = 'account.html';
             }
         }
