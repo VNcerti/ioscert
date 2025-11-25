@@ -1103,7 +1103,7 @@
                 vipButtonHTML = `
                     <button class="download-btn download-btn-premium" onclick="requirePremiumForVIP()">
                         <i class="fas fa-crown"></i>
-                        Tải VIP #1 (Cần nâng cấp)
+                        Tải VIP #1 (Premium)
                     </button>
                 `;
             } else {
@@ -1183,7 +1183,7 @@
                     </div>
                     <div style="margin-top: 10px; font-size: 11px; color: var(--text-muted);">
                         <i class="fas fa-info-circle"></i>
-                        ${!hasValidVIPLink ? 'Bản VIP đang được cập nhật' : 'Bản Premium: Không quảng cáo + Tính năng cao cấp'}
+                        ${!hasValidVIPLink ? 'Bản VIP đang được cập nhật' : 'Premium: No Ads – Full Features – Unlimited Access'}
                     </div>
                 </div>
 
@@ -1236,7 +1236,7 @@
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA`)) {
+                if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tiếp tục tải file ngay lập tức`)) {
                     window.open(downloadLink, '_blank');
                     
                     setTimeout(() => {
@@ -1264,7 +1264,7 @@
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA VIP`)) {
+                if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải file VIP ngay lập tức`)) {
                     window.open(downloadLink, '_blank');
                     
                     setTimeout(() => {
@@ -1292,7 +1292,7 @@
 
         // Yêu cầu nâng cấp để tải VIP
         function requirePremiumForVIP() {
-            if (confirm('Bạn cần nâng cấp lên tài khoản Premium để tải bản VIP.\n\nChuyển đến kênh Telegram để đặt mua?')) {
+            if (confirm('Tài khoản của bạn chưa được cấp phép vui lòng nâng cấp để sử dụng dịch vụ VIP.\n\nNâng cấp tài khoản Premium ngay?')) {
                 window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
             }
         }
