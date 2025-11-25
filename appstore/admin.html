@@ -1097,7 +1097,7 @@
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
         const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
-        const TELEGRAM_CHAT_ID = '@xspace_ipa';
+        const TELEGRAM_CHAT_ID = '-1003057128724';
         const BASE_APP_URL = 'https://ioscert.site/appstore/app-detail.html?id=';
 
         // Firebase Configuration cho Realtime Database
@@ -1477,39 +1477,40 @@
             }
         }
 
-        // FIXED: Gửi thông báo đến Telegram - ĐÃ SỬA LỖI MÔ TẢ
+        // Gửi thông báo đến Telegram với ảnh - ĐẢM BẢO LUÔN CÓ ẢNH
         async function sendTelegramNotification(appData, appId) {
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
                 
-                // Format mô tả để tránh vượt quá giới hạn ký tự của Telegram
-                const maxDescriptionLength = 800;
-                let formattedDescription = appData.description || 'Không có mô tả';
-                
-                // Cắt bớt mô tả nếu quá dài
-                if (formattedDescription.length > maxDescriptionLength) {
-                    formattedDescription = formattedDescription.substring(0, maxDescriptionLength) + '...';
+                // Loại bỏ ký tự ' ở đầu phiên bản nếu có
+                let version = appData.version;
+                if (version && version.startsWith("'")) {
+                    version = version.substring(1);
                 }
                 
-                // Thay thế xuống dòng bằng ký tự hợp lệ
-                formattedDescription = formattedDescription.replace(/\n/g, '\n');
+                // Định dạng mô tả thành các dòng bullet
+                const formattedDescription = appData.description
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(line => `+ ${line.trim()}`)
+                    .join('\n');
 
-                // Tạo message với định dạng đơn giản hơn
                 const message = `
-Ứng dụng : *${appData.name}*
+Ứng dụng : ${appData.name}
+Phiên bản : ${version}
 
-Phiên bản: ${appData.version}
 
-Mô tả:
+Chức năng : 
 ${formattedDescription}
 
-Tải ngay: ${appUrl}
+Cài đặt ngay : ${appUrl}
                 `.trim();
 
                 console.log('📤 Đang gửi thông báo Telegram...');
-                console.log('📝 Độ dài message:', message.length);
+                console.log('🆔 App ID:', appId);
+                console.log('🖼️ Ảnh:', appData.image);
 
-                // Thử gửi với ảnh và caption
+                // Gửi ảnh với caption - ĐẢM BẢO LUÔN CÓ ẢNH
                 const photoUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
                 
                 const response = await fetch(photoUrl, {
@@ -1534,13 +1535,8 @@ Tải ngay: ${appUrl}
                 } else {
                     console.error('❌ Lỗi khi gửi ảnh Telegram:', result);
                     
-                    // Nếu lỗi do caption quá dài, gửi ảnh và text riêng
-                    if (result.description && result.description.includes('too long')) {
-                        console.log('📝 Caption quá dài, gửi ảnh và text riêng...');
-                        return await sendSeparateImageAndMessage(appData, appId);
-                    }
-                    
-                    // Thử lại lần cuối
+                    // THỬ LẠI GỬI ẢNH LẦN 2 - ĐẢM BẢO LUÔN CÓ ẢNH
+                    console.log('🔄 Thử gửi ảnh lần 2...');
                     const retryResponse = await fetch(photoUrl, {
                         method: 'POST',
                         headers: {
@@ -1549,17 +1545,27 @@ Tải ngay: ${appUrl}
                         body: JSON.stringify({
                             chat_id: TELEGRAM_CHAT_ID,
                             photo: appData.image,
-                            caption: `📱 ${appData.name}\n⬇️ Tải ngay: ${appUrl}`,
+                            caption: message,
                             parse_mode: 'Markdown'
                         })
                     });
                     
                     const retryResult = await retryResponse.json();
-                    return retryResult.ok;
+                    if (retryResult.ok) {
+                        console.log('✅ Thông báo Telegram với ảnh thành công sau lần thử 2!');
+                        return true;
+                    }
+                    
+                    // Nếu vẫn lỗi, gửi text nhưng vẫn cố gắng gửi ảnh riêng
+                    console.log('📝 Gửi ảnh riêng và tin nhắn riêng...');
+                    await sendSeparateImageAndMessage(appData, appId);
+                    return true;
                 }
             } catch (error) {
                 console.error('💥 Lỗi kết nối Telegram:', error);
-                return await sendSeparateImageAndMessage(appData, appId);
+                // Vẫn cố gắng gửi ảnh và tin nhắn riêng
+                await sendSeparateImageAndMessage(appData, appId);
+                return true;
             }
         }
 
@@ -1568,12 +1574,27 @@ Tải ngay: ${appUrl}
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
                 
-                const message = `
-📱 *${appData.name}*
-👨‍💻 ${appData.developer}
-🔄 Phiên bản: ${appData.version}
+                // Loại bỏ ký tự ' ở đầu phiên bản nếu có
+                let version = appData.version;
+                if (version && version.startsWith("'")) {
+                    version = version.substring(1);
+                }
+                
+                const formattedDescription = appData.description
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(line => `+ ${line.trim()}`)
+                    .join('\n');
 
-⬇️ Tải ngay: ${appUrl}
+                const message = `
+Ứng dụng : ${appData.name}
+Phiên bản : ${version}
+
+
+Chức năng : 
+${formattedDescription}
+
+Cài đặt ngay : ${appUrl}
                 `.trim();
 
                 // Gửi ảnh trước
@@ -1662,7 +1683,7 @@ Tải ngay: ${appUrl}
                     const actualAppId = await getAppIdAfterUpload(appData);
                     
                     if (actualAppId) {
-                        // Gửi thông báo đến Telegram với ID chính xác - ĐÃ SỬA LỖI MÔ TẢ
+                        // Gửi thông báo đến Telegram với ID chính xác - ĐẢM BẢO LUÔN CÓ ẢNH
                         submitBtn.innerHTML = '<div class="loading"></div> Đang gửi Telegram...';
                         const telegramSent = await sendTelegramNotification(appData, actualAppId);
                         
