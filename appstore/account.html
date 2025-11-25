@@ -7,363 +7,129 @@
     <link rel="icon" href="https://i.imgur.com/k0zikhA.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --background: #ffffff;
-            --surface: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --primary:#2076f3; --primary-dark:#0cabeb; --primary-light:#e1f0ff;
+            --background:#ffffff; --surface:#f8fafc; --text-primary:#1e293b;
+            --text-secondary:#64748b; --text-muted:#94a3b8; --border:#e2e8f0;
+            --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+            --premium: linear-gradient(135deg, #f59e0b, #eab308, #f97316);
+            --card-shadow:0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);
+            --card-shadow-hover:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
+            --nav-height:56px;
         }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 400px;
-            width: 100%;
-        }
+        body { background:var(--background); color:var(--text-primary); line-height:1.4; padding-bottom:var(--nav-height); font-size:13px; }
+        .container { max-width:1200px; margin:0 auto; padding:0 12px; }
 
         /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        .header { background:var(--background); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); }
+        .header-content { display:flex; align-items:center; justify-content:space-between; padding:8px 0; }
+        .logo { display:flex; align-items:center; gap:6px; font-size:16px; font-weight:700; color:var(--primary); text-decoration:none; }
+        .logo-icon { background:linear-gradient(90deg, var(--primary-dark), var(--primary)); width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; }
+        .icon-btn { width:34px; height:34px; border-radius:8px; background:var(--surface); color:var(--text-secondary); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+        .icon-btn:hover { background:var(--primary-light); color:var(--primary); }
 
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-            margin-bottom: 10px;
-        }
+        /* Welcome Section */
+        .welcome-section { text-align:center; margin-bottom:20px; padding:0 12px; }
+        .welcome-title { font-size:20px; font-weight:700; margin-bottom:8px; color:var(--text-primary); }
+        .welcome-subtitle { font-size:14px; color:var(--text-secondary); line-height:1.5; }
 
-        .logo-icon {
-            background: rgba(255, 255, 255, 0.2);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-            backdrop-filter: blur(10px);
-        }
-
-        .tagline {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-        }
-
-        /* Auth Container */
-        .auth-container {
-            background: var(--background);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            backdrop-filter: blur(10px);
-        }
+        /* Account Container */
+        .account-container { max-width:400px; margin:20px auto; padding:0 12px; }
+        .auth-card { background:var(--surface); border-radius:12px; overflow:hidden; box-shadow:var(--card-shadow); border:1px solid var(--border); padding:20px; transition:all .3s; }
+        .auth-card:hover { transform:translateY(-2px); box-shadow:var(--card-shadow-hover); }
 
         /* Tabs */
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 25px;
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 4px;
-            border: 1px solid var(--border);
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .auth-tab.active {
-            background: var(--primary);
-            color: white;
-        }
+        .auth-tabs { display:flex; margin-bottom:20px; background:var(--surface); border-radius:10px; padding:4px; border:1px solid var(--border); }
+        .auth-tab { flex:1; padding:10px; border:none; background:transparent; color:var(--text-secondary); border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; transition:all .3s; }
+        .auth-tab.active { background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; }
 
         /* Forms */
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-            font-size: 13px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: var(--background);
-            color: var(--text-primary);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .submit-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .submit-btn:disabled {
-            background: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-        }
+        .auth-form { display:none; }
+        .auth-form.active { display:block; }
+        .form-group { margin-bottom:14px; }
+        .form-label { display:block; font-weight:600; margin-bottom:6px; color:var(--text-primary); font-size:12px; display:flex; align-items:center; gap:6px; }
+        .form-input { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-size:13px; transition:all .3s; background:var(--background); color:var(--text-primary); }
+        .form-input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(32, 118, 243, 0.1); }
+        .submit-btn { width:100%; background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; transition:all .3s; font-size:13px; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .submit-btn:hover { background:linear-gradient(90deg, var(--primary), var(--primary-dark)); transform:translateY(-1px); }
+        .submit-btn:disabled { background:var(--text-muted); cursor:not-allowed; transform:none; }
 
         /* Messages */
-        .message {
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid transparent;
-            font-size: 13px;
-        }
-
-        .message-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border-color: rgba(16, 185, 129, 0.2);
-        }
-
-        .message-error {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.2);
-        }
+        .message { padding:10px 14px; border-radius:10px; margin-bottom:14px; display:none; align-items:center; gap:8px; border:1px solid transparent; font-size:12px; }
+        .message-success { background:rgba(16,185,129,0.1); color:var(--success); border-color:rgba(16,185,129,0.2); }
+        .message-error { background:rgba(239,68,68,0.1); color:var(--danger); border-color:rgba(239,68,68,0.2); }
 
         /* User Info */
-        .user-info {
-            display: none;
-            text-align: center;
-        }
-
-        .user-info.active {
-            display: block;
-        }
-
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 700;
-            margin: 0 auto 16px;
-        }
-
-        .user-name {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .user-detail {
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        .user-badge {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin: 8px 0;
-        }
-
-        .user-badge.free {
-            background: var(--text-muted);
-        }
-
-        .user-badge.premium {
-            background: linear-gradient(135deg, #f59e0b, #eab308);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--surface);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .action-btn.logout {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-
-        .action-btn.logout:hover {
-            background: #dc2626;
-        }
+        .user-info { display:none; text-align:center; }
+        .user-info.active { display:block; }
+        .user-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; margin:0 auto 16px; box-shadow:0 4px 8px rgba(12, 171, 235, 0.2); }
+        .user-name { font-size:20px; font-weight:700; margin-bottom:8px; color:var(--text-primary); }
+        .user-details { background:var(--surface); border-radius:12px; padding:16px; margin:16px 0; border:1px solid var(--border); }
+        .user-detail { color:var(--text-secondary); margin-bottom:8px; font-size:13px; display:flex; align-items:center; justify-content:flex-start; gap:8px; padding:6px 0; }
+        .user-detail i { width:18px; color:var(--primary); }
+        .user-badge { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; padding:6px 12px; border-radius:16px; font-size:12px; font-weight:700; margin:10px 0; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+        .user-badge.free { background:var(--text-muted); }
+        .user-badge.premium { background:var(--premium); box-shadow:0 2px 6px rgba(245,158,11,0.3); }
+        .user-badge i { font-size:14px; }
+        .action-buttons { display:flex; gap:10px; margin-top:20px; }
+        .action-btn { flex:1; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text-primary); cursor:pointer; font-weight:600; font-size:12px; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .action-btn:hover { background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; border-color:var(--primary); transform:translateY(-1px); }
+        .action-btn.logout { background:var(--danger); color:white; border-color:var(--danger); }
+        .action-btn.logout:hover { background:#dc2626; }
 
         /* Loading */
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
+        .loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-radius:50%; border-top-color:#fff; animation:spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* Quick Loading */
+        .quick-loading { display:none; text-align:center; padding:20px; }
+        .quick-loading.active { display:block; }
+        .quick-loading .loading { width:24px; height:24px; margin-bottom:10px; }
 
-        /* Back Button */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 13px;
-        }
-
-        .back-btn:hover {
-            background: var(--surface);
-            color: var(--text-primary);
-        }
+        /* Bottom Nav */
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--background); border-top:1px solid var(--border); padding:6px 0; z-index:1000; }
+        .nav-items { display:flex; justify-content:space-around; max-width:500px; margin:0 auto; }
+        .nav-item { display:flex; flex-direction:column; align-items:center; text-decoration:none; color:var(--text-secondary); flex:1; padding:4px 0; transition:all .3s; }
+        .nav-item.active { color:var(--primary); }
+        .nav-icon { font-size:16px; margin-bottom:2px; }
+        .nav-label { font-size:9px; font-weight:500; }
 
         /* Responsive */
-        @media (max-width: 480px) {
-            .auth-container {
-                padding: 20px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
+        @media (max-width:480px) {
+            .account-container { padding:16px 0; margin:10px auto; }
+            .auth-card { padding:16px; }
+            .action-buttons { flex-direction:column; }
+            .welcome-title { font-size:18px; }
+            .welcome-subtitle { font-size:13px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                XSpace Store
-            </a>
-            <p class="tagline">Quản lý tài khoản của bạn</p>
-        </div>
 
-        <!-- Auth Container -->
-        <div class="auth-container">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-rocket"></i></div>
+                    XSpace Store
+                </a>
+                <div class="user-actions">
+                    <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="account-container">
+            <!-- Quick Loading -->
+            <div class="quick-loading" id="quickLoading">
+                <div class="loading"></div>
+                <p>Đang tải thông tin...</p>
+            </div>
+
             <!-- Messages -->
             <div id="successMessage" class="message message-success">
                 <i class="fas fa-check-circle"></i>
@@ -375,131 +141,149 @@
                 <span id="errorText">Đã xảy ra lỗi!</span>
             </div>
 
+            <!-- Welcome Section (shown when not logged in) -->
+            <div class="welcome-section" id="welcomeSection">
+                <h2 class="welcome-title">Chào mừng bạn đến với XSpace Store</h2>
+                <p class="welcome-subtitle">Hãy đăng nhập để trải nghiệm kho ứng dụng một cách trọn vẹn nhất!</p>
+            </div>
+
             <!-- Login/Register Forms -->
             <div id="authForms">
-                <!-- Tabs -->
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-form="loginForm">Đăng nhập</button>
-                    <button class="auth-tab" data-form="registerForm">Đăng ký</button>
+                <div class="auth-card">
+                    <!-- Tabs -->
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" data-form="loginForm">Đăng nhập</button>
+                        <button class="auth-tab" data-form="registerForm">Đăng ký</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form class="auth-form active" id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label" for="loginUsername">
+                                <i class="fas fa-user"></i>
+                                Tên đăng nhập
+                            </label>
+                            <input type="text" id="loginUsername" class="form-input" placeholder="Nhập tên đăng nhập" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="loginPassword">
+                                <i class="fas fa-lock"></i>
+                                Mật khẩu
+                            </label>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="Nhập mật khẩu" required>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form class="auth-form" id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label" for="registerUsername">
+                                <i class="fas fa-user"></i>
+                                Tên đăng nhập
+                            </label>
+                            <input type="text" id="registerUsername" class="form-input" placeholder="Chọn tên đăng nhập" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="registerEmail">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            <input type="email" id="registerEmail" class="form-input" placeholder="Nhập email của bạn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="registerPassword">
+                                <i class="fas fa-lock"></i>
+                                Mật khẩu
+                            </label>
+                            <input type="password" id="registerPassword" class="form-input" placeholder="Tạo mật khẩu" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="registerConfirmPassword">
+                                <i class="fas fa-lock"></i>
+                                Nhập lại mật khẩu
+                            </label>
+                            <input type="password" id="registerConfirmPassword" class="form-input" placeholder="Xác nhận mật khẩu" required>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="registerBtn">
+                            <i class="fas fa-user-plus"></i>
+                            Đăng ký tài khoản
+                        </button>
+                    </form>
                 </div>
-
-                <!-- Login Form -->
-                <form class="auth-form active" id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label" for="loginUsername">
-                            <i class="fas fa-user"></i>
-                            Tên đăng nhập
-                        </label>
-                        <input type="text" id="loginUsername" class="form-input" placeholder="Nhập tên đăng nhập" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="loginPassword">
-                            <i class="fas fa-lock"></i>
-                            Mật khẩu
-                        </label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="Nhập mật khẩu" required>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="loginBtn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Đăng nhập
-                    </button>
-                </form>
-
-                <!-- Register Form -->
-                <form class="auth-form" id="registerForm">
-                    <div class="form-group">
-                        <label class="form-label" for="registerUsername">
-                            <i class="fas fa-user"></i>
-                            Tên đăng nhập
-                        </label>
-                        <input type="text" id="registerUsername" class="form-input" placeholder="Chọn tên đăng nhập" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="registerEmail">
-                            <i class="fas fa-envelope"></i>
-                            Email
-                        </label>
-                        <input type="email" id="registerEmail" class="form-input" placeholder="Nhập email của bạn" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="registerPassword">
-                            <i class="fas fa-lock"></i>
-                            Mật khẩu
-                        </label>
-                        <input type="password" id="registerPassword" class="form-input" placeholder="Tạo mật khẩu" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="registerConfirmPassword">
-                            <i class="fas fa-lock"></i>
-                            Nhập lại mật khẩu
-                        </label>
-                        <input type="password" id="registerConfirmPassword" class="form-input" placeholder="Xác nhận mật khẩu" required>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="registerBtn">
-                        <i class="fas fa-user-plus"></i>
-                        Đăng ký tài khoản
-                    </button>
-                </form>
             </div>
 
             <!-- User Info (shown after login) -->
             <div class="user-info" id="userInfo">
-                <div class="user-avatar" id="userAvatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                
-                <h2 class="user-name" id="userName">Người dùng</h2>
-                
-                <div class="user-detail">
-                    <i class="fas fa-envelope"></i>
-                    Email: <span id="userEmail">user@example.com</span>
-                </div>
-                
-                <div class="user-detail">
-                    <i class="fas fa-calendar"></i>
-                    Ngày tham gia: <span id="userCreatedDate">01/01/2024</span>
-                </div>
-                
-                <div class="user-badge free" id="userBadge">
-                    Tài khoản Miễn phí
-                </div>
+                <div class="auth-card">
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    
+                    <h2 class="user-name" id="userName">Người dùng</h2>
+                    
+                    <div class="user-details">
+                        <div class="user-detail">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email: <strong id="userEmail">user@example.com</strong></span>
+                        </div>
+                        
+                        <div class="user-detail">
+                            <i class="fas fa-calendar"></i>
+                            <span>Ngày tham gia: <strong id="userCreatedDate">01/01/2024</strong></span>
+                        </div>
+                        
+                        <div class="user-detail" id="vipExpiryInfo" style="display: none;">
+                            <i class="fas fa-crown"></i>
+                            <span>VIP đến: <strong id="vipExpiryDate">01/01/2024</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="user-badge free" id="userBadge">
+                        <i class="fas fa-user"></i>
+                        <span>Tài khoản Miễn phí</span>
+                    </div>
 
-                <div class="user-detail" id="vipExpiryInfo" style="display: none;">
-                    <i class="fas fa-crown"></i>
-                    VIP đến: <span id="vipExpiryDate">01/01/2024</span>
+                    <div class="action-buttons">
+                        <button class="action-btn" id="upgradeBtn" style="display: none;">
+                            <i class="fas fa-crown"></i>
+                            Nâng cấp VIP
+                        </button>
+                        <button class="action-btn" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Làm mới
+                        </button>
+                        <button class="action-btn logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Đăng xuất
+                        </button>
+                    </div>
                 </div>
-
-                <div class="action-buttons">
-                    <button class="action-btn" id="upgradeBtn" style="display: none;">
-                        <i class="fas fa-crown"></i>
-                        Nâng cấp VIP
-                    </button>
-                    <button class="action-btn" id="refreshBtn">
-                        <i class="fas fa-sync-alt"></i>
-                        Làm mới
-                    </button>
-                    <button class="action-btn logout" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Đăng xuất
-                    </button>
-                </div>
-            </div>
-
-            <!-- Back to Home -->
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="index.html" class="back-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    Quay về trang chủ
-                </a>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="nav-items">
+                <a href="index.html" class="nav-item" data-view="home"><div class="nav-icon"><i class="fas fa-home"></i></div><div class="nav-label">Trang chủ</div></a>
+                <a href="#" class="nav-item" data-view="today"><div class="nav-icon"><i class="fas fa-calendar-day"></i></div><div class="nav-label">Hôm nay</div></a>
+                <a href="#" class="nav-item" id="searchNavItem"><div class="nav-icon"><i class="fas fa-search"></i></div><div class="nav-label">Tìm kiếm</div></a>
+                <a href="#" class="nav-item" data-view="games"><div class="nav-icon"><i class="fas fa-gamepad"></i></div><div class="nav-label">Trò chơi</div></a>
+                <a href="account.html" class="nav-item active"><div class="nav-icon"><i class="fas fa-user"></i></div><div class="nav-label">Tài khoản</div></a>
+            </div>
+        </div>
+    </nav>
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
@@ -511,6 +295,7 @@
         const registerForm = document.getElementById('registerForm');
         const authFormsContainer = document.getElementById('authForms');
         const userInfo = document.getElementById('userInfo');
+        const welcomeSection = document.getElementById('welcomeSection');
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
         const logoutBtn = document.getElementById('logoutBtn');
@@ -520,12 +305,42 @@
         const errorMessage = document.getElementById('errorMessage');
         const successText = document.getElementById('successText');
         const errorText = document.getElementById('errorText');
+        const quickLoading = document.getElementById('quickLoading');
+
+        // Format date function
+        function formatDate(dateString) {
+            if (!dateString) return 'Không xác định';
+            
+            // Handle ISO format (2025-11-24T17:00:00.000Z)
+            if (dateString.includes('T')) {
+                const date = new Date(dateString);
+                // Add one day to fix the timezone issue
+                date.setDate(date.getDate() + 1);
+                return date.toLocaleDateString('vi-VN');
+            }
+            
+            // Handle dd/mm/yyyy format
+            if (dateString.includes('/')) {
+                return dateString;
+            }
+            
+            return dateString;
+        }
 
         // Check if user is already logged in
         document.addEventListener('DOMContentLoaded', function() {
             const currentUser = getCurrentUser();
             if (currentUser) {
-                loadUserInfo(currentUser);
+                // Hiển thị thông tin người dùng ngay lập tức
+                loadUserInfo(currentUser, true);
+                
+                // Sau đó tải thông tin mới nhất từ server
+                refreshUserInfo(currentUser);
+            } else {
+                // Hiển thị form đăng nhập/đăng ký và welcome section
+                authFormsContainer.style.display = 'block';
+                welcomeSection.style.display = 'block';
+                quickLoading.style.display = 'none';
             }
         });
 
@@ -583,7 +398,7 @@
                 if (result.success) {
                     // Save user info to localStorage
                     localStorage.setItem('currentUser', JSON.stringify(result.data));
-                    loadUserInfo(result.data);
+                    loadUserInfo(result.data, false);
                     showSuccess('Đăng nhập thành công!');
                 } else {
                     throw new Error(result.message);
@@ -667,6 +482,7 @@
         logoutBtn.addEventListener('click', function() {
             localStorage.removeItem('currentUser');
             authFormsContainer.style.display = 'block';
+            welcomeSection.style.display = 'block';
             userInfo.classList.remove('active');
             showSuccess('Đã đăng xuất thành công');
         });
@@ -677,16 +493,8 @@
             if (currentUser) {
                 refreshBtn.innerHTML = '<div class="loading"></div> Đang làm mới...';
                 try {
-                    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(currentUser.email)}`);
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        localStorage.setItem('currentUser', JSON.stringify(result.data));
-                        loadUserInfo(result.data);
-                        showSuccess('Đã cập nhật thông tin tài khoản!');
-                    } else {
-                        throw new Error('Không thể cập nhật thông tin');
-                    }
+                    await refreshUserInfo(currentUser);
+                    showSuccess('Đã cập nhật thông tin tài khoản!');
                 } catch (error) {
                     showError(error.message || 'Lỗi khi làm mới thông tin');
                 } finally {
@@ -701,23 +509,11 @@
         });
 
         // Utility functions
-        async function loadUserInfo(userData) {
-            // Tải thông tin mới nhất từ server
-            try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(userData.email)}`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    userData = result.data;
-                    localStorage.setItem('currentUser', JSON.stringify(userData));
-                }
-            } catch (error) {
-                console.error('Lỗi khi tải thông tin người dùng:', error);
-            }
-            
+        async function loadUserInfo(userData, isQuickLoad) {
+            // Hiển thị thông tin người dùng ngay lập tức
             document.getElementById('userName').textContent = userData.username;
             document.getElementById('userEmail').textContent = userData.email;
-            document.getElementById('userCreatedDate').textContent = userData.createdDate;
+            document.getElementById('userCreatedDate').textContent = formatDate(userData.createdDate);
             
             // Set avatar with first letter of username
             const firstLetter = userData.username.charAt(0).toUpperCase();
@@ -730,20 +526,48 @@
             const upgradeBtn = document.getElementById('upgradeBtn');
             
             if (userData.accountType === 'premium' && isVIPActive(userData.vipExpiry)) {
-                userBadge.textContent = 'Tài khoản Premium';
+                userBadge.innerHTML = '<i class="fas fa-crown"></i><span>Tài khoản Premium</span>';
                 userBadge.className = 'user-badge premium';
-                vipExpiryDate.textContent = userData.vipExpiry;
-                vipExpiryInfo.style.display = 'block';
+                vipExpiryDate.textContent = formatDate(userData.vipExpiry);
+                vipExpiryInfo.style.display = 'flex';
                 upgradeBtn.style.display = 'none';
             } else {
-                userBadge.textContent = 'Tài khoản Miễn phí';
+                userBadge.innerHTML = '<i class="fas fa-user"></i><span>Tài khoản Miễn phí</span>';
                 userBadge.className = 'user-badge free';
                 vipExpiryInfo.style.display = 'none';
-                upgradeBtn.style.display = 'block';
+                upgradeBtn.style.display = 'flex';
             }
             
+            // Hiển thị thông tin người dùng
             authFormsContainer.style.display = 'none';
+            welcomeSection.style.display = 'none';
             userInfo.classList.add('active');
+            quickLoading.style.display = 'none';
+            
+            // Nếu là quick load, không hiển thị animation
+            if (isQuickLoad) {
+                userInfo.style.animation = 'none';
+            }
+        }
+
+        async function refreshUserInfo(userData) {
+            // Tải thông tin mới nhất từ server
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(userData.email)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const updatedUserData = result.data;
+                    localStorage.setItem('currentUser', JSON.stringify(updatedUserData));
+                    loadUserInfo(updatedUserData, false);
+                } else {
+                    throw new Error('Không thể cập nhật thông tin');
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải thông tin người dùng:', error);
+                // Vẫn hiển thị thông tin cũ nếu không thể cập nhật
+                loadUserInfo(userData, false);
+            }
         }
 
         function getCurrentUser() {
