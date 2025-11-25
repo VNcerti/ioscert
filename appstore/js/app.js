@@ -123,10 +123,19 @@ class AppManager {
             const result = await response.json();
             
             if (result.success) {
-                this.allApps = result.data;
-                AppUtils.saveToCache(result.data);
+                // Xử lý dữ liệu để đảm bảo cấu trúc đúng
+                this.allApps = result.data.map(app => {
+                    // Đảm bảo app có categories
+                    if (!app.categories) {
+                        app.categories = 'other'; // Mặc định nếu không có categories
+                    }
+                    return app;
+                });
+                
+                AppUtils.saveToCache(this.allApps);
                 this.renderApps();
                 console.log('✅ Dữ liệu mới đã được tải và cache');
+                console.log('📊 Cấu trúc dữ liệu app đầu tiên:', this.allApps[0]);
             } else {
                 throw new Error('Không thể tải dữ liệu');
             }
