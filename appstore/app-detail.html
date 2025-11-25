@@ -840,16 +840,23 @@
         const urlParams = new URLSearchParams(window.location.search);
         const appId = urlParams.get('id');
 
-        // Xử lý dữ liệu app để đảm bảo cấu trúc đúng với Google Sheets mới
+        // FIXED: Xử lý dữ liệu app để đảm bảo cấu trúc đúng
         function processAppData(app) {
-            // Đảm bảo app có categories (cột mới trong Google Sheets)
+            // Đảm bảo app có viplink1 và không phải là null/undefined
+            if (!app.viplink1 || app.viplink1 === 'null' || app.viplink1 === 'undefined') {
+                app.viplink1 = '';
+            }
+            
+            // Đảm bảo app có categories
             if (!app.categories) {
                 app.categories = 'other';
             }
-            // Đảm bảo app có viplink1 (cột mới trong Google Sheets)
-            if (!app.viplink1) {
-                app.viplink1 = '';
+            
+            // Đảm bảo downloadlink có giá trị
+            if (!app.downloadlink || app.downloadlink === 'null' || app.downloadlink === 'undefined') {
+                app.downloadlink = '';
             }
+            
             return app;
         }
 
@@ -959,7 +966,7 @@
             return expiryDate >= today;
         }
 
-        // Tải thông tin ứng dụng với cache
+        // FIXED: Tải thông tin ứng dụng với cache - ĐÃ SỬA LỖI LINK VIP
         async function loadAppDetail() {
             if (!appId) {
                 showError('Không tìm thấy ID ứng dụng');
@@ -967,12 +974,10 @@
             }
 
             try {
-                // Hiển thị skeleton loading ngay lập tức
                 showDetailSkeleton();
                 
                 let apps = [];
                 
-                // Kiểm tra cache trước
                 if (isCacheValid()) {
                     const cachedApps = getFromCache();
                     if (cachedApps && cachedApps.length > 0) {
@@ -986,7 +991,6 @@
                     }
                 }
                 
-                // Nếu không tìm thấy trong cache, fetch từ server
                 console.log('🔄 Đang tải dữ liệu mới từ server...');
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&t=${Date.now()}`);
                 
@@ -998,7 +1002,6 @@
                 console.log('Kết quả tải ứng dụng:', result);
                 
                 if (result.success) {
-                    // Tìm ứng dụng theo ID trong danh sách
                     const app = result.data.find(app => app.id == appId || app.id === appId);
                     if (app) {
                         displayAppDetail(app);
@@ -1014,10 +1017,14 @@
             }
         }
 
-        // Hiển thị chi tiết ứng dụng
+        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ SỬA LỖI LINK VIP
         function displayAppDetail(app) {
             // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
             app = processAppData(app);
+            
+            console.log('🔍 App data after processing:', app);
+            console.log('📱 VIP Link:', app.viplink1);
+            console.log('🔗 Free Link:', app.downloadlink);
             
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -1028,7 +1035,6 @@
                 'other': 'Khác'
             };
 
-            // Xử lý categories
             let categories = [];
             if (typeof app.categories === 'string') {
                 categories = app.categories.split(',');
@@ -1038,12 +1044,10 @@
                 categories = ['other'];
             }
 
-            // Tạo tags HTML
             const tagsHTML = categories.map(cat => 
                 `<span class="app-tag">${categoryLabels[cat] || cat}</span>`
             ).join('');
 
-            // Format date to DD/MM/YYYY
             let formattedDate = 'Chưa cập nhật';
             if (app.updatedate) {
                 const date = new Date(app.updatedate);
@@ -1054,14 +1058,11 @@
                 }
             }
 
-            // Cập nhật title trang
             document.title = `${app.name} - XSpace Store`;
 
-            // Kiểm tra trạng thái đăng nhập
             const currentUser = getCurrentUser();
             const isPremium = isUserPremium();
             
-            // Hiển thị hoặc ẩn login prompt
             const loginPrompt = document.getElementById('loginPrompt');
             if (!currentUser) {
                 loginPrompt.style.display = 'block';
@@ -1069,10 +1070,28 @@
                 loginPrompt.style.display = 'none';
             }
 
-            // Tạo nút tải VIP dựa trên trạng thái user
+            // FIXED: Tạo nút tải VIP với kiểm tra link chính xác
             let vipButtonHTML = '';
-            if (!currentUser) {
-                // Chưa đăng nhập
+            
+            // Kiểm tra link VIP có hợp lệ không
+            const hasValidVIPLink = app.viplink1 && 
+                                  app.viplink1 !== '' && 
+                                  app.viplink1 !== 'null' && 
+                                  app.viplink1 !== 'undefined' &&
+                                  (app.viplink1.startsWith('http://') || app.viplink1.startsWith('https://'));
+            
+            console.log('✅ VIP Link valid:', hasValidVIPLink);
+            
+            if (!hasValidVIPLink) {
+                // Nếu không có link VIP hợp lệ
+                vipButtonHTML = `
+                    <button class="download-btn download-btn-premium" disabled style="background: var(--text-muted);">
+                        <i class="fas fa-crown"></i>
+                        VIP #1 (Đang cập nhật)
+                    </button>
+                `;
+            } else if (!currentUser) {
+                // Có link VIP nhưng chưa đăng nhập
                 vipButtonHTML = `
                     <button class="download-btn download-btn-premium" onclick="requireLoginForVIP()">
                         <i class="fas fa-crown"></i>
@@ -1080,7 +1099,7 @@
                     </button>
                 `;
             } else if (!isPremium) {
-                // Đã đăng nhập nhưng không phải Premium
+                // Có link VIP nhưng không phải Premium
                 vipButtonHTML = `
                     <button class="download-btn download-btn-premium" onclick="requirePremiumForVIP()">
                         <i class="fas fa-crown"></i>
@@ -1088,7 +1107,7 @@
                     </button>
                 `;
             } else {
-                // Đã đăng nhập và là Premium
+                // Có link VIP và là Premium user
                 vipButtonHTML = `
                     <button class="download-btn download-btn-premium" onclick="downloadVIP('${app.viplink1}', '${app.name}')">
                         <i class="fas fa-crown"></i>
@@ -1097,10 +1116,27 @@
                 `;
             }
 
-            // Tạo nút tải miễn phí dựa trên trạng thái user
+            // FIXED: Tạo nút tải miễn phí với kiểm tra link chính xác
             let freeButtonHTML = '';
-            if (!currentUser) {
-                // Chưa đăng nhập
+            
+            // Kiểm tra link miễn phí có hợp lệ không
+            const hasValidFreeLink = app.downloadlink && 
+                                   app.downloadlink !== '' && 
+                                   app.downloadlink !== 'null' && 
+                                   app.downloadlink !== 'undefined' &&
+                                   (app.downloadlink.startsWith('http://') || app.downloadlink.startsWith('https://'));
+            
+            console.log('✅ Free Link valid:', hasValidFreeLink);
+            
+            if (!hasValidFreeLink) {
+                // Nếu không có link miễn phí hợp lệ
+                freeButtonHTML = `
+                    <button class="download-btn" disabled style="background: var(--text-muted);">
+                        <i class="fas fa-download"></i>
+                        Miễn phí (Đang cập nhật)
+                    </button>
+                `;
+            } else if (!currentUser) {
                 freeButtonHTML = `
                     <button class="download-btn" onclick="requireLoginForFree()">
                         <i class="fas fa-download"></i>
@@ -1108,7 +1144,6 @@
                     </button>
                 `;
             } else {
-                // Đã đăng nhập
                 freeButtonHTML = `
                     <button class="download-btn" onclick="downloadApp('${app.downloadlink}', '${app.name}')">
                         <i class="fas fa-download"></i>
@@ -1148,7 +1183,7 @@
                     </div>
                     <div style="margin-top: 10px; font-size: 11px; color: var(--text-muted);">
                         <i class="fas fa-info-circle"></i>
-                        Bản Premium: Không quảng cáo + Tính năng cao cấp
+                        ${!hasValidVIPLink ? 'Bản VIP đang được cập nhật' : 'Bản Premium: Không quảng cáo + Tính năng cao cấp'}
                     </div>
                 </div>
 
@@ -1183,25 +1218,27 @@
             `;
         }
 
-        // Hàm tải ứng dụng miễn phí
+        // FIXED: Hàm tải ứng dụng miễn phí - ĐÃ SỬA LỖI KIỂM TRA LINK
         function downloadApp(downloadLink, appName) {
-            console.log('Download link:', downloadLink);
-            console.log('App name:', appName);
+            console.log('🔗 Download link:', downloadLink);
+            console.log('📱 App name:', appName);
             
             // Kiểm tra link hợp lệ
-            if (!downloadLink || downloadLink === '#' || downloadLink === '' || downloadLink.includes('github.com')) {
+            if (!downloadLink || 
+                downloadLink === '#' || 
+                downloadLink === '' || 
+                downloadLink === 'null' ||
+                downloadLink === 'undefined' ||
+                downloadLink.includes('github.com')) {
                 alert('⚠️ Link tải ứng dụng đang được cập nhật hoặc chưa có sẵn.\n\nVui lòng thử lại sau hoặc liên hệ hỗ trợ.');
                 return;
             }
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                // Hiển thị thông báo
                 if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA`)) {
-                    // Mở link trong tab mới
                     window.open(downloadLink, '_blank');
                     
-                    // Hiển thị thông báo thành công
                     setTimeout(() => {
                         alert('✅ Đã bắt đầu tải xuống ứng dụng!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
                     }, 1000);
@@ -1211,25 +1248,25 @@
             }
         }
 
-        // Hàm tải ứng dụng VIP
+        // FIXED: Hàm tải ứng dụng VIP - ĐÃ SỬA LỖI KIỂM TRA LINK
         function downloadVIP(downloadLink, appName) {
-            console.log('VIP Download link:', downloadLink);
-            console.log('App name:', appName);
+            console.log('👑 VIP Download link:', downloadLink);
+            console.log('📱 App name:', appName);
             
-            // Kiểm tra link hợp lệ
-            if (!downloadLink || downloadLink === '#' || downloadLink === '' || downloadLink.includes('github.com')) {
+            // Kiểm tra link hợp lệ - GIẢM BỚT ĐIỀU KIỆN KIỂM TRA
+            if (!downloadLink || 
+                downloadLink === '' || 
+                downloadLink === 'null' ||
+                downloadLink === 'undefined') {
                 alert('⚠️ Link tải VIP đang được cập nhật hoặc chưa có sẵn.\n\nVui lòng thử lại sau hoặc liên hệ hỗ trợ.');
                 return;
             }
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                // Hiển thị thông báo
                 if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải IPA VIP`)) {
-                    // Mở link trong tab mới
                     window.open(downloadLink, '_blank');
                     
-                    // Hiển thị thông báo thành công
                     setTimeout(() => {
                         alert('✅ Đã bắt đầu tải xuống bản VIP!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
                     }, 1000);
