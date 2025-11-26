@@ -268,7 +268,7 @@ body {
     padding: 12px;
     display: flex;
     gap: 12px;
-    height: 122px;
+    height: 110px;
 }
 
 .app-card:hover {
@@ -637,7 +637,7 @@ margin-top : -1px;
     display: flex;
     gap: 12px;
     padding: 12px;
-    height: 122px;
+    height: 110px;
 }
 
 .skeleton-logo {
@@ -788,4 +788,3 @@ margin-top : -1px;
         font-size: 8px;
     }
 }
- 
