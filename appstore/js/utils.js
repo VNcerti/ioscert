@@ -109,10 +109,10 @@ class AppUtils {
         ).join('');
     }
 
-    // HÀM MỚI: Tạo mô tả ngắn chỉ hiển thị 2 dòng đầu (cho trang chủ)
+    // HÀM MỚI: Tạo mô tả ngắn chỉ hiển thị 2 dòng nội dung + 1 dòng "Xem thêm"
     static createShortDescriptionHTML(description) {
         if (!description) {
-            return '<div class="app-description">Mô tả ứng dụng...</div>';
+            return '<div class="app-description-check">Mô tả ứng dụng...</div>';
         }
 
         const descriptionLines = description.split('\n').filter(line => line.trim());
@@ -132,14 +132,16 @@ class AppUtils {
             }
         });
         
-        // Thêm dấu "..." nếu có nhiều hơn 2 dòng
+        // Thêm dòng "Xem thêm..." với style khác biệt
         if (descriptionLines.length > 2) {
             descriptionHTML += `
-                <div class="description-item">
-                    <div class="check-icon-container">
+                <div class="description-item" style="margin-top: 2px;">
+                    <div class="check-icon-container" style="background: var(--text-muted);">
                         <i class="fas fa-ellipsis-h"></i>
                     </div>
-                    <span class="description-text">Xem thêm...</span>
+                    <span class="description-text" style="color: var(--primary); font-weight: 600; font-style: italic;">
+                        Xem thêm...
+                    </span>
                 </div>
             `;
         }
@@ -151,7 +153,7 @@ class AppUtils {
     // HÀM MỚI: Tạo mô tả đầy đủ (cho trang chi tiết)
     static createFullDescriptionHTML(description) {
         if (!description) {
-            return '<div class="app-description">Ứng dụng chưa có mô tả chi tiết.</div>';
+            return '<div class="app-description-check">Ứng dụng chưa có mô tả chi tiết.</div>';
         }
 
         const descriptionLines = description.split('\n').filter(line => line.trim());
