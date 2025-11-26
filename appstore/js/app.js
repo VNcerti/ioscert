@@ -285,7 +285,9 @@ class AppManager {
         
         const tagsHTML = AppUtils.createTagsHTML(app.categories);
         const formattedDate = AppUtils.formatDate(app.updatedate);
-        const descriptionHTML = AppUtils.createDescriptionHTML(app.description);
+        
+        // THAY ĐỔI QUAN TRỌNG: Sử dụng createShortDescriptionHTML thay vì createDescriptionHTML
+        const descriptionHTML = AppUtils.createShortDescriptionHTML(app.description);
         
         appCard.innerHTML = `
             <img src="${app.image}" alt="${app.name}" class="app-logo" 
