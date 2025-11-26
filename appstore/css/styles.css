@@ -276,7 +276,6 @@ body {
     box-shadow: var(--card-shadow-hover);
 }
 
-/* ĐÃ SỬA: Logo căn giữa và không bị thụt xuống */
 .app-logo {
     width: 90px;
     height: 90px;
@@ -298,7 +297,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 
 .app-info {
@@ -320,7 +319,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 
 .app-tag {
@@ -337,7 +336,7 @@ body {
     gap: 12px;
     font-size: 10px;
     color: var(--text-muted);
-    margin-bottom: 0px;
+    margin-bottom: 2px;
 }
 
 .app-meta-item {
@@ -352,7 +351,6 @@ body {
     margin-right: -4px;
 }
 
-/* ĐÃ SỬA HOÀN TOÀN: Mô tả hiển thị 3 dòng đầy đủ */
 .app-description-check {
     color: var(--text-secondary);
     font-size: 11px;
@@ -362,15 +360,15 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex: 1;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: -4px;
+    margin-bottom: -8px;
 }
 
 .description-item {
     display: flex;
     align-items: flex-start;
     gap: 6px;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
 }
 
 .check-icon-container {
@@ -742,6 +740,10 @@ body {
     
     .hero h1 {
         font-size: 15px;
+    }
+    
+    .app-card {
+        height: 130px;
     }
     
     .app-logo {
