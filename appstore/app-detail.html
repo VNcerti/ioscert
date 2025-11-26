@@ -268,15 +268,44 @@
             color: var(--text-primary);
         }
 
-        .app-description {
-            color: var(--text-secondary);
-            line-height: 1.5;
-            font-size: 13px;
-            white-space: pre-line;
+        /* Style cho mô tả với icon check */
+        .app-description-check {
             background: var(--surface);
             padding: 16px;
             border-radius: 12px;
             border: 1px solid var(--border);
+        }
+
+        .description-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .description-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .check-icon-container {
+            background: var(--success);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .description-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-size: 13px;
+            flex: 1;
         }
 
         /* Screenshots */
@@ -653,10 +682,21 @@
                 margin-bottom: 10px;
             }
             
-            .app-description {
+            .app-description-check {
                 font-size: 12px;
                 padding: 12px;
                 line-height: 1.4;
+            }
+            
+            .description-item {
+                gap: 8px;
+                margin-bottom: 6px;
+            }
+            
+            .check-icon-container {
+                width: 16px;
+                height: 16px;
+                font-size: 7px;
             }
             
             .screenshots-section {
@@ -860,6 +900,31 @@
             return app;
         }
 
+        // HÀM MỚI: Tạo mô tả đầy đủ với icon check (cho trang chi tiết)
+        function createFullDescriptionHTML(description) {
+            if (!description) {
+                return '<div class="app-description-check">Ứng dụng chưa có mô tả chi tiết.</div>';
+            }
+
+            const descriptionLines = description.split('\n').filter(line => line.trim());
+            
+            let descriptionHTML = '<div class="app-description-check">';
+            descriptionLines.forEach(line => {
+                if (line.trim()) {
+                    descriptionHTML += `
+                        <div class="description-item">
+                            <div class="check-icon-container">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="description-text">${line.trim()}</span>
+                        </div>
+                    `;
+                }
+            });
+            descriptionHTML += '</div>';
+            return descriptionHTML;
+        }
+
         // Hiển thị skeleton loading cho trang chi tiết
         function showDetailSkeleton() {
             document.getElementById('appContent').innerHTML = `
@@ -899,12 +964,19 @@
 
                     <div class="skeleton-section">
                         <div class="skeleton skeleton-section-title"></div>
-                        <div class="app-description">
-                            <div class="skeleton skeleton-description"></div>
-                            <div class="skeleton skeleton-description"></div>
-                            <div class="skeleton skeleton-description short"></div>
-                            <div class="skeleton skeleton-description"></div>
-                            <div class="skeleton skeleton-description short"></div>
+                        <div class="app-description-check">
+                            <div class="description-item">
+                                <div class="skeleton" style="width: 18px; height: 18px; border-radius: 50%;"></div>
+                                <div class="skeleton skeleton-description"></div>
+                            </div>
+                            <div class="description-item">
+                                <div class="skeleton" style="width: 18px; height: 18px; border-radius: 50%;"></div>
+                                <div class="skeleton skeleton-description short"></div>
+                            </div>
+                            <div class="description-item">
+                                <div class="skeleton" style="width: 18px; height: 18px; border-radius: 50%;"></div>
+                                <div class="skeleton skeleton-description"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -1017,7 +1089,7 @@
             }
         }
 
-        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ SỬA LỖI LINK VIP
+        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ SỬA LỖI LINK VIP VÀ SỬ DỤNG MÔ TẢ ĐẦY ĐỦ
         function displayAppDetail(app) {
             // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
             app = processAppData(app);
@@ -1152,6 +1224,9 @@
                 `;
             }
 
+            // THAY ĐỔI QUAN TRỌNG: Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
+            const descriptionHTML = createFullDescriptionHTML(app.description);
+
             // Hiển thị nội dung
             document.getElementById('appContent').innerHTML = `
                 <div class="app-header">
@@ -1189,7 +1264,7 @@
 
                 <div class="description-section">
                     <h2 class="section-title">Mô tả ứng dụng</h2>
-                    <div class="app-description">${app.description || 'Ứng dụng chưa có mô tả chi tiết.'}</div>
+                    ${descriptionHTML}
                 </div>
 
                 <div class="screenshots-section">
