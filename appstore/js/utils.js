@@ -109,7 +109,7 @@ class AppUtils {
         ).join('');
     }
 
-    // HÀM MỚI: Tạo mô tả ngắn chỉ hiển thị 2 dòng nội dung + 1 dòng "Xem thêm"
+    // HÀM MỚI: Tạo mô tả ngắn chỉ hiển thị 2 dòng đầu (đã xoá phần "Xem thêm")
     static createShortDescriptionHTML(description) {
         if (!description) {
             return '<div class="app-description-check">Mô tả ứng dụng...</div>';
@@ -131,18 +131,6 @@ class AppUtils {
                 `;
             }
         });
-        
-        // Thêm dòng "Xem thêm..." với style GIỐNG HỆT các dòng trên
-        if (descriptionLines.length > 2) {
-            descriptionHTML += `
-                <div class="description-item">
-                    <div class="check-icon-container">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                    <span class="description-text">Xem thêm...</span>
-                </div>
-            `;
-        }
         
         descriptionHTML += '</div>';
         return descriptionHTML;
