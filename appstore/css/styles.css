@@ -618,7 +618,7 @@ body {
     display: flex;
     gap: 12px;
     padding: 12px;
-    height: 130px;
+    height: 115px;
 }
 
 .skeleton-logo {
@@ -743,7 +743,7 @@ body {
     }
     
     .app-card {
-        height: 130px;
+        height: 115px;
     }
     
     .app-logo {
