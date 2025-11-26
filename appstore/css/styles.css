@@ -369,12 +369,13 @@ body {
 }
 
 /* MỚI: Style cho description với icon check có nền tròn */
+/* SỬA LẠI: Mô tả hiển thị 3 dòng để có chỗ cho "Xem thêm..." */
 .app-description-check {
     color: var(--text-secondary);
     font-size: 11px;
     line-height: 1.3;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3; /* THAY ĐỔI: từ 2 thành 3 */
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex: 1;
@@ -404,16 +405,14 @@ body {
 .check-icon-container i {
     font-size: 6px;
     color: #ffffff;
-
 }
 
 .description-text {
     flex: 1;
     line-height: 1.3;
-margin-left : -3.65px;
-margin-top : -1px;
+    margin-left: -3.65px;
+    margin-top: -1px;
 }
-
 .app-actions {
     display: flex;
     justify-content: flex-end;
