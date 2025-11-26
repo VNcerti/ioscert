@@ -16,7 +16,7 @@
             --premium: linear-gradient(135deg, #f59e0b, #eab308, #f97316);
             --card-shadow:0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);
             --card-shadow-hover:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
-            --nav-height:56px;
+            --nav-height:50px;
         }
         body { background:var(--background); color:var(--text-primary); line-height:1.4; padding-bottom:var(--nav-height); font-size:13px; }
         .container { max-width:1200px; margin:0 auto; padding:0 12px; }
@@ -87,13 +87,35 @@
         .quick-loading.active { display:block; }
         .quick-loading .loading { width:24px; height:24px; margin-bottom:10px; }
 
-        /* Bottom Nav */
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--background); border-top:1px solid var(--border); padding:6px 0; z-index:1000; }
-        .nav-items { display:flex; justify-content:space-around; max-width:500px; margin:0 auto; }
-        .nav-item { display:flex; flex-direction:column; align-items:center; text-decoration:none; color:var(--text-secondary); flex:1; padding:4px 0; transition:all .3s; }
-        .nav-item.active { color:var(--primary); }
-        .nav-icon { font-size:16px; margin-bottom:2px; }
-        .nav-label { font-size:9px; font-weight:500; }
+        /* Bottom Nav - Đã cập nhật để đồng bộ với trang chủ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--background);
+            border-top: 1px solid var(--border);
+            padding: 6px 0;
+            z-index: 1000;
+        }
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            flex: 1;
+            padding: 4px 0;
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { font-size: 16px; margin-bottom: 2px; }
+        .nav-label { font-size: 9px; font-weight: 500; }
 
         /* Responsive */
         @media (max-width:480px) {
@@ -272,15 +294,30 @@
         </div>
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - Đã cập nhật để đồng bộ với trang chủ -->
     <nav class="bottom-nav">
         <div class="container">
             <div class="nav-items">
-                <a href="index.html" class="nav-item" data-view="home"><div class="nav-icon"><i class="fas fa-home"></i></div><div class="nav-label">Trang chủ</div></a>
-                <a href="#" class="nav-item" data-view="today"><div class="nav-icon"><i class="fas fa-calendar-day"></i></div><div class="nav-label">Hôm nay</div></a>
-                <a href="#" class="nav-item" id="searchNavItem"><div class="nav-icon"><i class="fas fa-search"></i></div><div class="nav-label">Tìm kiếm</div></a>
-                <a href="#" class="nav-item" data-view="games"><div class="nav-icon"><i class="fas fa-gamepad"></i></div><div class="nav-label">Trò chơi</div></a>
-                <a href="account.html" class="nav-item active"><div class="nav-icon"><i class="fas fa-user"></i></div><div class="nav-label">Tài khoản</div></a>
+                <a href="index.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-label">Trang chủ</div>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-calendar-day"></i></div>
+                    <div class="nav-label">Hôm nay</div>
+                </a>
+                <a href="#" class="nav-item" id="searchNavItem">
+                    <div class="nav-icon"><i class="fas fa-search"></i></div>
+                    <div class="nav-label">Tìm kiếm</div>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-gamepad"></i></div>
+                    <div class="nav-label">Trò chơi</div>
+                </a>
+                <a href="account.html" class="nav-item active">
+                    <div class="nav-icon"><i class="fas fa-user"></i></div>
+                    <div class="nav-label">Tài khoản</div>
+                </a>
             </div>
         </div>
     </nav>
