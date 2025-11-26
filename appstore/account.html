@@ -6,6 +6,11 @@
     <title>Tài khoản - XSpace Store</title>
     <link rel="icon" href="https://i.imgur.com/k0zikhA.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
         :root {
@@ -302,15 +307,15 @@
                     <div class="nav-icon"><i class="fas fa-home"></i></div>
                     <div class="nav-label">Trang chủ</div>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" data-view="today">
                     <div class="nav-icon"><i class="fas fa-calendar-day"></i></div>
                     <div class="nav-label">Hôm nay</div>
                 </a>
-                <a href="#" class="nav-item" id="searchNavItem">
+                <a href="#" class="nav-item" data-view="search" id="searchNavItem">
                     <div class="nav-icon"><i class="fas fa-search"></i></div>
                     <div class="nav-label">Tìm kiếm</div>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" data-view="games">
                     <div class="nav-icon"><i class="fas fa-gamepad"></i></div>
                     <div class="nav-label">Trò chơi</div>
                 </a>
@@ -343,6 +348,7 @@
         const successText = document.getElementById('successText');
         const errorText = document.getElementById('errorText');
         const quickLoading = document.getElementById('quickLoading');
+        const navItems = document.querySelectorAll('.nav-item[data-view]');
 
         // Format date function
         function formatDate(dateString) {
@@ -379,6 +385,24 @@
                 welcomeSection.style.display = 'block';
                 quickLoading.style.display = 'none';
             }
+
+            // Navigation events
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = item.dataset.view;
+                    
+                    if (view === 'search') {
+                        window.location.href = 'index.html#search';
+                        return;
+                    }
+                    
+                    // Chuyển hướng đến trang chính với view tương ứng
+                    if (view === 'today' || view === 'games') {
+                        window.location.href = `index.html?view=${view}`;
+                    }
+                });
+            });
         });
 
         // Tab switching
