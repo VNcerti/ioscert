@@ -109,13 +109,53 @@ class AppUtils {
         ).join('');
     }
 
-    // Tạo HTML cho mô tả với icon check
-    static createDescriptionHTML(description) {
+    // HÀM MỚI: Tạo mô tả ngắn chỉ hiển thị 2 dòng đầu (cho trang chủ)
+    static createShortDescriptionHTML(description) {
         if (!description) {
             return '<div class="app-description">Mô tả ứng dụng...</div>';
         }
 
-        const descriptionLines = description.split('\n');
+        const descriptionLines = description.split('\n').filter(line => line.trim());
+        const shortDescriptionLines = descriptionLines.slice(0, 2); // Chỉ lấy 2 dòng đầu
+        
+        let descriptionHTML = '<div class="app-description-check">';
+        shortDescriptionLines.forEach(line => {
+            if (line.trim()) {
+                descriptionHTML += `
+                    <div class="description-item">
+                        <div class="check-icon-container">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="description-text">${line.trim()}</span>
+                    </div>
+                `;
+            }
+        });
+        
+        // Thêm dấu "..." nếu có nhiều hơn 2 dòng
+        if (descriptionLines.length > 2) {
+            descriptionHTML += `
+                <div class="description-item">
+                    <div class="check-icon-container">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <span class="description-text">Xem thêm...</span>
+                </div>
+            `;
+        }
+        
+        descriptionHTML += '</div>';
+        return descriptionHTML;
+    }
+
+    // HÀM MỚI: Tạo mô tả đầy đủ (cho trang chi tiết)
+    static createFullDescriptionHTML(description) {
+        if (!description) {
+            return '<div class="app-description">Ứng dụng chưa có mô tả chi tiết.</div>';
+        }
+
+        const descriptionLines = description.split('\n').filter(line => line.trim());
+        
         let descriptionHTML = '<div class="app-description-check">';
         descriptionLines.forEach(line => {
             if (line.trim()) {
