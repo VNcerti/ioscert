@@ -132,16 +132,14 @@ class AppUtils {
             }
         });
         
-        // Thêm dòng "Xem thêm..." với style khác biệt
+        // Thêm dòng "Xem thêm..." với style GIỐNG HỆT các dòng trên
         if (descriptionLines.length > 2) {
             descriptionHTML += `
-                <div class="description-item" style="margin-top: 2px;">
-                    <div class="check-icon-container" style="background: var(--text-muted);">
+                <div class="description-item">
+                    <div class="check-icon-container">
                         <i class="fas fa-ellipsis-h"></i>
                     </div>
-                    <span class="description-text" style="color: var(--primary); font-weight: 600; font-style: italic;">
-                        Xem thêm...
-                    </span>
+                    <span class="description-text">Xem thêm...</span>
                 </div>
             `;
         }
