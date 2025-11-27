@@ -863,8 +863,6 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj2PcAuZnzDPZKvc8yZFCIJTj7u2foym6dO9HuCVcPkRaOqW5oU6PbDQyuTUsXQCed4w/exec';
-
         // DOM Elements
         const userInfoCard = document.getElementById('userInfoCard');
         const planSelection = document.getElementById('planSelection');
@@ -1001,53 +999,11 @@
                 planSelection.style.display = 'block';
             });
 
-            // Confirm payment
-            confirmPaymentBtn.addEventListener('click', async function() {
-                const currentUser = getCurrentUser();
-                if (!currentUser || !selectedPlan) return;
-                
-                confirmPaymentBtn.innerHTML = '<div class="loading"></div> Đang xử lý...';
-                confirmPaymentBtn.disabled = true;
-                
-                try {
-                    // Gửi yêu cầu nâng cấp tài khoản
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({
-                            action: 'upgradeUser',
-                            data: { 
-                                email: currentUser.email, 
-                                durationDays: planData[selectedPlan].durationDays,
-                                packageType: planData[selectedPlan].packageType
-                            }
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Cập nhật thông tin người dùng trong localStorage
-                        const updatedUser = {
-                            ...currentUser,
-                            accountType: 'premium',
-                            packageType: planData[selectedPlan].packageType,
-                            vipExpiry: result.data.vipExpiry
-                        };
-                        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-                        
-                        // Show thank you page
-                        paymentInfo.classList.remove('active');
-                        thankYouPage.style.display = 'block';
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (error) {
-                    alert('Lỗi khi xử lý thanh toán: ' + error.message);
-                } finally {
-                    confirmPaymentBtn.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận đã thanh toán';
-                    confirmPaymentBtn.disabled = false;
-                }
+            // Confirm payment - Chỉ hiển thị trang cảm ơn, không tự động nâng cấp tài khoản
+            confirmPaymentBtn.addEventListener('click', function() {
+                // Hiển thị trang cảm ơn
+                paymentInfo.classList.remove('active');
+                thankYouPage.style.display = 'block';
             });
 
             // Contact support
@@ -1092,6 +1048,7 @@
         function isUserPremium(user) {
             if (!user) return false;
             
+            // Kiểm tra xem tài khoản có phải là premium và còn hạn không
             if (user.accountType === 'premium' && isVIPActive(user.vipExpiry)) {
                 return true;
             }
