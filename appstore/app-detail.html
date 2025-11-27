@@ -872,7 +872,7 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj2PcAuZnzDPZKvc8yZFCIJTj7u2foym6dO9HuCVcPkRaOqW5oU6PbDQyuTUsXQCed4w/exec';
         const CACHE_KEY = 'xspace_apps_cache';
         const CACHE_TIMESTAMP_KEY = 'xspace_cache_timestamp';
         const CACHE_DURATION = 30 * 60 * 1000; // 30 phút
@@ -1366,10 +1366,10 @@
             }
         }
 
-        // Yêu cầu nâng cấp để tải VIP
+        // Yêu cầu nâng cấp để tải VIP - ĐÃ SỬA: CHUYỂN HƯỚNG ĐẾN TRANG PAYMENT
         function requirePremiumForVIP() {
             if (confirm('Tài khoản của bạn chưa được cấp phép vui lòng nâng cấp để sử dụng dịch vụ VIP.\n\nNâng cấp tài khoản Premium ngay?')) {
-                window.open('https://t.me/m/mZE8TbfRNWQ1', '_blank');
+                window.location.href = 'payment.html';
             }
         }
 
