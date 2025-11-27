@@ -75,6 +75,9 @@
         .user-detail i { width:18px; color:var(--primary); }
         .user-badge { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; padding:6px 12px; border-radius:16px; font-size:12px; font-weight:700; margin:10px 0; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
         .user-badge.free { background:var(--text-muted); }
+        .user-badge.trial { background:linear-gradient(90deg, #10b981, #0da271); }
+        .user-badge.basic { background:linear-gradient(90deg, #3b82f6, #1d4ed8); }
+        .user-badge.plus { background:linear-gradient(90deg, #8b5cf6, #7c3aed); }
         .user-badge.premium { background:var(--premium); box-shadow:0 2px 6px rgba(245,158,11,0.3); }
         .user-badge i { font-size:14px; }
         .action-buttons { display:flex; gap:10px; margin-top:20px; }
@@ -82,6 +85,8 @@
         .action-btn:hover { background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; border-color:var(--primary); transform:translateY(-1px); }
         .action-btn.logout { background:var(--danger); color:white; border-color:var(--danger); }
         .action-btn.logout:hover { background:#dc2626; }
+        .action-btn.upgrade { background:var(--warning); color:white; border-color:var(--warning); }
+        .action-btn.upgrade:hover { background:#d97706; }
 
         /* Loading */
         .loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-radius:50%; border-top-color:#fff; animation:spin 1s ease-in-out infinite; }
@@ -281,7 +286,7 @@
                     </div>
 
                     <div class="action-buttons">
-                        <button class="action-btn" id="upgradeBtn" style="display: none;">
+                        <button class="action-btn upgrade" id="upgradeBtn">
                             <i class="fas fa-crown"></i>
                             Nâng cấp VIP
                         </button>
@@ -328,7 +333,7 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj2PcAuZnzDPZKvc8yZFCIJTj7u2foym6dO9HuCVcPkRaOqW5oU6PbDQyuTUsXQCed4w/exec';
 
         // DOM Elements
         const authTabs = document.querySelectorAll('.auth-tab');
@@ -548,6 +553,11 @@
             showSuccess('Đã đăng xuất thành công');
         });
 
+        // Upgrade button
+        upgradeBtn.addEventListener('click', function() {
+            window.location.href = 'payment.html';
+        });
+
         // Refresh user info
         refreshBtn.addEventListener('click', async function() {
             const currentUser = getCurrentUser();
@@ -564,11 +574,6 @@
             }
         });
 
-        // Upgrade button
-        upgradeBtn.addEventListener('click', function() {
-            alert('Liên hệ admin để nâng cấp tài khoản VIP!');
-        });
-
         // Utility functions
         async function loadUserInfo(userData, isQuickLoad) {
             // Hiển thị thông tin người dùng ngay lập tức
@@ -576,25 +581,36 @@
             document.getElementById('userEmail').textContent = userData.email;
             document.getElementById('userCreatedDate').textContent = formatDate(userData.createdDate);
             
-            // Set avatar with first letter of username
+            // Set avatar với chữ cái đầu của username
             const firstLetter = userData.username.charAt(0).toUpperCase();
             document.getElementById('userAvatar').innerHTML = firstLetter;
             
-            // Update badge and VIP info
+            // Update badge và VIP info với packageType từ server
             const userBadge = document.getElementById('userBadge');
             const vipExpiryInfo = document.getElementById('vipExpiryInfo');
             const vipExpiryDate = document.getElementById('vipExpiryDate');
             const upgradeBtn = document.getElementById('upgradeBtn');
             
+            // Định nghĩa tên gói và màu sắc
+            const packageInfo = {
+                'free': { name: 'Miễn phí', class: 'free', icon: 'fas fa-user' },
+                'trial': { name: 'Trial', class: 'trial', icon: 'fas fa-star' },
+                'basic': { name: 'Basic', class: 'basic', icon: 'fas fa-crown' },
+                'plus': { name: 'Plus', class: 'plus', icon: 'fas fa-crown' },
+                'premium': { name: 'Premium', class: 'premium', icon: 'fas fa-crown' }
+            };
+            
+            const currentPackage = packageInfo[userData.packageType] || packageInfo.free;
+            
             if (userData.accountType === 'premium' && isVIPActive(userData.vipExpiry)) {
-                userBadge.innerHTML = '<i class="fas fa-crown"></i><span>Tài khoản Premium</span>';
-                userBadge.className = 'user-badge premium';
+                userBadge.innerHTML = `<i class="${currentPackage.icon}"></i><span>Tài khoản ${currentPackage.name}</span>`;
+                userBadge.className = `user-badge ${currentPackage.class}`;
                 vipExpiryDate.textContent = formatDate(userData.vipExpiry);
                 vipExpiryInfo.style.display = 'flex';
                 upgradeBtn.style.display = 'none';
             } else {
-                userBadge.innerHTML = '<i class="fas fa-user"></i><span>Tài khoản Miễn phí</span>';
-                userBadge.className = 'user-badge free';
+                userBadge.innerHTML = `<i class="${currentPackage.icon}"></i><span>Tài khoản ${currentPackage.name}</span>`;
+                userBadge.className = `user-badge ${currentPackage.class}`;
                 vipExpiryInfo.style.display = 'none';
                 upgradeBtn.style.display = 'flex';
             }
