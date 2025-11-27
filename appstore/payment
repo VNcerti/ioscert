@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nâng cấp Premium - XSpace Store</title>
+    <link rel="icon" href="https://i.imgur.com/k0zikhA.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #2076f3;
+            --primary-dark: #0cabeb;
+            --primary-light: #e1f0ff;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --premium: linear-gradient(135deg, #f59e0b, #eab308, #f97316);
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --card-shadow-hover: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --nav-height: 50px;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.4;
+            padding-bottom: var(--nav-height);
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text-secondary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 0 12px;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .welcome-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Payment Container */
+        .payment-container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 12px;
+        }
+
+        .payment-card {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            padding: 20px;
+            transition: all .3s;
+            margin-bottom: 20px;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(12, 171, 235, 0.2);
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .user-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--text-muted);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-status.free { background: var(--text-muted); }
+        .user-status.trial { background: linear-gradient(90deg, #10b981, #0da271); }
+        .user-status.basic { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+        .user-status.plus { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+        .user-status.premium { background: var(--premium); }
+
+        /* Plan Selection */
+        .plan-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .plan-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        /* Đảm bảo mỗi gói chiếm 1 dòng riêng biệt */
+        @media (min-width: 768px) {
+            .plan-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .plan-card {
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all .3s;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .plan-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .plan-card.recommended {
+            border-color: var(--warning);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card.recommended::before {
+            content: "ĐỀ XUẤT";
+            position: absolute;
+            top: 10px;
+            right: -25px;
+            background: var(--warning);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 30px;
+            transform: rotate(45deg);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .plan-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .plan-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .plan-period {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .plan-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .plan-feature i {
+            color: var(--success);
+            font-size: 10px;
+        }
+
+        /* Payment Info */
+        .payment-info {
+            display: none;
+        }
+
+        .payment-info.active {
+            display: block;
+        }
+
+        .order-summary {
+            background: var(--background);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .order-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .order-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .order-label {
+            color: var(--text-secondary);
+        }
+
+        .order-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 20px 0;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .qr-code {
+            max-width: 200px;
+            margin: 0 auto 12px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .qr-details {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .bank-info {
+            background: var(--background);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .bank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bank-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .bank-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .bank-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .action-btn.success {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .action-btn.success:hover {
+            background: #0da271;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Messages */
+        .message {
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            font-size: 12px;
+        }
+
+        .message-success {
+            background: rgba(16,185,129,0.1);
+            color: var(--success);
+            border-color: rgba(16,185,129,0.2);
+        }
+
+        .message-error {
+            background: rgba(239,68,68,0.1);
+            color: var(--danger);
+            border-color: rgba(239,68,68,0.2);
+        }
+
+        /* Thank You Page */
+        .thank-you {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .thank-you-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .thank-you-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .thank-you-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--background);
+            border-top: 1px solid var(--border);
+            padding: 6px 0;
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            flex: 1;
+            padding: 4px 0;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .nav-label {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 16px 0;
+                margin: 10px auto;
+            }
+            
+            .payment-card {
+                padding: 16px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .welcome-title {
+                font-size: 18px;
+            }
+            
+            .welcome-subtitle {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-rocket"></i></div>
+                    XSpace Store
+                </a>
+                <div class="user-actions">
+                    <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="payment-container">
+            <!-- Welcome Section - Chỉ hiển thị ở trang chọn gói -->
+            <div class="welcome-section" id="welcomeSection">
+                <h2 class="welcome-title">Nâng cấp Premium</h2>
+                <p class="welcome-subtitle">Trải nghiệm trọn vẹn kho ứng dụng với gói Premium</p>
+            </div>
+
+            <!-- User Info - Chỉ hiển thị ở trang chọn gói -->
+            <div class="payment-card" id="userInfoCard">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Người dùng</div>
+                        <div class="user-status free" id="userStatus">
+                            <i class="fas fa-user"></i>
+                            <span>Tài khoản Miễn phí</span>
+                        </div>
+                    </div>
+                </div>
+                <p id="userMessage">Xin chào <strong id="userDisplayName">Người dùng</strong>, hãy chọn gói Premium muốn nâng cấp.</p>
+            </div>
+
+            <!-- Plan Selection -->
+            <div class="payment-card" id="planSelection">
+                <h3 class="section-title">Chọn gói Premium</h3>
+                <div class="plan-grid">
+                    <div class="plan-card" data-plan="trial" data-price="59000" data-duration="1" data-package-type="trial" data-duration-days="30">
+                        <div class="plan-header">
+                            <div>
+                                <div class="plan-name">Gói Trial</div>
+                                <div class="plan-period">1 tháng</div>
+                            </div>
+                            <div class="plan-price">59.000đ</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li class="plan-feature"><i class="fas fa-check"></i> Truy cập tất cả ứng dụng</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Tải không giới hạn</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Hỗ trợ 24/7</li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-card" data-plan="basic" data-price="129000" data-duration="3" data-package-type="basic" data-duration-days="90">
+                        <div class="plan-header">
+                            <div>
+                                <div class="plan-name">Gói Basic</div>
+                                <div class="plan-period">3 tháng</div>
+                            </div>
+                            <div class="plan-price">129.000đ</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li class="plan-feature"><i class="fas fa-check"></i> Tất cả tính năng Trial</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Tải bản VIP</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Hỗ trợ ưu tiên</li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-card recommended" data-plan="plus" data-price="219000" data-duration="6" data-package-type="plus" data-duration-days="180">
+                        <div class="plan-header">
+                            <div>
+                                <div class="plan-name">Gói Plus</div>
+                                <div class="plan-period">6 tháng</div>
+                            </div>
+                            <div class="plan-price">219.000đ</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li class="plan-feature"><i class="fas fa-check"></i> Tất cả tính năng Basic</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Truy cập sớm ứng dụng mới</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Yêu cầu ứng dụng riêng</li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-card" data-plan="premium" data-price="249000" data-duration="12" data-package-type="premium" data-duration-days="365">
+                        <div class="plan-header">
+                            <div>
+                                <div class="plan-name">Gói Premium</div>
+                                <div class="plan-period">1 năm</div>
+                            </div>
+                            <div class="plan-price">249.000đ</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li class="plan-feature"><i class="fas fa-check"></i> Tất cả tính năng Plus</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Giảm giá 50% cho lần gia hạn</li>
+                            <li class="plan-feature"><i class="fas fa-check"></i> Hỗ trợ VIP 1-1</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" id="backBtn">
+                        <i class="fas fa-arrow-left"></i>
+                        Quay lại
+                    </button>
+                    <button class="action-btn primary" id="confirmPlanBtn" disabled>
+                        <i class="fas fa-check"></i>
+                        Xác nhận chọn gói
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="payment-card payment-info" id="paymentInfo">
+                <h3 class="section-title">Thanh toán</h3>
+                
+                <div class="order-summary">
+                    <h4 class="order-title">Thông tin đơn hàng</h4>
+                    <div class="order-detail">
+                        <span class="order-label">Gói sản phẩm:</span>
+                        <span class="order-value" id="selectedPlanName">Gói Trial</span>
+                    </div>
+                    <div class="order-detail">
+                        <span class="order-label">Giá dịch vụ:</span>
+                        <span class="order-value" id="selectedPlanPrice">59.000đ</span>
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <h4 class="order-title">Quét mã QR để thanh toán</h4>
+                    <div class="qr-code">
+                        <img src="https://i.imgur.com/mjFOBtz.png" alt="QR Code">
+                    </div>
+                    <div class="qr-details">
+                        <p>311435</p>
+                        <p>VU TUNG LAM</p>
+                    </div>
+                </div>
+
+                <div class="bank-info">
+                    <h4 class="order-title">Thông tin chuyển khoản</h4>
+                    <div class="bank-item">
+                        <span class="bank-label">Ngân hàng:</span>
+                        <span class="bank-value">MB Bank</span>
+                    </div>
+                    <div class="bank-item">
+                        <span class="bank-label">STK:</span>
+                        <div>
+                            <span class="bank-value" id="bankAccount">311435</span>
+                            <button class="copy-btn" data-copy="311435">
+                                <i class="fas fa-copy"></i> Sao chép
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bank-item">
+                        <span class="bank-label">NGDG:</span>
+                        <div>
+                            <span class="bank-value" id="paymentNote">PAY ADMIN</span>
+                            <button class="copy-btn" data-copy="PAY ADMIN">
+                                <i class="fas fa-copy"></i> Sao chép
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bank-item">
+                        <span class="bank-label">Số tiền cần thanh toán:</span>
+                        <span class="bank-value" id="paymentAmount">59.000đ</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" id="backToPlanBtn">
+                        <i class="fas fa-arrow-left"></i>
+                        Quay lại chọn gói
+                    </button>
+                    <button class="action-btn success" id="confirmPaymentBtn">
+                        <i class="fas fa-check-circle"></i>
+                        Xác nhận đã thanh toán
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thank You Page -->
+            <div class="payment-card thank-you" id="thankYouPage" style="display: none;">
+                <div class="thank-you-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="thank-you-title">Cảm ơn quý khách!</h2>
+                <p class="thank-you-message">
+                    Cảm ơn quý khách đã tin tưởng và ủng hộ dịch vụ của chúng mình!<br>
+                    Mọi vấn đề lỗi thanh toán hay kích hoạt VIP tài khoản vui lòng nhắn cho nhân viên hỗ trợ.
+                </p>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="window.location.href='index.html'">
+                        <i class="fas fa-home"></i>
+                        Về trang chủ
+                    </button>
+                    <button class="action-btn primary" id="contactSupportBtn">
+                        <i class="fas fa-headset"></i>
+                        Liên hệ hỗ trợ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="nav-items">
+                <a href="index.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-label">Trang chủ</div>
+                </a>
+                <a href="#" class="nav-item" data-view="today">
+                    <div class="nav-icon"><i class="fas fa-calendar-day"></i></div>
+                    <div class="nav-label">Hôm nay</div>
+                </a>
+                <a href="#" class="nav-item" data-view="search" id="searchNavItem">
+                    <div class="nav-icon"><i class="fas fa-search"></i></div>
+                    <div class="nav-label">Tìm kiếm</div>
+                </a>
+                <a href="#" class="nav-item" data-view="games">
+                    <div class="nav-icon"><i class="fas fa-gamepad"></i></div>
+                    <div class="nav-label">Trò chơi</div>
+                </a>
+                <a href="account.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-user"></i></div>
+                    <div class="nav-label">Tài khoản</div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj2PcAuZnzDPZKvc8yZFCIJTj7u2foym6dO9HuCVcPkRaOqW5oU6PbDQyuTUsXQCed4w/exec';
+
+        // DOM Elements
+        const userInfoCard = document.getElementById('userInfoCard');
+        const planSelection = document.getElementById('planSelection');
+        const paymentInfo = document.getElementById('paymentInfo');
+        const thankYouPage = document.getElementById('thankYouPage');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userStatus = document.getElementById('userStatus');
+        const userMessage = document.getElementById('userMessage');
+        const confirmPlanBtn = document.getElementById('confirmPlanBtn');
+        const backBtn = document.getElementById('backBtn');
+        const backToPlanBtn = document.getElementById('backToPlanBtn');
+        const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+        const contactSupportBtn = document.getElementById('contactSupportBtn');
+        const selectedPlanName = document.getElementById('selectedPlanName');
+        const selectedPlanPrice = document.getElementById('selectedPlanPrice');
+        const bankAccount = document.getElementById('bankAccount');
+        const paymentNote = document.getElementById('paymentNote');
+        const paymentAmount = document.getElementById('paymentAmount');
+
+        // Plan data với packageType
+        const planData = {
+            trial: { 
+                name: 'Gói Trial', 
+                price: '59.000đ', 
+                duration: '1 tháng',
+                packageType: 'trial',
+                durationDays: 30
+            },
+            basic: { 
+                name: 'Gói Basic', 
+                price: '129.000đ', 
+                duration: '3 tháng',
+                packageType: 'basic', 
+                durationDays: 90
+            },
+            plus: { 
+                name: 'Gói Plus', 
+                price: '219.000đ', 
+                duration: '6 tháng',
+                packageType: 'plus',
+                durationDays: 180
+            },
+            premium: { 
+                name: 'Gói Premium', 
+                price: '249.000đ', 
+                duration: '1 năm',
+                packageType: 'premium',
+                durationDays: 365
+            }
+        };
+
+        // Selected plan
+        let selectedPlan = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = getCurrentUser();
+            
+            if (currentUser) {
+                // Load user info
+                loadUserInfo(currentUser);
+                
+                // Check if user already has premium
+                if (isUserPremium(currentUser)) {
+                    userMessage.innerHTML = `Xin chào <strong>${currentUser.username}</strong>, tài khoản của bạn đã là Premium.`;
+                    userStatus.innerHTML = '<i class="fas fa-crown"></i><span>Tài khoản Premium</span>';
+                    userStatus.className = 'user-status premium';
+                    confirmPlanBtn.disabled = true;
+                    confirmPlanBtn.innerHTML = '<i class="fas fa-crown"></i> Đã là Premium';
+                } else {
+                    userMessage.innerHTML = `Xin chào <strong>${currentUser.username}</strong>, hãy chọn gói Premium muốn nâng cấp.`;
+                    
+                    // Update payment note with username
+                    paymentNote.textContent = `PAY ${currentUser.username.toUpperCase()}`;
+                    document.querySelectorAll('[data-copy="PAY ADMIN"]').forEach(btn => {
+                        btn.setAttribute('data-copy', `PAY ${currentUser.username.toUpperCase()}`);
+                    });
+                }
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'account.html';
+            }
+
+            // Plan selection
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    document.querySelectorAll('.plan-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Enable confirm button
+                    confirmPlanBtn.disabled = false;
+                    
+                    // Store selected plan
+                    selectedPlan = this.dataset.plan;
+                });
+            });
+
+            // Confirm plan selection
+            confirmPlanBtn.addEventListener('click', function() {
+                if (selectedPlan) {
+                    // Update payment info
+                    selectedPlanName.textContent = planData[selectedPlan].name;
+                    selectedPlanPrice.textContent = planData[selectedPlan].price;
+                    paymentAmount.textContent = planData[selectedPlan].price;
+                    
+                    // Hide welcome section and user info when showing payment info
+                    document.getElementById('welcomeSection').style.display = 'none';
+                    userInfoCard.style.display = 'none';
+                    
+                    // Show payment info, hide plan selection
+                    planSelection.style.display = 'none';
+                    paymentInfo.classList.add('active');
+                }
+            });
+
+            // Back to plan selection
+            backBtn.addEventListener('click', function() {
+                window.location.href = 'account.html';
+            });
+
+            backToPlanBtn.addEventListener('click', function() {
+                // Show welcome section and user info again
+                document.getElementById('welcomeSection').style.display = 'block';
+                userInfoCard.style.display = 'block';
+                
+                paymentInfo.classList.remove('active');
+                planSelection.style.display = 'block';
+            });
+
+            // Confirm payment
+            confirmPaymentBtn.addEventListener('click', async function() {
+                const currentUser = getCurrentUser();
+                if (!currentUser || !selectedPlan) return;
+                
+                confirmPaymentBtn.innerHTML = '<div class="loading"></div> Đang xử lý...';
+                confirmPaymentBtn.disabled = true;
+                
+                try {
+                    // Gửi yêu cầu nâng cấp tài khoản
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'upgradeUser',
+                            data: { 
+                                email: currentUser.email, 
+                                durationDays: planData[selectedPlan].durationDays,
+                                packageType: planData[selectedPlan].packageType
+                            }
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Cập nhật thông tin người dùng trong localStorage
+                        const updatedUser = {
+                            ...currentUser,
+                            accountType: 'premium',
+                            packageType: planData[selectedPlan].packageType,
+                            vipExpiry: result.data.vipExpiry
+                        };
+                        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                        
+                        // Show thank you page
+                        paymentInfo.classList.remove('active');
+                        thankYouPage.style.display = 'block';
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    alert('Lỗi khi xử lý thanh toán: ' + error.message);
+                } finally {
+                    confirmPaymentBtn.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận đã thanh toán';
+                    confirmPaymentBtn.disabled = false;
+                }
+            });
+
+            // Contact support
+            contactSupportBtn.addEventListener('click', function() {
+                window.open('https://t.me/m/Qnw6Bzy6MzM1', '_blank');
+            });
+
+            // Copy to clipboard functionality
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const textToCopy = this.getAttribute('data-copy');
+                    
+                    // Create a temporary textarea element
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    
+                    // Select and copy the text
+                    textarea.select();
+                    document.execCommand('copy');
+                    
+                    // Remove the textarea
+                    document.body.removeChild(textarea);
+                    
+                    // Show feedback
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Đã sao chép';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+        });
+
+        // Utility functions
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('currentUser');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        function isUserPremium(user) {
+            if (!user) return false;
+            
+            if (user.accountType === 'premium' && isVIPActive(user.vipExpiry)) {
+                return true;
+            }
+            return false;
+        }
+
+        function isVIPActive(vipExpiry) {
+            if (!vipExpiry) return false;
+            const expiryDate = new Date(vipExpiry);
+            const today = new Date();
+            return expiryDate >= today;
+        }
+
+        function loadUserInfo(userData) {
+            userName.textContent = userData.username;
+            userDisplayName.textContent = userData.username;
+            
+            // Set avatar with first letter of username
+            const firstLetter = userData.username.charAt(0).toUpperCase();
+            userAvatar.innerHTML = firstLetter;
+            
+            // Update user status based on package type
+            const packageInfo = {
+                'free': { name: 'Miễn phí', class: 'free', icon: 'fas fa-user' },
+                'trial': { name: 'Trial', class: 'trial', icon: 'fas fa-star' },
+                'basic': { name: 'Basic', class: 'basic', icon: 'fas fa-crown' },
+                'plus': { name: 'Plus', class: 'plus', icon: 'fas fa-crown' },
+                'premium': { name: 'Premium', class: 'premium', icon: 'fas fa-crown' }
+            };
+            
+            const currentPackage = packageInfo[userData.packageType] || packageInfo.free;
+            userStatus.innerHTML = `<i class="${currentPackage.icon}"></i><span>Tài khoản ${currentPackage.name}</span>`;
+            userStatus.className = `user-status ${currentPackage.class}`;
+        }
+    </script>
+</body>
+</html>
