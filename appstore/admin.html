@@ -881,6 +881,13 @@
                                     <i class="fas fa-copy category-icon"></i>
                                     <span>Nhân bản</span>
                                 </label>
+
+                                <!-- THÊM MỤC MỚI: Mở khoá Premium -->
+                                <input type="checkbox" id="category-premium" class="category-checkbox" value="premium">
+                                <label for="category-premium" class="category-label">
+                                    <i class="fas fa-unlock category-icon"></i>
+                                    <span>Mở khoá Premium</span>
+                                </label>
                             </div>
                         </div>
 
@@ -1095,7 +1102,7 @@
     </footer>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywHM36jEQpXFXzBTdG-EcbdbKWbtMyKeOSjNwUt-XahtstAmm1F_R2fr8JWUms_A1jsQ/exec';
         const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
         const TELEGRAM_CHAT_ID = '@xspace_ipa';
         const BASE_APP_URL = 'https://ioscert.site/appstore/app-detail.html?id=';
@@ -1403,7 +1410,8 @@
                 'social': 'Mạng xã hội',
                 'entertainment': 'Giải trí',
                 'photo': 'Chụp ảnh',
-                'clone': 'Nhân bản'
+                'clone': 'Nhân bản',
+                'premium': 'Mở khoá Premium' // THÊM LABEL MỚI
             };
             
             categoryCheckboxes.forEach(checkbox => {
