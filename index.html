@@ -231,7 +231,7 @@
       margin-bottom: 15px;
     }
 
-    .website-link, .support-link, .dns-link {
+    .website-link, .support-link, .dns-link, .ipa-sign-link, .ipa-store-link {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -247,7 +247,7 @@
       animation: bounceIn 1s ease-out;
     }
 
-    .website-link:hover, .support-link:hover, .dns-link:hover {
+    .website-link:hover, .support-link:hover, .dns-link:hover, .ipa-sign-link:hover, .ipa-store-link:hover {
       background: var(--primary-dark);
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
@@ -584,7 +584,7 @@ background: #4461ee;
     }
 
     @media (max-width: 480px) {
-      .website-link, .support-link, .dns-link {
+      .website-link, .support-link, .dns-link, .ipa-sign-link, .ipa-store-link {
         padding: 10px 20px;
         font-size: 14px;
       }
@@ -661,7 +661,13 @@ background: #4461ee;
         <a href="https://download1588.mediafire.com/r75t6sxs2gxg9MbJlCSaTR8_OO0hZA4O0GFUiYvYKKHudakSWBfzp96wgu_7icBr8CiOiNr9G_botiNJhH-jvohRGnTWLqEWJ46_IbIAJOObUz9Xv-BSwtbJVMfAl8Q-BeglNq7W8MHS9zTxnBg_mKijA1EOebiNN1UFEL-G794/rfwgpy8u8rxfkms/DNS+Anti-Revoke%28ioscert%29.mobileconfig" target="_blank" class="dns-link" data-i18n="dns">
           <i class="fas fa-shield-alt"></i> DNS Chặn Thu Hồi và Quảng Cáo
         </a>
-    
+        <!-- Thêm 2 mục mới -->
+        <a href="https://ioscert.site/sign-app" target="_blank" class="ipa-sign-link" data-i18n="ipa-sign">
+          <i class="fas fa-signature"></i> Ký IPA Trực Tuyến
+        </a>
+        <a href="https://ioscert.site/appstore" target="_blank" class="ipa-store-link" data-i18n="ipa-store">
+          <i class="fas fa-box-open"></i> Kho Ứng Dụng iPA MOD
+        </a>
       </div>
     </header>
 
@@ -1563,6 +1569,8 @@ background: #4461ee;
         support: "Liên Hệ Hỗ Trợ 24/7",
         website: "Website Bán Chứng Chỉ Tự Động",
         dns: "DNS Chặn Thu Hồi và Quảng Cáo",
+        "ipa-sign": "Ký IPA Trực Tuyến",
+        "ipa-store": "Kho Ứng Dụng iPA MOD",
         contact: "Liên hệ: ",
         copyright: "Bản quyền © 2022 CHUNGCHIP12.COM. Bảo lưu mọi quyền.",
         beijing: "Beijing",
@@ -1585,6 +1593,8 @@ background: #4461ee;
         support: "Contact Support 24/7",
         website: "Automatic Certificate Sales Website",
         dns: "DNS for Anti-Revoke and Ads Block ",
+        "ipa-sign": "Online IPA Signing",
+        "ipa-store": "iPA MOD Apps Store",
         contact: "Contact me: ",
         copyright: "Copyright © 2022 CHUNGCHIP12.COM. All rights reserved.",
         beijing: "Beijing",
@@ -1680,6 +1690,10 @@ background: #4461ee;
             element.innerHTML = `<i class="fas fa-globe"></i> ${translations[lang][key] || element.textContent}`;
           } else if (element.classList.contains('dns-link')) {
             element.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('ipa-sign-link')) {
+            element.innerHTML = `<i class="fas fa-signature"></i> ${translations[lang][key] || element.textContent}`;
+          } else if (element.classList.contains('ipa-store-link')) {
+            element.innerHTML = `<i class="fas fa-box-open"></i> ${translations[lang][key] || element.textContent}`;
           } else {
             element.textContent = translations[lang][key] || element.textContent;
           }
