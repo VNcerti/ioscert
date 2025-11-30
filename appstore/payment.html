@@ -221,7 +221,6 @@
             gap: 12px;
         }
 
-        /* Đảm bảo mỗi gói chiếm 1 dòng riêng biệt */
         @media (min-width: 768px) {
             .plan-grid {
                 grid-template-columns: 1fr;
@@ -378,6 +377,70 @@
             margin-top: 12px;
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        /* Discount Section Styles */
+        .discount-section {
+            background: var(--background);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+        }
+
+        .discount-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .discount-input-group .form-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .discount-info {
+            border-top: 1px dashed var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .discount-amount {
+            color: var(--success) !important;
+        }
+
+        .final-amount {
+            color: var(--primary) !important;
+            font-weight: 700;
+            font-size: 14px;
         }
 
         .bank-info {
@@ -768,6 +831,31 @@
                     </div>
                 </div>
 
+                <!-- Discount Section -->
+                <div class="discount-section">
+                    <h4 class="order-title">Mã giảm giá / Kích hoạt</h4>
+                    <div class="discount-input-group">
+                        <input type="text" id="discountCode" class="form-input" placeholder="Nhập mã giảm giá hoặc mã kích hoạt">
+                        <button class="apply-btn" id="applyDiscountBtn">
+                            <i class="fas fa-tag"></i>
+                            Áp dụng
+                        </button>
+                    </div>
+                    <div id="discountMessage" class="message" style="display: none; margin-top: 10px;"></div>
+                    
+                    <!-- Hiển thị thông tin giảm giá -->
+                    <div id="discountInfo" class="discount-info" style="display: none;">
+                        <div class="order-detail">
+                            <span class="order-label">Giảm giá:</span>
+                            <span class="order-value discount-amount" id="discountAmount">0đ</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-label">Thành tiền:</span>
+                            <span class="order-value final-amount" id="finalAmount">59.000đ</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bank-info">
                     <h4 class="order-title">Thông tin chuyển khoản</h4>
                     <div class="bank-item">
@@ -863,6 +951,8 @@
     </nav>
 
     <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8phB2nlyB9Ku0pOOECicDvYVYSWTdLajUcbxDSxbeOiaBEU_f0hbF-_N1hk1GJoJgSQ/exec';
+
         // DOM Elements
         const userInfoCard = document.getElementById('userInfoCard');
         const planSelection = document.getElementById('planSelection');
@@ -884,32 +974,44 @@
         const paymentNote = document.getElementById('paymentNote');
         const paymentAmount = document.getElementById('paymentAmount');
 
+        // Discount Elements
+        const discountCodeInput = document.getElementById('discountCode');
+        const applyDiscountBtn = document.getElementById('applyDiscountBtn');
+        const discountMessage = document.getElementById('discountMessage');
+        const discountInfo = document.getElementById('discountInfo');
+        const discountAmount = document.getElementById('discountAmount');
+        const finalAmount = document.getElementById('finalAmount');
+
         // Plan data với packageType
         const planData = {
             trial: { 
                 name: 'Gói Trial', 
-                price: '59.000đ', 
+                price: 59000, 
+                displayPrice: '59.000đ',
                 duration: '1 tháng',
                 packageType: 'trial',
                 durationDays: 30
             },
             basic: { 
                 name: 'Gói Basic', 
-                price: '129.000đ', 
+                price: 129000,
+                displayPrice: '129.000đ',
                 duration: '3 tháng',
                 packageType: 'basic', 
                 durationDays: 90
             },
             plus: { 
                 name: 'Gói Plus', 
-                price: '219.000đ', 
+                price: 219000,
+                displayPrice: '219.000đ',
                 duration: '6 tháng',
                 packageType: 'plus',
                 durationDays: 180
             },
             premium: { 
                 name: 'Gói Premium', 
-                price: '249.000đ', 
+                price: 249000,
+                displayPrice: '249.000đ',
                 duration: '1 năm',
                 packageType: 'premium',
                 durationDays: 365
@@ -918,6 +1020,10 @@
 
         // Selected plan
         let selectedPlan = null;
+        let currentDiscount = null;
+        let originalPrice = 0;
+        let finalPrice = 0;
+        let isActivationCode = false;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -972,8 +1078,11 @@
                 if (selectedPlan) {
                     // Update payment info
                     selectedPlanName.textContent = planData[selectedPlan].name;
-                    selectedPlanPrice.textContent = planData[selectedPlan].price;
-                    paymentAmount.textContent = planData[selectedPlan].price;
+                    selectedPlanPrice.textContent = planData[selectedPlan].displayPrice;
+                    paymentAmount.textContent = planData[selectedPlan].displayPrice;
+                    
+                    // Reset discount state
+                    resetDiscountState();
                     
                     // Hide welcome section and user info when showing payment info
                     document.getElementById('welcomeSection').style.display = 'none';
@@ -999,11 +1108,50 @@
                 planSelection.style.display = 'block';
             });
 
-            // Confirm payment - Chỉ hiển thị trang cảm ơn, không tự động nâng cấp tài khoản
+            // Apply discount code
+            applyDiscountBtn.addEventListener('click', async function() {
+                const code = discountCodeInput.value.trim();
+                
+                if (!code) {
+                    showDiscountMessage('Vui lòng nhập mã', 'error');
+                    return;
+                }
+                
+                applyDiscountBtn.innerHTML = '<div class="loading"></div>';
+                applyDiscountBtn.disabled = true;
+                
+                try {
+                    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=validateCode&code=${encodeURIComponent(code)}`);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        if (result.type === 'discount') {
+                            await applyDiscount(result.data);
+                        } else if (result.type === 'activation') {
+                            await applyActivationCode(result.data);
+                        }
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    showDiscountMessage(error.message, 'error');
+                } finally {
+                    applyDiscountBtn.innerHTML = '<i class="fas fa-tag"></i> Áp dụng';
+                    applyDiscountBtn.disabled = false;
+                }
+            });
+
+            // Confirm payment
             confirmPaymentBtn.addEventListener('click', function() {
-                // Hiển thị trang cảm ơn
-                paymentInfo.classList.remove('active');
-                thankYouPage.style.display = 'block';
+                if (isActivationCode) {
+                    // Nếu là mã kích hoạt, hiển thị cảm ơn luôn
+                    paymentInfo.classList.remove('active');
+                    thankYouPage.style.display = 'block';
+                } else {
+                    // Nếu là thanh toán thông thường
+                    paymentInfo.classList.remove('active');
+                    thankYouPage.style.display = 'block';
+                }
             });
 
             // Contact support
@@ -1038,6 +1186,149 @@
                 });
             });
         });
+
+        // Apply discount
+        async function applyDiscount(discountData) {
+            currentDiscount = discountData;
+            isActivationCode = false;
+            
+            // Tính toán giảm giá
+            originalPrice = planData[selectedPlan].price;
+            const discountValue = Math.round((originalPrice * discountData.discount_percent) / 100);
+            finalPrice = originalPrice - discountValue;
+            
+            // Cập nhật giao diện
+            discountAmount.textContent = `-${formatCurrency(discountValue)}`;
+            finalAmount.textContent = formatCurrency(finalPrice);
+            paymentAmount.textContent = formatCurrency(finalPrice);
+            
+            discountInfo.style.display = 'block';
+            
+            // Hiển thị thông báo thành công
+            showDiscountMessage(`✅ Áp dụng mã giảm giá ${discountData.discount_percent}% thành công!`, 'success');
+            
+            // Đánh dấu đã sử dụng mã
+            await useDiscountCode(discountData.code);
+        }
+
+        // Apply activation code
+        async function applyActivationCode(activationData) {
+            isActivationCode = true;
+            
+            // Hiển thị thông báo thành công
+            showDiscountMessage(`✅ Kích hoạt thành công! Gói ${activationData.package_type.toUpperCase()} đã được kích hoạt.`, 'success');
+            
+            // Ẩn các phần thanh toán không cần thiết
+            document.querySelector('.qr-section').style.display = 'none';
+            document.querySelector('.bank-info').style.display = 'none';
+            
+            // Thay đổi nút xác nhận
+            confirmPaymentBtn.innerHTML = '<i class="fas fa-check-circle"></i> Hoàn tất kích hoạt';
+            
+            // Cập nhật thông tin đơn hàng
+            selectedPlanName.textContent = `Gói ${activationData.package_type.toUpperCase()} (Kích hoạt)`;
+            selectedPlanPrice.textContent = '0đ';
+            paymentAmount.textContent = '0đ';
+            
+            // Đánh dấu đã sử dụng mã kích hoạt
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                await useActivationCode(activationData.code, currentUser.email);
+                
+                // Cập nhật thông tin user ngay lập tức
+                await upgradeUserWithActivation(currentUser.email, activationData.duration_days);
+            }
+        }
+
+        // Use discount code
+        async function useDiscountCode(code) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'useDiscountCode',
+                        code: code
+                    })
+                });
+                
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('Lỗi khi sử dụng mã giảm giá:', result.message);
+                }
+            } catch (error) {
+                console.error('Lỗi khi sử dụng mã giảm giá:', error);
+            }
+        }
+
+        // Use activation code
+        async function useActivationCode(code, userEmail) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'useActivationCode',
+                        code: code,
+                        userEmail: userEmail
+                    })
+                });
+                
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('Lỗi khi sử dụng mã kích hoạt:', result.message);
+                }
+            } catch (error) {
+                console.error('Lỗi khi sử dụng mã kích hoạt:', error);
+            }
+        }
+
+        // Upgrade user with activation code
+        async function upgradeUserWithActivation(email, durationDays) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'upgradeUser',
+                        data: { email: email, durationDays: durationDays }
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log('✅ Nâng cấp tài khoản thành công:', result.message);
+                } else {
+                    console.error('❌ Lỗi nâng cấp tài khoản:', result.message);
+                }
+            } catch (error) {
+                console.error('❌ Lỗi nâng cấp tài khoản:', error);
+            }
+        }
+
+        // Reset discount state
+        function resetDiscountState() {
+            currentDiscount = null;
+            isActivationCode = false;
+            discountCodeInput.value = '';
+            discountInfo.style.display = 'none';
+            discountMessage.style.display = 'none';
+            document.querySelector('.qr-section').style.display = 'block';
+            document.querySelector('.bank-info').style.display = 'block';
+            confirmPaymentBtn.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận đã thanh toán';
+        }
+
+        // Show discount message
+        function showDiscountMessage(message, type) {
+            discountMessage.textContent = message;
+            discountMessage.className = `message message-${type}`;
+            discountMessage.style.display = 'flex';
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
+        }
 
         // Utility functions
         function getCurrentUser() {
