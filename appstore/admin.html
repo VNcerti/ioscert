@@ -747,6 +747,81 @@
             font-size: 11px;
         }
 
+        /* Code Management Styles */
+        .codes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .codes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .codes-list {
+            background: var(--background);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .code-item:last-child {
+            border-bottom: none;
+        }
+
+        .code-info {
+            flex: 1;
+        }
+
+        .code-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .code-details {
+            display: flex;
+            gap: 12px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .code-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-inactive {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-used {
+            background: var(--warning);
+            color: white;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .stats-grid {
@@ -820,6 +895,10 @@
                         <button class="nav-tab" data-tab="upgrade">
                             <i class="fas fa-crown"></i>
                             Nâng cấp VIP
+                        </button>
+                        <button class="nav-tab" data-tab="codes">
+                            <i class="fas fa-tags"></i>
+                            Mã giảm giá
                         </button>
                     </div>
                     
@@ -1213,6 +1292,166 @@
                     </div>
                 </section>
             </div>
+
+            <!-- Codes Tab Content -->
+            <div class="tab-content" id="codesTab">
+                <!-- Messages -->
+                <div id="codesSuccessMessage" class="message message-success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Thành công!</strong>
+                        <div id="codesSuccessText">Đã tạo mã thành công!</div>
+                    </div>
+                </div>
+                
+                <div id="codesErrorMessage" class="message message-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <strong>Lỗi!</strong>
+                        <div id="codesErrorText">Đã xảy ra lỗi khi tạo mã.</div>
+                    </div>
+                </div>
+
+                <!-- Create Codes Section -->
+                <section class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-tags"></i>
+                        Tạo Mã Giảm Giá & Kích Hoạt
+                    </h2>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-percentage"></i>
+                            Loại mã
+                        </label>
+                        <div class="categories-group">
+                            <input type="radio" id="codeTypeDiscount" name="codeType" class="category-radio" value="discount" checked>
+                            <label for="codeTypeDiscount" class="category-label">
+                                <i class="fas fa-tag"></i>
+                                <span>Mã giảm giá</span>
+                            </label>
+
+                            <input type="radio" id="codeTypeActivation" name="codeType" class="category-radio" value="activation">
+                            <label for="codeTypeActivation" class="category-label">
+                                <i class="fas fa-key"></i>
+                                <span>Mã kích hoạt</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form tạo mã giảm giá -->
+                    <div id="discountForm">
+                        <div class="form-group">
+                            <label class="form-label" for="discountPercent">
+                                <i class="fas fa-percent"></i>
+                                Phần trăm giảm giá
+                            </label>
+                            <input type="number" id="discountPercent" class="form-input" placeholder="20" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="discountLimit">
+                                <i class="fas fa-users"></i>
+                                Số lượt sử dụng tối đa
+                            </label>
+                            <input type="number" id="discountLimit" class="form-input" placeholder="100" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="discountExpiry">
+                                <i class="fas fa-calendar-times"></i>
+                                Ngày hết hạn
+                            </label>
+                            <input type="date" id="discountExpiry" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Form tạo mã kích hoạt -->
+                    <div id="activationForm" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" for="activationPackage">
+                                <i class="fas fa-crown"></i>
+                                Gói kích hoạt
+                            </label>
+                            <select id="activationPackage" class="form-input">
+                                <option value="trial">Gói Trial (30 ngày)</option>
+                                <option value="basic">Gói Basic (90 ngày)</option>
+                                <option value="plus">Gói Plus (180 ngày)</option>
+                                <option value="premium">Gói Premium (365 ngày)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="codeCount">
+                            <i class="fas fa-hashtag"></i>
+                            Số lượng mã cần tạo
+                        </label>
+                        <input type="number" id="codeCount" class="form-input" placeholder="10" min="1" max="100">
+                    </div>
+
+                    <button class="submit-btn" id="createCodesBtn">
+                        <i class="fas fa-plus"></i>
+                        Tạo Mã
+                    </button>
+
+                    <div id="createdCodesResult" style="margin-top: 15px; display: none;">
+                        <h4 style="margin-bottom: 10px;">Mã đã tạo:</h4>
+                        <div id="codesList" style="background: var(--background); padding: 10px; border-radius: 6px; border: 1px solid var(--border); max-height: 200px; overflow-y: auto;"></div>
+                    </div>
+                </section>
+
+                <!-- Codes Grid -->
+                <div class="codes-grid">
+                    <!-- Discount Codes List -->
+                    <section class="analytics-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-tag"></i>
+                                Mã Giảm Giá
+                            </h2>
+                            <button class="refresh-btn" id="refreshDiscountCodes">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="codes-list">
+                            <div id="discountCodesList">
+                                <div class="code-item">
+                                    <div class="code-info">
+                                        <div class="code-value">Đang tải dữ liệu...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Activation Codes List -->
+                    <section class="analytics-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-key"></i>
+                                Mã Kích Hoạt
+                            </h2>
+                            <button class="refresh-btn" id="refreshActivationCodes">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="codes-list">
+                            <div id="activationCodesList">
+                                <div class="code-item">
+                                    <div class="code-info">
+                                        <div class="code-value">Đang tải dữ liệu...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -1226,7 +1465,7 @@
     </footer>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyu0jB4zWWRWPx1RW_D2J6A5NLrTGyq9-WaQ3Pc1BWhRSm4e7IYnMEpFohKXv6C7dJTA/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8phB2nlyB9Ku0pOOECicDvYVYSWTdLajUcbxDSxbeOiaBEU_f0hbF-_N1hk1GJoJgSQ/exec';
         const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
         const TELEGRAM_CHAT_ID = '@xspace_ipa';
         const BASE_APP_URL = 'https://ioscert.site/appstore/app-detail.html?id=';
@@ -1306,6 +1545,22 @@
         const upgradeSuccessText = document.getElementById('upgradeSuccessText');
         const upgradeErrorText = document.getElementById('upgradeErrorText');
 
+        // Code Management Elements
+        const codeTypeRadios = document.querySelectorAll('input[name="codeType"]');
+        const discountForm = document.getElementById('discountForm');
+        const activationForm = document.getElementById('activationForm');
+        const createCodesBtn = document.getElementById('createCodesBtn');
+        const createdCodesResult = document.getElementById('createdCodesResult');
+        const codesList = document.getElementById('codesList');
+        const refreshDiscountCodesBtn = document.getElementById('refreshDiscountCodes');
+        const refreshActivationCodesBtn = document.getElementById('refreshActivationCodes');
+        const discountCodesList = document.getElementById('discountCodesList');
+        const activationCodesList = document.getElementById('activationCodesList');
+        const codesSuccessMessage = document.getElementById('codesSuccessMessage');
+        const codesErrorMessage = document.getElementById('codesErrorMessage');
+        const codesSuccessText = document.getElementById('codesSuccessText');
+        const codesErrorText = document.getElementById('codesErrorText');
+
         // Tab switching functionality
         navTabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -1323,18 +1578,228 @@
                     }
                 });
                 
-                // Load analytics data when switching to analytics tab
+                // Load data when switching tabs
                 if (targetTab === 'analytics') {
                     loadAppStats();
                     loadVisitStats();
                     loadDailyVisits();
                 } else if (targetTab === 'upgrade') {
                     loadVIPPackages();
+                } else if (targetTab === 'codes') {
+                    loadDiscountCodes();
+                    loadActivationCodes();
                 }
             });
         });
 
-        // Tải thống kê ứng dụng - ĐÃ CẬP NHẬT THÊM 3 MỤC MỚI
+        // Code Management - Switch between discount and activation forms
+        codeTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'discount') {
+                    discountForm.style.display = 'block';
+                    activationForm.style.display = 'none';
+                } else {
+                    discountForm.style.display = 'none';
+                    activationForm.style.display = 'block';
+                }
+            });
+        });
+
+        // Create codes
+        createCodesBtn.addEventListener('click', async function() {
+            const codeType = document.querySelector('input[name="codeType"]:checked').value;
+            const count = parseInt(document.getElementById('codeCount').value);
+            
+            if (!count || count < 1) {
+                showCodesMessage('Vui lòng nhập số lượng mã hợp lệ', 'error');
+                return;
+            }
+            
+            createCodesBtn.innerHTML = '<div class="loading"></div> Đang tạo...';
+            createCodesBtn.disabled = true;
+            
+            try {
+                if (codeType === 'discount') {
+                    await createDiscountCodes();
+                } else {
+                    await createActivationCodes();
+                }
+            } catch (error) {
+                showCodesMessage('Lỗi khi tạo mã: ' + error.message, 'error');
+            } finally {
+                createCodesBtn.innerHTML = '<i class="fas fa-plus"></i> Tạo Mã';
+                createCodesBtn.disabled = false;
+            }
+        });
+
+        // Create discount codes
+        async function createDiscountCodes() {
+            const percent = parseInt(document.getElementById('discountPercent').value);
+            const limit = parseInt(document.getElementById('discountLimit').value);
+            const count = parseInt(document.getElementById('codeCount').value);
+            const expiry = document.getElementById('discountExpiry').value;
+            
+            if (!percent || !limit || !expiry) {
+                throw new Error('Vui lòng điền đầy đủ thông tin mã giảm giá');
+            }
+            
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'createDiscountCodes',
+                    percent: percent,
+                    limit: limit,
+                    count: count,
+                    expiry: expiry
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                displayCreatedCodes(result.codes, 'Mã giảm giá');
+                showCodesMessage(`Đã tạo thành công ${result.codes.length} mã giảm giá`, 'success');
+                loadDiscountCodes(); // Reload the list
+            } else {
+                throw new Error(result.message);
+            }
+        }
+
+        // Create activation codes
+        async function createActivationCodes() {
+            const packageType = document.getElementById('activationPackage').value;
+            const count = parseInt(document.getElementById('codeCount').value);
+            
+            // Map package type to duration days
+            const durationMap = {
+                'trial': 30,
+                'basic': 90,
+                'plus': 180,
+                'premium': 365
+            };
+            
+            const duration = durationMap[packageType];
+            
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'createActivationCodes',
+                    packageType: packageType,
+                    duration: duration,
+                    count: count
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                displayCreatedCodes(result.codes, `Mã kích hoạt ${packageType}`);
+                showCodesMessage(`Đã tạo thành công ${result.codes.length} mã kích hoạt ${packageType}`, 'success');
+                loadActivationCodes(); // Reload the list
+            } else {
+                throw new Error(result.message);
+            }
+        }
+
+        // Display created codes
+        function displayCreatedCodes(codes, type) {
+            codesList.innerHTML = '';
+            codes.forEach(code => {
+                const codeElement = document.createElement('div');
+                codeElement.style.padding = '5px 0';
+                codeElement.style.borderBottom = '1px solid var(--border)';
+                codeElement.textContent = code;
+                codesList.appendChild(codeElement);
+            });
+            
+            createdCodesResult.style.display = 'block';
+        }
+
+        // Load discount codes
+        async function loadDiscountCodes() {
+            try {
+                // Since we don't have a direct endpoint to get all codes,
+                // we'll simulate loading or you can implement this in your Google Apps Script
+                discountCodesList.innerHTML = '<div class="code-item"><div class="code-info"><div class="code-value">Tính năng đang được phát triển...</div></div></div>';
+                
+                // You can implement actual loading by adding a new endpoint in Google Apps Script
+                // const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getDiscountCodes`);
+                // const result = await response.json();
+                // if (result.success) {
+                //     renderDiscountCodes(result.data);
+                // }
+                
+            } catch (error) {
+                console.error('Error loading discount codes:', error);
+                discountCodesList.innerHTML = '<div class="code-item"><div class="code-info"><div class="code-value">Lỗi khi tải dữ liệu</div></div></div>';
+            }
+        }
+
+        // Load activation codes
+        async function loadActivationCodes() {
+            try {
+                // Since we don't have a direct endpoint to get all codes,
+                // we'll simulate loading or you can implement this in your Google Apps Script
+                activationCodesList.innerHTML = '<div class="code-item"><div class="code-info"><div class="code-value">Tính năng đang được phát triển...</div></div></div>';
+                
+                // You can implement actual loading by adding a new endpoint in Google Apps Script
+                // const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getActivationCodes`);
+                // const result = await response.json();
+                // if (result.success) {
+                //     renderActivationCodes(result.data);
+                // }
+                
+            } catch (error) {
+                console.error('Error loading activation codes:', error);
+                activationCodesList.innerHTML = '<div class="code-item"><div class="code-info"><div class="code-value">Lỗi khi tải dữ liệu</div></div></div>';
+            }
+        }
+
+        // Show codes message
+        function showCodesMessage(message, type) {
+            if (type === 'success') {
+                codesSuccessText.textContent = message;
+                codesSuccessMessage.style.display = 'flex';
+                codesErrorMessage.style.display = 'none';
+            } else {
+                codesErrorText.textContent = message;
+                codesErrorMessage.style.display = 'flex';
+                codesSuccessMessage.style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                codesSuccessMessage.style.display = 'none';
+                codesErrorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Refresh discount codes
+        refreshDiscountCodesBtn.addEventListener('click', function() {
+            this.innerHTML = '<div class="loading"></div>';
+            loadDiscountCodes().finally(() => {
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Làm mới';
+                }, 1000);
+            });
+        });
+
+        // Refresh activation codes
+        refreshActivationCodesBtn.addEventListener('click', function() {
+            this.innerHTML = '<div class="loading"></div>';
+            loadActivationCodes().finally(() => {
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Làm mới';
+                }, 1000);
+            });
+        });
+
+        // ========== CÁC HÀM KHÁC GIỮ NGUYÊN TỪ CODE CŨ ==========
+        // (Giữ nguyên tất cả các hàm khác như loadAppStats, loadVisitStats, updatePreview, v.v.)
+        // ... [Các hàm khác giữ nguyên] ...
+
+        // Tải thống kê ứng dụng
         async function loadAppStats() {
             try {
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps`);
@@ -1362,7 +1827,6 @@
                     ).length;
                     totalEntertainmentElement.textContent = entertainment;
                     
-                    // THÊM 3 MỤC MỚI
                     const photo = apps.filter(app => 
                         app.categories && app.categories.includes('photo')
                     ).length;
@@ -1423,7 +1887,7 @@
             }
         }
 
-        // Tải lượt truy cập chi tiết theo ngày - HÀM MỚI (ĐÃ SỬA LẠI SẮP XẾP)
+        // Tải lượt truy cập chi tiết theo ngày
         async function loadDailyVisits() {
             try {
                 console.log('Đang tải lượt truy cập chi tiết theo ngày...');
@@ -1454,10 +1918,9 @@
                     }
                 });
                 
-                // SỬA LẠI: Sắp xếp theo ngày GIẢM DẦN (ngày gần nhất lên đầu)
+                // Sắp xếp theo ngày GIẢM DẦN (ngày gần nhất lên đầu)
                 const sortedDates = Object.entries(visitsByDate)
                     .sort(([dateA], [dateB]) => {
-                        // Chuyển đổi chuỗi ngày "dd/MM/yyyy" thành timestamp để so sánh
                         const convertToDate = (dateStr) => {
                             const [day, month, year] = dateStr.split('/');
                             return new Date(year, month - 1, day).getTime();
@@ -1491,7 +1954,7 @@
             }
         }
 
-        // Tạo item lượt truy cập theo ngày - HÀM MỚI
+        // Tạo item lượt truy cập theo ngày
         function createDailyVisitItem(date, count, maxVisits) {
             const dailyVisitItem = document.createElement('div');
             dailyVisitItem.className = 'daily-visit-item';
@@ -1674,7 +2137,7 @@
             return selectedCategories;
         }
 
-        // Hàm lấy ID chính xác từ Google Sheets sau khi upload - FIX LỖI TRÙNG TÊN
+        // Hàm lấy ID chính xác từ Google Sheets sau khi upload
         async function getAppIdAfterUpload(appData) {
             try {
                 console.log('🚀 Đang lấy ID chính xác từ Google Sheets...');
@@ -1689,8 +2152,7 @@
                 if (result.success) {
                     const apps = result.data;
                     
-                    // FIX: Tìm app MỚI NHẤT có cùng tên, developer, version và description
-                    // Sắp xếp apps theo ID giảm dần để lấy app mới nhất đầu tiên
+                    // Tìm app MỚI NHẤT có cùng tên, developer, version và description
                     const sortedApps = [...apps].sort((a, b) => (b.id || 0) - (a.id || 0));
                     
                     // Tìm app vừa upload bằng cách so sánh TẤT CẢ thuộc tính
@@ -1724,7 +2186,7 @@
             }
         }
 
-        // Gửi thông báo đến Telegram với ảnh - ĐẢM BẢO LUÔN CÓ ẢNH
+        // Gửi thông báo đến Telegram với ảnh
         async function sendTelegramNotification(appData, appId) {
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
@@ -1757,7 +2219,7 @@ Cài đặt ngay : ${appUrl}
                 console.log('🆔 App ID:', appId);
                 console.log('🖼️ Ảnh:', appData.image);
 
-                // Gửi ảnh với caption - ĐẢM BẢO LUÔN CÓ ẢNH
+                // Gửi ảnh với caption
                 const photoUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
                 
                 const response = await fetch(photoUrl, {
@@ -1782,7 +2244,7 @@ Cài đặt ngay : ${appUrl}
                 } else {
                     console.error('❌ Lỗi khi gửi ảnh Telegram:', result);
                     
-                    // THỬ LẠI GỬI ẢNH LẦN 2 - ĐẢM BẢO LUÔN CÓ ẢNH
+                    // THỬ LẠI GỬI ẢNH LẦN 2
                     console.log('🔄 Thử gửi ảnh lần 2...');
                     const retryResponse = await fetch(photoUrl, {
                         method: 'POST',
@@ -1816,7 +2278,7 @@ Cài đặt ngay : ${appUrl}
             }
         }
 
-        // Gửi ảnh và tin nhắn riêng biệt - ĐẢM BẢO LUÔN CÓ ẢNH
+        // Gửi ảnh và tin nhắn riêng biệt
         async function sendSeparateImageAndMessage(appData, appId) {
             try {
                 const appUrl = `${BASE_APP_URL}${appId}`;
@@ -1879,7 +2341,7 @@ Cài đặt ngay : ${appUrl}
             }
         }
 
-        // Xử lý sự kiện submit form - FIX LỖI TRÙNG TÊN
+        // Xử lý sự kiện submit form
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1925,12 +2387,12 @@ Cài đặt ngay : ${appUrl}
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Lấy ID chính xác từ Google Sheets - FIX LỖI TRÙNG TÊN
+                    // Lấy ID chính xác từ Google Sheets
                     submitBtn.innerHTML = '<div class="loading"></div> Đang lấy ID...';
                     const actualAppId = await getAppIdAfterUpload(appData);
                     
                     if (actualAppId) {
-                        // Gửi thông báo đến Telegram với ID chính xác - ĐẢM BẢO LUÔN CÓ ẢNH
+                        // Gửi thông báo đến Telegram với ID chính xác
                         submitBtn.innerHTML = '<div class="loading"></div> Đang gửi Telegram...';
                         const telegramSent = await sendTelegramNotification(appData, actualAppId);
                         
