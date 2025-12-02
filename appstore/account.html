@@ -18,6 +18,7 @@
             --background:#ffffff; --surface:#f8fafc; --text-primary:#1e293b;
             --text-secondary:#64748b; --text-muted:#94a3b8; --border:#e2e8f0;
             --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+            --refresh-bg:#f1f5f9; --refresh-hover:#e1f0ff; --refresh-active:#d1e4ff;
             --premium: linear-gradient(135deg, #f59e0b, #eab308, #f97316);
             --card-shadow:0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);
             --card-shadow-hover:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
@@ -80,13 +81,34 @@
         .user-badge.plus { background:linear-gradient(90deg, #8b5cf6, #7c3aed); }
         .user-badge.premium { background:var(--premium); box-shadow:0 2px 6px rgba(245,158,11,0.3); }
         .user-badge i { font-size:14px; }
-        .action-buttons { display:flex; gap:10px; margin-top:20px; }
-        .action-btn { flex:1; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text-primary); cursor:pointer; font-weight:600; font-size:12px; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .action-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+        .action-btn { flex:1; min-width: calc(50% - 5px); padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text-primary); cursor:pointer; font-weight:600; font-size:12px; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:6px; }
         .action-btn:hover { background:linear-gradient(90deg, var(--primary-dark), var(--primary)); color:white; border-color:var(--primary); transform:translateY(-1px); }
         .action-btn.logout { background:var(--danger); color:white; border-color:var(--danger); }
         .action-btn.logout:hover { background:#dc2626; }
         .action-btn.upgrade { background:var(--warning); color:white; border-color:var(--warning); }
         .action-btn.upgrade:hover { background:#d97706; }
+        .action-btn.refresh { background:var(--refresh-bg); color:var(--text-secondary); border-color:var(--border); }
+        .action-btn.refresh:hover { background:var(--refresh-hover); color:var(--primary); border-color:var(--primary); }
+        .action-btn.change-password { background:linear-gradient(90deg, #10b981, #0da271); color:white; border-color:#10b981; }
+        .action-btn.change-password:hover { background:linear-gradient(90deg, #0da271, #0c8a5c); }
+
+        /* Change Password Modal */
+        .change-password-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+        .change-password-modal.active { display:flex; }
+        .change-password-card { background:var(--surface); border-radius:16px; padding:24px; width:100%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation:modalAppear 0.3s ease-out; }
+        @keyframes modalAppear { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+        .change-password-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+        .change-password-title { font-size:18px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px; }
+        .close-modal { width:32px; height:32px; border-radius:8px; background:var(--surface); border:1px solid var(--border); color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .3s; }
+        .close-modal:hover { background:var(--danger); color:white; border-color:var(--danger); }
+        .change-password-form .form-group:last-child { margin-bottom:0; }
+        .password-strength { margin-top:6px; font-size:11px; display:flex; align-items:center; gap:4px; }
+        .strength-bar { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+        .strength-fill { height:100%; width:0%; transition:all .3s; }
+        .strength-weak .strength-fill { width:33%; background:var(--danger); }
+        .strength-medium .strength-fill { width:66%; background:var(--warning); }
+        .strength-strong .strength-fill { width:100%; background:var(--success); }
 
         /* Loading */
         .loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-radius:50%; border-top-color:#fff; animation:spin 1s ease-in-out infinite; }
@@ -132,8 +154,10 @@
             .account-container { padding:16px 0; margin:10px auto; }
             .auth-card { padding:16px; }
             .action-buttons { flex-direction:column; }
+            .action-btn { min-width:100%; }
             .welcome-title { font-size:18px; }
             .welcome-subtitle { font-size:13px; }
+            .change-password-card { padding:20px; margin:0 12px; }
         }
     </style>
 </head>
@@ -286,11 +310,15 @@
                     </div>
 
                     <div class="action-buttons">
+                        <button class="action-btn change-password" id="changePasswordBtn">
+                            <i class="fas fa-key"></i>
+                            Đổi mật khẩu
+                        </button>
                         <button class="action-btn upgrade" id="upgradeBtn">
                             <i class="fas fa-crown"></i>
                             Nâng cấp VIP
                         </button>
-                        <button class="action-btn" id="refreshBtn">
+                        <button class="action-btn refresh" id="refreshBtn">
                             <i class="fas fa-sync-alt"></i>
                             Làm mới
                         </button>
@@ -304,7 +332,59 @@
         </div>
     </main>
 
-    <!-- Bottom Navigation - Đã cập nhật để đồng bộ với trang chủ -->
+    <!-- Change Password Modal -->
+    <div class="change-password-modal" id="changePasswordModal">
+        <div class="change-password-card">
+            <div class="change-password-header">
+                <h3 class="change-password-title">
+                    <i class="fas fa-key"></i>
+                    Đổi mật khẩu
+                </h3>
+                <button class="close-modal" id="closeChangePasswordModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label class="form-label" for="oldPassword">
+                        <i class="fas fa-lock"></i>
+                        Mật khẩu hiện tại
+                    </label>
+                    <input type="password" id="oldPassword" class="form-input" placeholder="Nhập mật khẩu hiện tại" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="newPassword">
+                        <i class="fas fa-lock"></i>
+                        Mật khẩu mới
+                    </label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Nhập mật khẩu mới" required>
+                    <div class="password-strength" id="passwordStrength">
+                        <span>Độ mạnh:</span>
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="confirmNewPassword">
+                        <i class="fas fa-lock"></i>
+                        Nhập lại mật khẩu mới
+                    </label>
+                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Xác nhận mật khẩu mới" required>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitChangePasswordBtn">
+                    <i class="fas fa-check"></i>
+                    Cập nhật mật khẩu
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="container">
             <div class="nav-items">
@@ -333,7 +413,8 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywHM36jEQpXFXzBTdG-EcbdbKWbtMyKeOSjNwUt-XahtstAmm1F_R2fr8JWUms_A1jsQ/exec';
+        // ĐÃ CẬP NHẬT: Google Apps Script URL mới của bạn
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmHUBarI6ryBWX295fcqScypfWQUAZtEm098AgoA98QRk745uscKV09R7rRKC7X7MCJg/exec';
 
         // DOM Elements
         const authTabs = document.querySelectorAll('.auth-tab');
@@ -348,6 +429,13 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const upgradeBtn = document.getElementById('upgradeBtn');
         const refreshBtn = document.getElementById('refreshBtn');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const closeChangePasswordModal = document.getElementById('closeChangePasswordModal');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const submitChangePasswordBtn = document.getElementById('submitChangePasswordBtn');
+        const newPasswordInput = document.getElementById('newPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const successText = document.getElementById('successText');
@@ -571,6 +659,129 @@
                 } finally {
                     refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Làm mới';
                 }
+            }
+        });
+
+        // Change password modal
+        changePasswordBtn.addEventListener('click', function() {
+            changePasswordModal.classList.add('active');
+            changePasswordForm.reset();
+            passwordStrength.className = 'password-strength';
+        });
+
+        closeChangePasswordModal.addEventListener('click', function() {
+            changePasswordModal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        changePasswordModal.addEventListener('click', function(e) {
+            if (e.target === changePasswordModal) {
+                changePasswordModal.classList.remove('active');
+            }
+        });
+
+        // Password strength checker
+        newPasswordInput.addEventListener('input', function() {
+            const password = newPasswordInput.value;
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            // Update strength indicator
+            passwordStrength.className = 'password-strength';
+            if (password.length > 0) {
+                if (strength <= 2) {
+                    passwordStrength.classList.add('strength-weak');
+                } else if (strength <= 4) {
+                    passwordStrength.classList.add('strength-medium');
+                } else {
+                    passwordStrength.classList.add('strength-strong');
+                }
+            }
+        });
+
+        // Change password form submission - ĐÃ CẬP NHẬT VỚI API CALL THỰC TẾ
+        changePasswordForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const oldPassword = document.getElementById('oldPassword').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value.trim();
+            
+            // Validation
+            if (!oldPassword || !newPassword || !confirmNewPassword) {
+                showError('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                showError('Mật khẩu mới và xác nhận không khớp');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showError('Mật khẩu mới phải có ít nhất 6 ký tự');
+                return;
+            }
+            
+            // Check if new password is same as old
+            if (newPassword === oldPassword) {
+                showError('Mật khẩu mới phải khác mật khẩu cũ');
+                return;
+            }
+            
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showError('Bạn cần đăng nhập để đổi mật khẩu');
+                return;
+            }
+            
+            submitChangePasswordBtn.innerHTML = '<div class="loading"></div> Đang cập nhật...';
+            submitChangePasswordBtn.disabled = true;
+            
+            try {
+                // Gọi API đổi mật khẩu - SỬ DỤNG URL MỚI CỦA BẠN
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify({
+                        action: 'changePassword',
+                        data: {
+                            email: currentUser.email,
+                            oldPassword: oldPassword,
+                            newPassword: newPassword
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Đổi mật khẩu thành công! Vui lòng đăng nhập lại với mật khẩu mới.');
+                    
+                    // Đóng modal
+                    setTimeout(() => {
+                        changePasswordModal.classList.remove('active');
+                        changePasswordForm.reset();
+                        passwordStrength.className = 'password-strength';
+                        
+                        // Không tự động logout, để người dùng tự đăng nhập lại khi cần
+                    }, 2000);
+                    
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showError(error.message || 'Đổi mật khẩu thất bại');
+            } finally {
+                submitChangePasswordBtn.innerHTML = '<i class="fas fa-check"></i> Cập nhật mật khẩu';
+                submitChangePasswordBtn.disabled = false;
             }
         });
 
