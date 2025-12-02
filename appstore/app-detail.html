@@ -801,13 +801,13 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo" id="logoLink">
                     <div class="logo-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
                     XSpace Store
                 </a>
-                <a href="index.html" class="back-btn">
+                <a href="index.html" class="back-btn" id="backBtn">
                     <i class="fas fa-arrow-left"></i>
                     Quay lại
                 </a>
@@ -821,7 +821,7 @@
             <!-- Login Prompt -->
             <div class="login-prompt" id="loginPrompt" style="display: none;">
                 <p>Vui lòng đăng nhập để tải ứng dụng</p>
-                <button class="download-btn" onclick="window.location.href='account.html'">
+                <button class="download-btn" id="loginBtn">
                     <i class="fas fa-sign-in-alt"></i>
                     Đăng nhập ngay
                 </button>
@@ -837,31 +837,31 @@
     <nav class="bottom-nav">
         <div class="container">
             <div class="nav-items">
-                <a href="index.html" class="nav-item">
+                <a href="index.html" class="nav-item" id="homeNav">
                     <div class="nav-icon">
                         <i class="fas fa-home"></i>
                     </div>
                     <div class="nav-label">Trang chủ</div>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" id="todayNav">
                     <div class="nav-icon">
                         <i class="fas fa-calendar-day"></i>
                     </div>
                     <div class="nav-label">Hôm nay</div>
                 </a>
-                <a href="#" class="nav-item" id="searchNavItem">
+                <a href="#" class="nav-item" id="searchNav">
                     <div class="nav-icon">
                         <i class="fas fa-search"></i>
                     </div>
                     <div class="nav-label">Tìm kiếm</div>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" id="gamesNav">
                     <div class="nav-icon">
                         <i class="fas fa-gamepad"></i>
                     </div>
                     <div class="nav-label">Trò chơi</div>
                 </a>
-                <a href="https://t.me/m/inBUSKQ1N2E1" class="nav-item" target="_blank">
+                <a href="https://t.me/m/inBUSKQ1N2E1" class="nav-item" id="requestNav" target="_blank">
                     <div class="nav-icon">
                         <i class="fas fa-headset"></i>
                     </div>
@@ -877,11 +877,117 @@
         const CACHE_TIMESTAMP_KEY = 'xspace_cache_timestamp';
         const CACHE_DURATION = 30 * 60 * 1000; // 30 phút
 
+        // Biến để phát hiện WebClip
+        let isWebClip = false;
+
         // Lấy appId từ URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const appId = urlParams.get('id');
+        const appId = urlParams.get('appId') || urlParams.get('id');
 
-        // FIXED: Xử lý dữ liệu app để đảm bảo cấu trúc đúng
+        // Phát hiện WebClip khi trang tải
+        function detectWebClip() {
+            // Kiểm tra các dấu hiệu của WebClip/PWA
+            if (window.navigator.standalone) {
+                // iOS WebClip
+                isWebClip = true;
+            } else if (window.matchMedia('(display-mode: standalone)').matches) {
+                // Android PWA/WebClip
+                isWebClip = true;
+            } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
+                // Fullscreen mode
+                isWebClip = true;
+            }
+            
+            // Kiểm tra thêm bằng user agent
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            if (userAgent.includes('safari') && !userAgent.includes('chrome')) {
+                // Có thể là Safari WebClip
+                if (window.innerWidth === window.screen.width && window.innerHeight === window.screen.height) {
+                    isWebClip = true;
+                }
+            }
+            
+            console.log('Is WebClip:', isWebClip);
+            return isWebClip;
+        }
+
+        // Hàm mở liên kết thông minh (phát hiện WebClip)
+        function openLink(url, target = '_blank') {
+            if (isWebClip) {
+                // Trong WebClip, luôn mở trong cửa sổ mới
+                window.open(url, '_blank');
+            } else {
+                // Trong trình duyệt thông thường
+                if (target === '_self') {
+                    window.location.href = url;
+                } else {
+                    window.open(url, '_blank');
+                }
+            }
+        }
+
+        // Hàm mở liên kết nội bộ (trang trong site)
+        function openInternalLink(url) {
+            if (isWebClip) {
+                // Trong WebClip, mở trong tab mới để tránh mất session
+                window.open(url, '_blank');
+            } else {
+                // Trong trình duyệt, chuyển trang bình thường
+                window.location.href = url;
+            }
+        }
+
+        // Thiết lập sự kiện cho các liên kết
+        function setupLinks() {
+            // Logo link
+            const logoLink = document.getElementById('logoLink');
+            if (logoLink) {
+                logoLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openInternalLink('index.html');
+                });
+            }
+
+            // Back button
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openInternalLink('index.html');
+                });
+            }
+
+            // Login button
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openInternalLink('account.html');
+                });
+            }
+
+            // Navigation links
+            const navLinks = ['homeNav', 'todayNav', 'searchNav', 'gamesNav', 'requestNav'];
+            navLinks.forEach(id => {
+                const link = document.getElementById(id);
+                if (link) {
+                    link.addEventListener('click', function(e) {
+                        if (id !== 'requestNav') {
+                            e.preventDefault();
+                            if (id === 'homeNav') {
+                                openInternalLink('index.html');
+                            } else {
+                                // Các trang khác chưa có, mở trong tab mới
+                                openLink('#', '_blank');
+                            }
+                        }
+                        // requestNav đã có target="_blank" nên để mặc định
+                    });
+                }
+            });
+        }
+
+        // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
         function processAppData(app) {
             // Đảm bảo app có viplink1 và không phải là null/undefined
             if (!app.viplink1 || app.viplink1 === 'null' || app.viplink1 === 'undefined') {
@@ -1039,7 +1145,7 @@
             return expiryDate >= today;
         }
 
-        // FIXED: Tải thông tin ứng dụng với cache - ĐÃ SỬA LỖI LINK VIP
+        // Tải thông tin ứng dụng với cache
         async function loadAppDetail() {
             if (!appId) {
                 showError('Không tìm thấy ID ứng dụng');
@@ -1090,7 +1196,7 @@
             }
         }
 
-        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ SỬA LỖI LINK VIP VÀ SỬ DỤNG MÔ TẢ ĐẦY ĐỦ
+        // Hiển thị chi tiết ứng dụng
         function displayAppDetail(app) {
             // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
             app = processAppData(app);
@@ -1105,7 +1211,7 @@
                 'entertainment': 'Giải trí',
                 'photo': 'Chụp ảnh',
                 'clone': 'Nhân bản',
-                'premium': 'Mở khoá Premium', // THÊM LABEL MỚI
+                'premium': 'Mở khoá Premium',
                 'other': 'Khác'
             };
 
@@ -1144,7 +1250,7 @@
                 loginPrompt.style.display = 'none';
             }
 
-            // FIXED: Tạo nút tải VIP với kiểm tra link chính xác
+            // Tạo nút tải VIP với kiểm tra link chính xác
             let vipButtonHTML = '';
             
             // Kiểm tra link VIP có hợp lệ không
@@ -1167,7 +1273,7 @@
             } else if (!currentUser) {
                 // Có link VIP nhưng chưa đăng nhập
                 vipButtonHTML = `
-                    <button class="download-btn download-btn-premium" onclick="requireLoginForVIP()">
+                    <button class="download-btn download-btn-premium" id="vipRequireLoginBtn">
                         <i class="fas fa-crown"></i>
                         Tải VIP #1 
                     </button>
@@ -1175,7 +1281,7 @@
             } else if (!isPremium) {
                 // Có link VIP nhưng không phải Premium
                 vipButtonHTML = `
-                    <button class="download-btn download-btn-premium" onclick="requirePremiumForVIP()">
+                    <button class="download-btn download-btn-premium" id="vipRequirePremiumBtn">
                         <i class="fas fa-crown"></i>
                         Tải VIP #1 (Premium)
                     </button>
@@ -1183,14 +1289,14 @@
             } else {
                 // Có link VIP và là Premium user
                 vipButtonHTML = `
-                    <button class="download-btn download-btn-premium" onclick="downloadVIP('${app.viplink1}', '${app.name}')">
+                    <button class="download-btn download-btn-premium" id="downloadVIPBtn" data-link="${app.viplink1}" data-name="${app.name}">
                         <i class="fas fa-crown"></i>
                         Tải VIP #1
                     </button>
                 `;
             }
 
-            // FIXED: Tạo nút tải miễn phí với kiểm tra link chính xác
+            // Tạo nút tải miễn phí với kiểm tra link chính xác
             let freeButtonHTML = '';
             
             // Kiểm tra link miễn phí có hợp lệ không
@@ -1212,21 +1318,21 @@
                 `;
             } else if (!currentUser) {
                 freeButtonHTML = `
-                    <button class="download-btn" onclick="requireLoginForFree()">
+                    <button class="download-btn" id="freeRequireLoginBtn">
                         <i class="fas fa-download"></i>
                         Tải miễn phí
                     </button>
                 `;
             } else {
                 freeButtonHTML = `
-                    <button class="download-btn" onclick="downloadApp('${app.downloadlink}', '${app.name}')">
+                    <button class="download-btn" id="downloadFreeBtn" data-link="${app.downloadlink}" data-name="${app.name}">
                         <i class="fas fa-download"></i>
                         Tải miễn phí
                     </button>
                 `;
             }
 
-            // THAY ĐỔI QUAN TRỌNG: Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
+            // Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
             const descriptionHTML = createFullDescriptionHTML(app.description);
 
             // Hiển thị nội dung
@@ -1287,15 +1393,79 @@
                 <div class="support-section" style="text-align: center; margin-top: 30px; padding: 16px; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
                     <h3 style="margin-bottom: 10px; color: var(--text-primary); font-size: 15px;">Cần hỗ trợ?</h3>
                     <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 12px;">Liên hệ với chúng tôi nếu bạn gặp vấn đề khi tải hoặc sử dụng ứng dụng</p>
-                    <button class="download-btn download-btn-secondary" onclick="contactSupport()" style="max-width: 180px; font-size: 12px; padding: 8px 16px;">
+                    <button class="download-btn download-btn-secondary" id="contactSupportBtn" style="max-width: 180px; font-size: 12px; padding: 8px 16px;">
                         <i class="fas fa-headset"></i>
                         Liên hệ hỗ trợ
                     </button>
                 </div>
             `;
+            
+            // Thiết lập sự kiện cho các nút trong nội dung app
+            setupAppButtons();
         }
 
-        // FIXED: Hàm tải ứng dụng miễn phí - ĐÃ SỬA LỖI KIỂM TRA LINK
+        // Thiết lập sự kiện cho các nút trong app
+        function setupAppButtons() {
+            // Nút đăng nhập để tải miễn phí
+            const freeRequireLoginBtn = document.getElementById('freeRequireLoginBtn');
+            if (freeRequireLoginBtn) {
+                freeRequireLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    requireLoginForFree();
+                });
+            }
+
+            // Nút đăng nhập để tải VIP
+            const vipRequireLoginBtn = document.getElementById('vipRequireLoginBtn');
+            if (vipRequireLoginBtn) {
+                vipRequireLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    requireLoginForVIP();
+                });
+            }
+
+            // Nút yêu cầu premium để tải VIP
+            const vipRequirePremiumBtn = document.getElementById('vipRequirePremiumBtn');
+            if (vipRequirePremiumBtn) {
+                vipRequirePremiumBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    requirePremiumForVIP();
+                });
+            }
+
+            // Nút tải miễn phí
+            const downloadFreeBtn = document.getElementById('downloadFreeBtn');
+            if (downloadFreeBtn) {
+                downloadFreeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const link = downloadFreeBtn.getAttribute('data-link');
+                    const name = downloadFreeBtn.getAttribute('data-name');
+                    downloadApp(link, name);
+                });
+            }
+
+            // Nút tải VIP
+            const downloadVIPBtn = document.getElementById('downloadVIPBtn');
+            if (downloadVIPBtn) {
+                downloadVIPBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const link = downloadVIPBtn.getAttribute('data-link');
+                    const name = downloadVIPBtn.getAttribute('data-name');
+                    downloadVIP(link, name);
+                });
+            }
+
+            // Nút liên hệ hỗ trợ
+            const contactSupportBtn = document.getElementById('contactSupportBtn');
+            if (contactSupportBtn) {
+                contactSupportBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    contactSupport();
+                });
+            }
+        }
+
+        // Hàm tải ứng dụng miễn phí
         function downloadApp(downloadLink, appName) {
             console.log('🔗 Download link:', downloadLink);
             console.log('📱 App name:', appName);
@@ -1314,7 +1484,7 @@
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
                 if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tiếp tục tải file ngay lập tức`)) {
-                    window.open(downloadLink, '_blank');
+                    openLink(downloadLink, '_blank');
                     
                     setTimeout(() => {
                         alert('✅ Đã bắt đầu tải xuống ứng dụng!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
@@ -1325,12 +1495,12 @@
             }
         }
 
-        // FIXED: Hàm tải ứng dụng VIP - ĐÃ SỬA LỖI KIỂM TRA LINK
+        // Hàm tải ứng dụng VIP
         function downloadVIP(downloadLink, appName) {
             console.log('👑 VIP Download link:', downloadLink);
             console.log('📱 App name:', appName);
             
-            // Kiểm tra link hợp lệ - GIẢM BỚT ĐIỀU KIỆN KIỂM TRA
+            // Kiểm tra link hợp lệ
             if (!downloadLink || 
                 downloadLink === '' || 
                 downloadLink === 'null' ||
@@ -1342,7 +1512,7 @@
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
                 if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải file VIP ngay lập tức`)) {
-                    window.open(downloadLink, '_blank');
+                    openLink(downloadLink, '_blank');
                     
                     setTimeout(() => {
                         alert('✅ Đã bắt đầu tải xuống bản VIP!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
@@ -1356,27 +1526,27 @@
         // Yêu cầu đăng nhập để tải miễn phí
         function requireLoginForFree() {
             if (confirm('Bạn cần đăng nhập để tải ứng dụng miễn phí.\n\nChuyển đến trang đăng nhập?')) {
-                window.location.href = 'account.html';
+                openInternalLink('account.html');
             }
         }
 
         // Yêu cầu đăng nhập để tải VIP
         function requireLoginForVIP() {
             if (confirm('Bạn cần đăng nhập để tải bản VIP.\n\nĐăng nhập ngay nào bro?')) {
-                window.location.href = 'account.html';
+                openInternalLink('account.html');
             }
         }
 
-        // Yêu cầu nâng cấp để tải VIP - ĐÃ SỬA: CHUYỂN HƯỚNG ĐẾN TRANG PAYMENT
+        // Yêu cầu nâng cấp để tải VIP
         function requirePremiumForVIP() {
             if (confirm('Tài khoản của bạn chưa được cấp phép vui lòng nâng cấp để sử dụng dịch vụ VIP.\n\nNâng cấp tài khoản Premium ngay?')) {
-                window.location.href = 'payment.html';
+                openInternalLink('payment.html');
             }
         }
 
         // Hàm liên hệ hỗ trợ
         function contactSupport() {
-            window.open('https://t.me/m/inBUSKQ1N2E1', '_blank');
+            openLink('https://t.me/m/inBUSKQ1N2E1', '_blank');
         }
 
         // Hiển thị lỗi
@@ -1388,30 +1558,48 @@
                     </div>
                     <h3>Đã xảy ra lỗi</h3>
                     <p>${message}</p>
-                    <button class="download-btn" onclick="window.location.href='index.html'" style="margin-top: 16px; max-width: 200px;">
+                    <button class="download-btn" id="backHomeBtn" style="margin-top: 16px; max-width: 200px;">
                         <i class="fas fa-home"></i>
                         Quay về trang chủ
                     </button>
                 </div>
             `;
+            
+            // Thiết lập sự kiện cho nút quay về trang chủ
+            const backHomeBtn = document.getElementById('backHomeBtn');
+            if (backHomeBtn) {
+                backHomeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openInternalLink('index.html');
+                });
+            }
         }
 
         // Khởi tạo khi trang được tải
         document.addEventListener('DOMContentLoaded', function() {
+            // Phát hiện WebClip trước
+            detectWebClip();
+            
+            // Thiết lập các liên kết
+            setupLinks();
+            
+            // Tải chi tiết ứng dụng
             loadAppDetail();
             
             // Thêm loading state cho các button
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.download-btn')) {
                     const button = e.target.closest('.download-btn');
-                    const originalHTML = button.innerHTML;
-                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-                    button.disabled = true;
-                    
-                    setTimeout(() => {
-                        button.innerHTML = originalHTML;
-                        button.disabled = false;
-                    }, 2000);
+                    if (!button.disabled) {
+                        const originalHTML = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                        button.disabled = true;
+                        
+                        setTimeout(() => {
+                            button.innerHTML = originalHTML;
+                            button.disabled = false;
+                        }, 2000);
+                    }
                 }
             });
         });
