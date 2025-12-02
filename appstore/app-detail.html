@@ -890,12 +890,15 @@
             if (window.navigator.standalone) {
                 // iOS WebClip
                 isWebClip = true;
+                console.log('📱 Phát hiện iOS WebClip');
             } else if (window.matchMedia('(display-mode: standalone)').matches) {
                 // Android PWA/WebClip
                 isWebClip = true;
+                console.log('📱 Phát hiện Android PWA/WebClip');
             } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
                 // Fullscreen mode
                 isWebClip = true;
+                console.log('📱 Phát hiện Fullscreen mode');
             }
             
             // Kiểm tra thêm bằng user agent
@@ -904,6 +907,7 @@
                 // Có thể là Safari WebClip
                 if (window.innerWidth === window.screen.width && window.innerHeight === window.screen.height) {
                     isWebClip = true;
+                    console.log('📱 Phát hiện Safari WebClip');
                 }
             }
             
@@ -911,13 +915,62 @@
             return isWebClip;
         }
 
+        // Hàm mở liên kết trong Safari - CHỈ DÀNH CHO WEBCLIP
+        function openInSafari(url) {
+            if (!url) return;
+            
+            // Tạo URL với scheme để mở Safari
+            let safariUrl;
+            
+            // Kiểm tra nếu là link Telegram
+            if (url.includes('t.me')) {
+                safariUrl = url; // Telegram links thường mở được trong Safari
+            } else {
+                // Mã hóa URL để chuyển qua
+                safariUrl = 'xspace://open?url=' + encodeURIComponent(url);
+            }
+            
+            // Thử mở qua scheme trước
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = safariUrl;
+            document.body.appendChild(iframe);
+            
+            // Fallback: Mở trong cửa sổ hiện tại sau 500ms
+            setTimeout(function() {
+                document.body.removeChild(iframe);
+                
+                // Thử cách khác cho iOS
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                
+                // Thêm thuộc tính để mở trong Safari
+                a.setAttribute('target', '_system');
+                a.setAttribute('rel', 'noopener');
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Thông báo cho người dùng
+                setTimeout(function() {
+                    alert('Đang mở trong Safari...\n\nNếu không tự động mở, vui lòng mở Safari và quay lại trang này.');
+                }, 300);
+                
+            }, 500);
+        }
+
         // Hàm mở liên kết thông minh (phát hiện WebClip)
         function openLink(url, target = '_blank') {
             if (isWebClip) {
-                // Trong WebClip, luôn mở trong cửa sổ mới
-                window.open(url, '_blank');
+                // Trong WebClip, mở trong Safari
+                console.log('🌐 WebClip: Mở trong Safari:', url);
+                openInSafari(url);
             } else {
                 // Trong trình duyệt thông thường
+                console.log('🌐 Trình duyệt: Mở bình thường:', url);
                 if (target === '_self') {
                     window.location.href = url;
                 } else {
@@ -929,8 +982,8 @@
         // Hàm mở liên kết nội bộ (trang trong site)
         function openInternalLink(url) {
             if (isWebClip) {
-                // Trong WebClip, mở trong tab mới để tránh mất session
-                window.open(url, '_blank');
+                // Trong WebClip, vẫn mở trang nội bộ trong WebClip
+                window.location.href = url;
             } else {
                 // Trong trình duyệt, chuyển trang bình thường
                 window.location.href = url;
@@ -977,11 +1030,16 @@
                             if (id === 'homeNav') {
                                 openInternalLink('index.html');
                             } else {
-                                // Các trang khác chưa có, mở trong tab mới
-                                openLink('#', '_blank');
+                                // Các trang khác chưa có, vẫn mở trong WebClip
+                                alert('Tính năng đang phát triển...');
+                            }
+                        } else {
+                            // requestNav đã có target="_blank" nhưng cần xử lý cho WebClip
+                            if (isWebClip) {
+                                e.preventDefault();
+                                openLink('https://t.me/m/inBUSKQ1N2E1', '_blank');
                             }
                         }
-                        // requestNav đã có target="_blank" nên để mặc định
                     });
                 }
             });
@@ -1332,6 +1390,12 @@
                 `;
             }
 
+            // Thêm thông báo cho WebClip
+            const webclipNote = isWebClip ? 
+                '<div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107; font-size: 12px; color: #856404;">' +
+                '<i class="fas fa-exclamation-circle"></i> <strong>Lưu ý:</strong> Đang sử dụng WebClip. Các liên kết tải sẽ mở trong Safari.' +
+                '</div>' : '';
+
             // Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
             const descriptionHTML = createFullDescriptionHTML(app.description);
 
@@ -1364,6 +1428,7 @@
                         ${freeButtonHTML}
                         ${vipButtonHTML}
                     </div>
+                    ${webclipNote}
                     <div style="margin-top: 10px; font-size: 11px; color: var(--text-muted);">
                         <i class="fas fa-info-circle"></i>
                         ${!hasValidVIPLink ? 'Bản VIP đang được cập nhật' : 'Premium: No Ads – Full Features – Unlimited Access'}
@@ -1465,7 +1530,7 @@
             }
         }
 
-        // Hàm tải ứng dụng miễn phí
+        // Hàm tải ứng dụng miễn phí - ĐÃ SỬA CHO WEBCLIP
         function downloadApp(downloadLink, appName) {
             console.log('🔗 Download link:', downloadLink);
             console.log('📱 App name:', appName);
@@ -1483,19 +1548,26 @@
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\nChọn "OK" để tiếp tục tải file ngay lập tức`)) {
+                if (confirm(`Bạn muốn tải xuống ứng dụng: ${appName}?\n\n${isWebClip ? 'Link sẽ mở trong Safari để tải về.' : 'Chọn "OK" để tiếp tục tải file ngay lập tức'}`)) {
                     openLink(downloadLink, '_blank');
                     
-                    setTimeout(() => {
-                        alert('✅ Đã bắt đầu tải xuống ứng dụng!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
-                    }, 1000);
+                    // Thông báo đặc biệt cho WebClip
+                    if (isWebClip) {
+                        setTimeout(() => {
+                            alert('✅ Đang mở trong Safari...\n\nVui lòng kiểm tra Safari để tải ứng dụng.\n\nNếu không tự động mở, vui lòng:\n1. Mở Safari\n2. Quay lại trang này\n3. Nhấn lại nút tải');
+                        }, 800);
+                    } else {
+                        setTimeout(() => {
+                            alert('✅ Đã bắt đầu tải xuống ứng dụng!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
+                        }, 1000);
+                    }
                 }
             } else {
                 alert('❌ Link tải không hợp lệ. Vui lòng kiểm tra lại.');
             }
         }
 
-        // Hàm tải ứng dụng VIP
+        // Hàm tải ứng dụng VIP - ĐÃ SỬA CHO WEBCLIP
         function downloadVIP(downloadLink, appName) {
             console.log('👑 VIP Download link:', downloadLink);
             console.log('📱 App name:', appName);
@@ -1511,12 +1583,19 @@
             
             // Kiểm tra nếu là link HTTP/HTTPS hợp lệ
             if (downloadLink.startsWith('http://') || downloadLink.startsWith('https://')) {
-                if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\nChọn "OK" để tải file VIP ngay lập tức`)) {
+                if (confirm(`Bạn muốn tải xuống bản VIP của ứng dụng: ${appName}?\n\n${isWebClip ? 'Link sẽ mở trong Safari để tải về.' : 'Chọn "OK" để tải file VIP ngay lập tức'}`)) {
                     openLink(downloadLink, '_blank');
                     
-                    setTimeout(() => {
-                        alert('✅ Đã bắt đầu tải xuống bản VIP!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
-                    }, 1000);
+                    // Thông báo đặc biệt cho WebClip
+                    if (isWebClip) {
+                        setTimeout(() => {
+                            alert('✅ Đang mở trong Safari...\n\nVui lòng kiểm tra Safari để tải bản VIP.\n\nNếu không tự động mở, vui lòng:\n1. Mở Safari\n2. Quay lại trang này\n3. Nhấn lại nút tải VIP');
+                        }, 800);
+                    } else {
+                        setTimeout(() => {
+                            alert('✅ Đã bắt đầu tải xuống bản VIP!\n\nNếu download không tự động bắt đầu, vui lòng kiểm tra trình duyệt của bạn.');
+                        }, 1000);
+                    }
                 }
             } else {
                 alert('❌ Link tải VIP không hợp lệ. Vui lòng kiểm tra lại.');
