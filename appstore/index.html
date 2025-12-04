@@ -11,10 +11,6 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
-    <!-- Preconnect để tải video nhanh hơn -->
-    <link rel="preconnect" href="https://www.apple.com">
-    <link rel="dns-prefetch" href="https://www.apple.com">
 </head>
 <body>
     <!-- Header -->
@@ -40,27 +36,16 @@
         </div>
     </header>
 
-    <!-- Hero Section với Video Nền Apple App Store Awards -->
+    <!-- Hero Section -->
     <section class="hero">
-        <!-- Video nền Apple App Store Awards 2025 -->
-        <video class="hero-video-bg" autoplay muted loop playsinline preload="auto" crossorigin="anonymous">
-            <source src="https://www.apple.com/newsroom/videos/2025/autoplay/12/apple-app-store-awards-2025/large_2x.mp4" type="video/mp4">
-            <!-- Fallback cho trình duyệt không hỗ trợ video -->
-            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Hero Background">
-        </video>
-        
-        <div class="video-loading" id="videoLoading">
-            <i class="fas fa-spinner fa-spin"></i> Đang tải video...
-        </div>
-        
         <div class="container">
             <div class="hero-content">
                 <h1>Khám phá kho ứng dụng iPA đỉnh cao</h1>
                 <p>Tận hưởng thế giới ứng dụng và trò chơi được tuyển chọn kỹ lưỡng, hoàn toàn miễn phí. Tải về các bản iPA chất lượng, mở khóa trải nghiệm mà trước đây bạn chưa từng thấy trong App Store.</p>
-                <button class="cta-button" id="exploreBtn">
+                <a href="#" class="cta-button">
                     <i class="fas fa-download"></i>
                     Khám phá ngay
-                </button>
+                </a>
             </div>
         </div>
     </section>
@@ -216,102 +201,5 @@
     <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
     <script src="js/firebase-analytics.js"></script>
-    
-    <script>
-        // Script điều khiển video nền
-        document.addEventListener('DOMContentLoaded', function() {
-            const heroVideo = document.querySelector('.hero-video-bg');
-            const videoLoading = document.getElementById('videoLoading');
-            const exploreBtn = document.getElementById('exploreBtn');
-            
-            if (heroVideo) {
-                // Cài đặt video
-                heroVideo.muted = true;
-                heroVideo.autoplay = true;
-                heroVideo.loop = true;
-                heroVideo.playsInline = true;
-                heroVideo.preload = 'auto';
-                
-                // Sự kiện khi video bắt đầu phát
-                heroVideo.addEventListener('loadeddata', function() {
-                    console.log('Video đã tải xong');
-                    if (videoLoading) {
-                        videoLoading.style.display = 'none';
-                    }
-                });
-                
-                // Sự kiện khi video bắt đầu phát
-                heroVideo.addEventListener('playing', function() {
-                    console.log('Video đang phát');
-                    if (videoLoading) {
-                        videoLoading.style.display = 'none';
-                    }
-                });
-                
-                // Sự kiện khi có lỗi
-                heroVideo.addEventListener('error', function(e) {
-                    console.error('Lỗi tải video:', e);
-                    if (videoLoading) {
-                        videoLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không thể tải video';
-                        videoLoading.style.background = 'rgba(255, 0, 0, 0.5)';
-                    }
-                });
-                
-                // Sự kiện khi kết thúc video - phát lại
-                heroVideo.addEventListener('ended', function() {
-                    this.currentTime = 0;
-                    this.play();
-                });
-                
-                // Thử phát video nếu chưa tự động phát
-                setTimeout(function() {
-                    if (heroVideo.paused) {
-                        heroVideo.play().catch(function(error) {
-                            console.log('Lỗi autoplay:', error);
-                        });
-                    }
-                }, 1000);
-            }
-            
-            // Sự kiện cho nút khám phá
-            if (exploreBtn) {
-                exploreBtn.addEventListener('click', function() {
-                    // Cuộn đến phần ứng dụng
-                    document.querySelector('.categories-section').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                    
-                    // Thêm hiệu ứng
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            }
-            
-            // Kiểm tra và phát video khi người dùng tương tác
-            document.addEventListener('click', function initVideo() {
-                if (heroVideo && heroVideo.paused) {
-                    heroVideo.play();
-                }
-                document.removeEventListener('click', initVideo);
-            });
-            
-            // Fallback: nếu video không tải được sau 5 giây
-            setTimeout(function() {
-                if (heroVideo && !heroVideo.readyState) {
-                    console.log('Video tải chậm, hiển thị fallback');
-                    if (videoLoading) {
-                        videoLoading.innerHTML = '<i class="fas fa-play-circle"></i> Nhấn để tải video';
-                        videoLoading.style.cursor = 'pointer';
-                        videoLoading.addEventListener('click', function() {
-                            heroVideo.load();
-                            heroVideo.play();
-                        });
-                    }
-                }
-            }, 5000);
-        });
-    </script>
 </body>
-</html>
+</html> 
