@@ -309,30 +309,119 @@
             flex: 1;
         }
 
-        /* Screenshots Section */
+        /* Screenshots Section - ĐÃ CHỈNH SỬA HOÀN TOÀN */
         .screenshots-section {
             margin-bottom: 25px;
         }
 
-        .screenshots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        /* Container chính cho scroll ngang */
+        .screenshots-container {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Wrapper cho scroll ngang */
+        .screenshots-wrapper {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding: 10px 0 20px 0;
             gap: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) var(--surface);
+        }
+
+        /* Custom scrollbar cho Webkit browsers */
+        .screenshots-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .screenshots-wrapper::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 3px;
+        }
+
+        .screenshots-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        .screenshots-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Ảnh minh hoạ - ĐÃ CẬP NHẬT */
+        .screenshot-item {
+            flex: 0 0 auto;
+            width: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .screenshot-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .screenshot {
-               max-width: 100%;
-    height: auto;
-
-            object-fit: cover;
-            border-radius: 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            transition: transform 0.3s ease;
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
         }
 
-        .screenshot:hover {
-            transform: scale(1.02);
+        /* Navigation arrows */
+        .screenshot-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            color: var(--primary);
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .screenshot-nav:hover {
+            background: var(--primary);
+            color: white;
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .screenshot-nav.prev {
+            left: 10px;
+            display: none; /* Ẩn mặc định, hiện khi có nhiều ảnh */
+        }
+
+        .screenshot-nav.next {
+            right: 10px;
+            display: none; /* Ẩn mặc định, hiện khi có nhiều ảnh */
+        }
+
+        /* Screenshot counter */
+        .screenshot-counter {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 12px;
         }
 
         /* Loading */
@@ -588,13 +677,14 @@
                 padding: 10px 16px;
             }
             
-            .screenshots-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+            .screenshot-item {
+                width: 250px;
             }
             
-            .screenshot {
-                height: 200px;
+            .screenshot-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
             }
         }
 
@@ -705,14 +795,14 @@
                 margin-bottom: 20px;
             }
             
-            .screenshots-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
+            .screenshot-item {
+                width: 220px;
             }
             
-            .screenshot {
-                height: 220px;
-                border-radius: 10px;
+            .screenshot-nav {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
             }
             
             /* Support section mobile */
@@ -774,8 +864,8 @@
                 padding: 14px;
             }
             
-            .screenshot {
-                height: 180px;
+            .screenshot-item {
+                width: 200px;
             }
         }
 
@@ -793,6 +883,10 @@
             
             .app-meta {
                 align-items: center;
+            }
+            
+            .screenshot-item {
+                width: 180px;
             }
         }
     </style>
@@ -938,17 +1032,12 @@
             return descriptionHTML;
         }
 
-        // HÀM MỚI: Tạo HTML cho ảnh minh hoạ
+        // HÀM MỚI: Tạo HTML cho ảnh minh hoạ với scroll ngang
         function createScreenshotsHTML(app) {
             // Lấy ảnh từ dữ liệu app
             const screenshot1 = app.screenshot1 || '';
             const screenshot2 = app.screenshot2 || '';
             const screenshot3 = app.screenshot3 || '';
-            
-            // Nếu có ít nhất 1 ảnh minh hoạ hợp lệ, hiển thị ảnh đó
-            // Nếu không có ảnh minh hoạ, hiển thị ảnh logo ứng dụng (theo code gốc)
-            
-            let screenshotsHTML = '<div class="screenshots-grid">';
             
             // Tạo danh sách ảnh để hiển thị
             const imagesToShow = [];
@@ -958,7 +1047,7 @@
                 imagesToShow.push({
                     src: screenshot1,
                     alt: 'Ảnh minh hoạ 1',
-                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+1'
+                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+1'
                 });
             }
             
@@ -966,7 +1055,7 @@
                 imagesToShow.push({
                     src: screenshot2,
                     alt: 'Ảnh minh hoạ 2',
-                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+2'
+                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+2'
                 });
             }
             
@@ -974,7 +1063,7 @@
                 imagesToShow.push({
                     src: screenshot3,
                     alt: 'Ảnh minh hoạ 3',
-                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+3'
+                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+3'
                 });
             }
             
@@ -985,37 +1074,73 @@
                     {
                         src: app.image,
                         alt: 'Screenshot 1',
-                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+1'
+                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
                     },
                     {
                         src: app.image,
                         alt: 'Screenshot 2',
-                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+2'
+                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
                     },
                     {
                         src: app.image,
                         alt: 'Screenshot 3',
-                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+3'
+                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
                     }
                 );
             }
             
-            // Giới hạn tối đa 3 ảnh để hiển thị
-            const displayImages = imagesToShow.slice(0, 3);
+            // Tạo HTML cho container ảnh minh hoạ
+            let screenshotsHTML = `
+                <div class="screenshots-container">
+                    <div class="screenshots-wrapper" id="screenshotsWrapper">
+            `;
             
-            // Tạo HTML cho các ảnh
-            displayImages.forEach((img, index) => {
+            // Thêm các ảnh vào wrapper
+            imagesToShow.forEach((img, index) => {
                 screenshotsHTML += `
-                    <img src="${img.src}" alt="${img.alt}" class="screenshot" 
-                         loading="lazy"
-                         onerror="this.src='${img.placeholder}'">
+                    <div class="screenshot-item">
+                        <img src="${img.src}" alt="${img.alt}" class="screenshot" 
+                             loading="lazy"
+                             onerror="this.src='${img.placeholder}'">
+                    </div>
                 `;
             });
             
-            screenshotsHTML += '</div>';
+            screenshotsHTML += `
+                    </div>
+                    
+                    <!-- Navigation arrows - chỉ hiện khi có nhiều ảnh -->
+                    ${imagesToShow.length > 1 ? `
+                        <div class="screenshot-nav prev" onclick="scrollScreenshots(-280)">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="screenshot-nav next" onclick="scrollScreenshots(280)">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Screenshot counter -->
+                    ${imagesToShow.length > 1 ? `
+                        <div class="screenshot-counter">
+                            <span id="currentScreenshot">1</span> / ${imagesToShow.length}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
             
-            console.log(`📸 Hiển thị ${displayImages.length} ảnh:`, displayImages);
+            console.log(`📸 Hiển thị ${imagesToShow.length} ảnh theo chiều ngang`);
             return screenshotsHTML;
+        }
+
+        // Hàm scroll ảnh minh hoạ
+        function scrollScreenshots(amount) {
+            const wrapper = document.getElementById('screenshotsWrapper');
+            if (wrapper) {
+                wrapper.scrollBy({
+                    left: amount,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         // Hiển thị skeleton loading cho trang chi tiết
@@ -1131,7 +1256,7 @@
             return expiryDate >= today;
         }
 
-        // FIXED: Tải thông tin ứng dụng với cache
+        // Tải thông tin ứng dụng
         async function loadAppDetail() {
             if (!appId) {
                 showError('Không tìm thấy ID ứng dụng');
@@ -1182,7 +1307,7 @@
             }
         }
 
-        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ CẬP NHẬT VỚI ẢNH MINH HOẠ
+        // Hiển thị chi tiết ứng dụng
         function displayAppDetail(app) {
             // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
             app = processAppData(app);
@@ -1380,6 +1505,48 @@
                     </button>
                 </div>
             `;
+            
+            // Khởi tạo scroll cho ảnh sau khi render
+            initScreenshotScroll();
+        }
+
+        // Khởi tạo scroll và navigation cho ảnh
+        function initScreenshotScroll() {
+            const wrapper = document.getElementById('screenshotsWrapper');
+            const prevBtn = document.querySelector('.screenshot-nav.prev');
+            const nextBtn = document.querySelector('.screenshot-nav.next');
+            const counter = document.querySelector('#currentScreenshot');
+            
+            if (!wrapper) return;
+            
+            // Chỉ hiện nút navigation khi có nhiều ảnh
+            const totalItems = wrapper.querySelectorAll('.screenshot-item').length;
+            if (totalItems > 1) {
+                if (prevBtn) prevBtn.style.display = 'flex';
+                if (nextBtn) nextBtn.style.display = 'flex';
+            }
+            
+            // Cập nhật counter khi scroll
+            wrapper.addEventListener('scroll', function() {
+                const scrollLeft = wrapper.scrollLeft;
+                const itemWidth = 280; // Chiều rộng mỗi item + gap
+                const currentIndex = Math.round(scrollLeft / itemWidth) + 1;
+                
+                if (counter) {
+                    counter.textContent = Math.min(currentIndex, totalItems);
+                }
+                
+                // Ẩn/hiện nút navigation
+                if (prevBtn) {
+                    prevBtn.style.display = scrollLeft > 0 ? 'flex' : 'none';
+                }
+                if (nextBtn) {
+                    nextBtn.style.display = scrollLeft < (wrapper.scrollWidth - wrapper.clientWidth - 10) ? 'flex' : 'none';
+                }
+            });
+            
+            // Khởi tạo trạng thái ban đầu
+            wrapper.dispatchEvent(new Event('scroll'));
         }
 
         // Hàm tải ứng dụng miễn phí
