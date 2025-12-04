@@ -565,26 +565,6 @@
             transform: translateY(-1px);
         }
 
-        /* Debug Info */
-        .debug-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 11px;
-            color: #6c757d;
-            display: none;
-        }
-
-        .debug-toggle {
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 11px;
-            margin-top: 5px;
-            display: inline-block;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -815,14 +795,6 @@
             <div id="appContent">
                 <!-- Nội dung sẽ được thêm bằng JavaScript -->
             </div>
-            
-            <!-- Debug Info (ẩn mặc định) -->
-            <div id="debugInfo" class="debug-info">
-                <div id="debugContent"></div>
-            </div>
-            <div class="debug-toggle" onclick="toggleDebug()">
-                <i class="fas fa-bug"></i> more
-            </div>
         </div>
     </main>
 
@@ -875,7 +847,6 @@
         // Biến để theo dõi retry
         let retryCount = 0;
         const MAX_RETRIES = 3;
-        let currentAppData = null;
 
         // ==================== UTILITY FUNCTIONS ====================
         
@@ -884,9 +855,8 @@
             try {
                 localStorage.removeItem('xspace_apps_cache');
                 localStorage.removeItem('xspace_cache_timestamp');
-                console.log('✅ Đã xoá cache');
             } catch (e) {
-                console.log('⚠️ Không thể xoá cache:', e);
+                // Không làm gì nếu lỗi
             }
         }
         
@@ -931,53 +901,8 @@
         // Retry load app
         function retryLoadApp() {
             retryCount++;
-            console.log(`🔄 Thử lại lần ${retryCount}/${MAX_RETRIES}...`);
             loadAppDetail();
         }
-        
-        // Toggle debug info
-        function toggleDebug() {
-            const debugInfo = document.getElementById('debugInfo');
-            const toggle = document.querySelector('.debug-toggle');
-            
-            if (debugInfo.style.display === 'none' || debugInfo.style.display === '') {
-                debugInfo.style.display = 'block';
-                toggle.innerHTML = '<i class="fas fa-bug"></i> Ẩn thông tin debug';
-                updateDebugInfo();
-            } else {
-                debugInfo.style.display = 'none';
-                toggle.innerHTML = '<i class="fas fa-bug"></i> Hiển thị thông tin debug';
-            }
-        }
-        
-        // Update debug info
-        function updateDebugInfo() {
-            const debugContent = document.getElementById('debugContent');
-            if (!debugContent || !currentAppData) return;
-            
-            debugContent.innerHTML = `
-                <h4>Thông tin debug:</h4>
-                <p><strong>App ID:</strong> ${appId}</p>
-                <p><strong>Retry count:</strong> ${retryCount}/${MAX_RETRIES}</p>
-                <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
-                <p><strong>Screenshot1:</strong> ${currentAppData.screenshot1 || 'N/A'}</p>
-                <p><strong>Screenshot2:</strong> ${currentAppData.screenshot2 || 'N/A'}</p>
-                <p><strong>Screenshot3:</strong> ${currentAppData.screenshot3 || 'N/A'}</p>
-                <button class="retry-btn" onclick="forceReload()" style="margin-top: 10px;">
-                    <i class="fas fa-sync-alt"></i>
-                    Tải lại dữ liệu
-                </button>
-            `;
-        }
-        
-        // Force reload
-        function forceReload() {
-            clearCache();
-            retryCount = 0;
-            loadAppDetail();
-        }
-        
-        // ==================== DATA PROCESSING ====================
         
         // Kiểm tra URL ảnh hợp lệ
         function isValidImageUrl(url) {
@@ -1000,36 +925,26 @@
             }
             
             // Kiểm tra nếu là URL hợp lệ
-            const isUrl = trimmedUrl.startsWith('http://') || 
-                         trimmedUrl.startsWith('https://') || 
-                         trimmedUrl.startsWith('//') ||
-                         trimmedUrl.includes('.jpg') || 
-                         trimmedUrl.includes('.jpeg') || 
-                         trimmedUrl.includes('.png') ||
-                         trimmedUrl.includes('.gif') ||
-                         trimmedUrl.includes('.webp') ||
-                         trimmedUrl.includes('imgur.com') ||
-                         trimmedUrl.includes('i.imgur.com') ||
-                         trimmedUrl.includes('cdn.discordapp.com') ||
-                         trimmedUrl.includes('imageshack.com') ||
-                         trimmedUrl.includes('photobucket.com');
-            
-            return isUrl;
+            return trimmedUrl.startsWith('http://') || 
+                   trimmedUrl.startsWith('https://') || 
+                   trimmedUrl.startsWith('//') ||
+                   trimmedUrl.includes('.jpg') || 
+                   trimmedUrl.includes('.jpeg') || 
+                   trimmedUrl.includes('.png') ||
+                   trimmedUrl.includes('.gif') ||
+                   trimmedUrl.includes('.webp') ||
+                   trimmedUrl.includes('imgur.com') ||
+                   trimmedUrl.includes('i.imgur.com');
         }
         
-        // Xử lý dữ liệu app - FIXED VERSION
+        // Xử lý dữ liệu app
         function processAppData(app) {
-            console.log('🔍 Processing app data...');
-            
             // Đảm bảo tất cả các trường cần thiết tồn tại
             app.viplink1 = app.viplink1 || '';
             app.downloadlink = app.downloadlink || '';
             app.categories = app.categories || 'other';
             
-            // Xử lý screenshot - QUAN TRỌNG!
-            // Cố gắng tìm screenshot bằng nhiều cách
-            
-            // Cách 1: Kiểm tra các key có thể có
+            // Xử lý screenshot
             const possibleKeys = {
                 'screenshot1': ['screenshot1', 'Screenshot1', 'screenshot_1', 'image1', 'Image1'],
                 'screenshot2': ['screenshot2', 'Screenshot2', 'screenshot_2', 'image2', 'Image2'],
@@ -1037,54 +952,34 @@
             };
             
             // Tìm screenshot1
-            let foundScreenshot1 = '';
+            app.screenshot1 = '';
             for (const key of possibleKeys.screenshot1) {
                 if (app[key] && typeof app[key] === 'string' && app[key].trim() !== '') {
-                    foundScreenshot1 = app[key].trim();
+                    app.screenshot1 = app[key].trim();
                     break;
                 }
             }
             
             // Tìm screenshot2
-            let foundScreenshot2 = '';
+            app.screenshot2 = '';
             for (const key of possibleKeys.screenshot2) {
                 if (app[key] && typeof app[key] === 'string' && app[key].trim() !== '') {
-                    foundScreenshot2 = app[key].trim();
+                    app.screenshot2 = app[key].trim();
                     break;
                 }
             }
             
             // Tìm screenshot3
-            let foundScreenshot3 = '';
+            app.screenshot3 = '';
             for (const key of possibleKeys.screenshot3) {
                 if (app[key] && typeof app[key] === 'string' && app[key].trim() !== '') {
-                    foundScreenshot3 = app[key].trim();
+                    app.screenshot3 = app[key].trim();
                     break;
                 }
             }
             
-            // Cách 2: Nếu không tìm thấy, thử lấy từ index của mảng
-            if (!foundScreenshot1 && Array.isArray(app)) {
-                if (app.length > 10) foundScreenshot1 = app[10] || ''; // Index 10 là screenshot1
-                if (app.length > 11) foundScreenshot2 = app[11] || ''; // Index 11 là screenshot2
-                if (app.length > 12) foundScreenshot3 = app[12] || ''; // Index 12 là screenshot3
-            }
-            
-            // Gán giá trị cuối cùng
-            app.screenshot1 = foundScreenshot1;
-            app.screenshot2 = foundScreenshot2;
-            app.screenshot3 = foundScreenshot3;
-            
-            // Log kết quả
-            console.log('📸 Screenshot results:');
-            console.log('- Screenshot 1:', app.screenshot1, 'Valid:', isValidImageUrl(app.screenshot1));
-            console.log('- Screenshot 2:', app.screenshot2, 'Valid:', isValidImageUrl(app.screenshot2));
-            console.log('- Screenshot 3:', app.screenshot3, 'Valid:', isValidImageUrl(app.screenshot3));
-            
             return app;
         }
-        
-        // ==================== DISPLAY FUNCTIONS ====================
         
         // Tạo HTML cho mô tả
         function createDescriptionHTML(description) {
@@ -1111,10 +1006,8 @@
             return html;
         }
         
-        // Tạo HTML cho screenshots - RELIABLE VERSION
+        // Tạo HTML cho screenshots
         function createScreenshotsHTML(app) {
-            console.log('🖼️ Creating screenshots HTML...');
-            
             // Lấy screenshot đã được xử lý
             const screenshot1 = app.screenshot1 || '';
             const screenshot2 = app.screenshot2 || '';
@@ -1130,13 +1023,8 @@
                         alt: `Ảnh minh hoạ ${index + 1} - ${app.name}`,
                         placeholder: `https://via.placeholder.com/220x400/2563eb/FFFFFF?text=Ảnh+${index + 1}`
                     });
-                    console.log(`✅ Added screenshot ${index + 1}`);
-                } else {
-                    console.log(`❌ Skipped invalid screenshot ${index + 1}:`, url);
                 }
             });
-            
-            console.log(`📊 Total valid screenshots: ${validImages.length}`);
             
             // Nếu không có ảnh hợp lệ
             if (validImages.length === 0) {
@@ -1203,12 +1091,83 @@
             }
         }
         
+        // Init screenshot scroll
+        function initScreenshotScroll() {
+            const wrapper = document.getElementById('screenshotsWrapper');
+            const prevBtn = document.querySelector('.screenshot-nav.prev');
+            const nextBtn = document.querySelector('.screenshot-nav.next');
+            const counter = document.querySelector('#currentScreenshot');
+            
+            if (!wrapper) return;
+            
+            const totalItems = wrapper.querySelectorAll('.screenshot-item').length;
+            if (totalItems > 1) {
+                if (prevBtn) prevBtn.style.display = 'flex';
+                if (nextBtn) nextBtn.style.display = 'flex';
+            }
+            
+            wrapper.addEventListener('scroll', function() {
+                const scrollLeft = wrapper.scrollLeft;
+                const itemWidth = 220;
+                const currentIndex = Math.round(scrollLeft / itemWidth) + 1;
+                
+                if (counter) {
+                    counter.textContent = Math.min(currentIndex, totalItems);
+                }
+                
+                if (prevBtn) {
+                    prevBtn.style.display = scrollLeft > 0 ? 'flex' : 'none';
+                }
+                if (nextBtn) {
+                    nextBtn.style.display = scrollLeft < (wrapper.scrollWidth - wrapper.clientWidth - 10) ? 'flex' : 'none';
+                }
+            });
+            
+            wrapper.dispatchEvent(new Event('scroll'));
+        }
+        
+        // Tạo nút download
+        function createDownloadButton(app, isVIP, user) {
+            const link = isVIP ? app.viplink1 : app.downloadlink;
+            const isValidLink = link && isValidImageUrl(link.replace('image', 'http'));
+            
+            if (!isValidLink) {
+                return `
+                    <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" disabled style="background: var(--text-muted);">
+                        <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
+                        ${isVIP ? 'VIP #1' : 'Miễn phí'} (Đang cập nhật)
+                    </button>
+                `;
+            }
+            
+            if (!user) {
+                return `
+                    <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" onclick="requireLogin(${isVIP})">
+                        <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
+                        ${isVIP ? 'Tải VIP #1' : 'Tải miễn phí'}
+                    </button>
+                `;
+            }
+            
+            if (isVIP && !isUserPremium()) {
+                return `
+                    <button class="download-btn download-btn-premium" onclick="requirePremium()">
+                        <i class="fas fa-crown"></i>
+                        Tải VIP #1 (Premium)
+                    </button>
+                `;
+            }
+            
+            return `
+                <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" onclick="downloadApp('${link}', '${app.name}', ${isVIP})">
+                    <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
+                    ${isVIP ? 'Tải VIP #1' : 'Tải miễn phí'}
+                </button>
+            `;
+        }
+        
         // Hiển thị chi tiết app
         function displayAppDetail(app) {
-            currentAppData = app; // Lưu cho debug
-            
-            console.log('🎨 Displaying app detail:', app.name);
-            
             // Xử lý categories
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -1318,81 +1277,6 @@
             setTimeout(initScreenshotScroll, 100);
         }
         
-        // Tạo nút download
-        function createDownloadButton(app, isVIP, user) {
-            const link = isVIP ? app.viplink1 : app.downloadlink;
-            const isValidLink = link && isValidImageUrl(link.replace('image', 'http'));
-            
-            if (!isValidLink) {
-                return `
-                    <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" disabled style="background: var(--text-muted);">
-                        <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
-                        ${isVIP ? 'VIP #1' : 'Miễn phí'} (Đang cập nhật)
-                    </button>
-                `;
-            }
-            
-            if (!user) {
-                return `
-                    <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" onclick="requireLogin(${isVIP})">
-                        <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
-                        ${isVIP ? 'Tải VIP #1' : 'Tải miễn phí'}
-                    </button>
-                `;
-            }
-            
-            if (isVIP && !isUserPremium()) {
-                return `
-                    <button class="download-btn download-btn-premium" onclick="requirePremium()">
-                        <i class="fas fa-crown"></i>
-                        Tải VIP #1 (Premium)
-                    </button>
-                `;
-            }
-            
-            return `
-                <button class="download-btn ${isVIP ? 'download-btn-premium' : ''}" onclick="downloadApp('${link}', '${app.name}', ${isVIP})">
-                    <i class="fas ${isVIP ? 'fa-crown' : 'fa-download'}"></i>
-                    ${isVIP ? 'Tải VIP #1' : 'Tải miễn phí'}
-                </button>
-            `;
-        }
-        
-        // Init screenshot scroll
-        function initScreenshotScroll() {
-            const wrapper = document.getElementById('screenshotsWrapper');
-            const prevBtn = document.querySelector('.screenshot-nav.prev');
-            const nextBtn = document.querySelector('.screenshot-nav.next');
-            const counter = document.querySelector('#currentScreenshot');
-            
-            if (!wrapper) return;
-            
-            const totalItems = wrapper.querySelectorAll('.screenshot-item').length;
-            if (totalItems > 1) {
-                if (prevBtn) prevBtn.style.display = 'flex';
-                if (nextBtn) nextBtn.style.display = 'flex';
-            }
-            
-            wrapper.addEventListener('scroll', function() {
-                const scrollLeft = wrapper.scrollLeft;
-                const itemWidth = 220;
-                const currentIndex = Math.round(scrollLeft / itemWidth) + 1;
-                
-                if (counter) {
-                    counter.textContent = Math.min(currentIndex, totalItems);
-                }
-                
-                if (prevBtn) {
-                    prevBtn.style.display = scrollLeft > 0 ? 'flex' : 'none';
-                }
-                if (nextBtn) {
-                    nextBtn.style.display = scrollLeft < (wrapper.scrollWidth - wrapper.clientWidth - 10) ? 'flex' : 'none';
-                }
-            });
-            
-            wrapper.dispatchEvent(new Event('scroll'));
-        }
-        
         // ==================== LOAD APP DETAIL ====================
         
         async function loadAppDetail() {
@@ -1401,8 +1285,6 @@
                 return;
             }
             
-            console.log(`🚀 Loading app detail for ID: ${appId}`);
-            
             // Xoá cache để đảm bảo tải dữ liệu mới
             clearCache();
             showLoading();
@@ -1410,46 +1292,38 @@
             try {
                 // Tải dữ liệu trực tiếp từ server với cache busting
                 const timestamp = Date.now();
-                const url = `${GOOGLE_SCRIPT_URL}?action=getApps&t=${timestamp}&nocache=true`;
-                
-                console.log(`📡 Fetching from: ${url}`);
+                const url = `${GOOGLE_SCRIPT_URL}?action=getApps&t=${timestamp}`;
                 
                 const response = await fetch(url);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('📦 Server response:', result);
                 
                 if (result.success && result.data) {
                     // Tìm app theo ID
                     const app = result.data.find(a => {
-                        // So sánh cả số và chuỗi
                         return a.id == appId || a.id === appId || a.id.toString() === appId.toString();
                     });
                     
                     if (app) {
-                        console.log('✅ Found app:', app.name);
                         // Xử lý dữ liệu trước khi hiển thị
                         const processedApp = processAppData(app);
                         displayAppDetail(processedApp);
                         retryCount = 0; // Reset retry count on success
                     } else {
-                        console.error('❌ App not found with ID:', appId);
                         showError(`Không tìm thấy ứng dụng với ID: ${appId}`, true);
                     }
                 } else {
                     throw new Error(result.message || 'Dữ liệu không hợp lệ từ server');
                 }
             } catch (error) {
-                console.error('💥 Error loading app:', error);
-                
                 if (retryCount < MAX_RETRIES) {
-                    showError(`Lỗi tải dữ liệu: ${error.message}. Thử lại?`, true);
+                    showError(`Lỗi tải dữ liệu. Thử lại?`, true);
                 } else {
-                    showError(`Không thể tải thông tin ứng dụng sau ${MAX_RETRIES} lần thử. Vui lòng thử lại sau.`, false);
+                    showError(`Không thể tải thông tin ứng dụng. Vui lòng thử lại sau.`, false);
                 }
             }
         }
@@ -1517,9 +1391,6 @@
         // ==================== INITIALIZATION ====================
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📱 App detail page initialized');
-            console.log('🔗 App ID from URL:', appId);
-            
             // Load app detail ngay lập tức
             loadAppDetail();
             
@@ -1537,11 +1408,6 @@
                     }, 1500);
                 }
             });
-        });
-        
-        // Force clear cache khi page được load
-        window.addEventListener('load', function() {
-            clearCache();
         });
     </script>
 </body>
