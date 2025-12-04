@@ -309,7 +309,7 @@
             flex: 1;
         }
 
-        /* Screenshots Section - ĐÃ CHỈNH SỬA HOÀN TOÀN */
+        /* Screenshots Section - ĐÃ CHỈNH SỬA ĐƠN GIẢN, KHÔNG VIỀN, KHÔNG BACKGROUND */
         .screenshots-section {
             margin-bottom: 25px;
         }
@@ -353,29 +353,25 @@
             background: var(--primary);
         }
 
-        /* Ảnh minh hoạ - ĐÃ CẬP NHẬT */
+        /* Ảnh minh hoạ - ĐÃ CẬP NHẬT: KHÔNG CÓ BACKGROUND, KHÔNG VIỀN, CHỈ CÓ ẢNH BO TRÒN */
         .screenshot-item {
             flex: 0 0 auto;
-           
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            box-shadow: var(--card-shadow);
-        }
-
-        .screenshot-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 220px; /* GIẢM KÍCH THƯỚC XUỐNG */
         }
 
         .screenshot {
-            width: 90%;
+            width: 100%;
             height: auto;
-            max-height: 500px;
-           
+            max-height: 400px; /* GIẢM CHIỀU CAO TỐI ĐA */
+            border-radius: 12px; /* BO TRÒN ẢNH */
             display: block;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* CHỈ SHADOW NHẸ, KHÔNG VIỀN */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .screenshot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         /* Navigation arrows */
@@ -385,8 +381,8 @@
             transform: translateY(-50%);
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--border);
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -395,8 +391,9 @@
             z-index: 10;
             transition: all 0.3s ease;
             color: var(--primary);
-            font-size: 18px;
+            font-size: 16px;
             opacity: 0.8;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .screenshot-nav:hover {
@@ -404,16 +401,17 @@
             color: white;
             opacity: 1;
             transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
         }
 
         .screenshot-nav.prev {
             left: 10px;
-            display: none; /* Ẩn mặc định, hiện khi có nhiều ảnh */
+            display: none;
         }
 
         .screenshot-nav.next {
             right: 10px;
-            display: none; /* Ẩn mặc định, hiện khi có nhiều ảnh */
+            display: none;
         }
 
         /* Screenshot counter */
@@ -678,13 +676,13 @@
             }
             
             .screenshot-item {
-                width: 250px;
+                width: 200px; /* NHỎ HƠN TRÊN TABLET */
             }
             
             .screenshot-nav {
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
             }
         }
 
@@ -796,13 +794,17 @@
             }
             
             .screenshot-item {
-                width: 220px;
+                width: 180px; /* NHỎ HƠN TRÊN MOBILE */
+            }
+            
+            .screenshot {
+                max-height: 350px; /* NHỎ HƠN TRÊN MOBILE */
             }
             
             .screenshot-nav {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
             }
             
             /* Support section mobile */
@@ -865,7 +867,11 @@
             }
             
             .screenshot-item {
-                width: 200px;
+                width: 160px; /* NHỎ NHẤT TRÊN MOBILE NHỎ */
+            }
+            
+            .screenshot {
+                max-height: 300px; /* NHỎ NHẤT TRÊN MOBILE NHỎ */
             }
         }
 
@@ -886,7 +892,7 @@
             }
             
             .screenshot-item {
-                width: 180px;
+                width: 150px; /* NHỎ NHẤT */
             }
         }
     </style>
@@ -1047,7 +1053,7 @@
                 imagesToShow.push({
                     src: screenshot1,
                     alt: 'Ảnh minh hoạ 1',
-                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+1'
+                    placeholder: 'https://via.placeholder.com/220x400/2563eb/FFFFFF?text=Ảnh+minh+hoạ+1'
                 });
             }
             
@@ -1055,7 +1061,7 @@
                 imagesToShow.push({
                     src: screenshot2,
                     alt: 'Ảnh minh hoạ 2',
-                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+2'
+                    placeholder: 'https://via.placeholder.com/220x400/2563eb/FFFFFF?text=Ảnh+minh+hoạ+2'
                 });
             }
             
@@ -1063,7 +1069,7 @@
                 imagesToShow.push({
                     src: screenshot3,
                     alt: 'Ảnh minh hoạ 3',
-                    placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Ảnh+minh+hoạ+3'
+                    placeholder: 'https://via.placeholder.com/220x400/2563eb/FFFFFF?text=Ảnh+minh+hoạ+3'
                 });
             }
             
@@ -1073,18 +1079,8 @@
                 imagesToShow.push(
                     {
                         src: app.image,
-                        alt: 'Screenshot 1',
-                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
-                    },
-                    {
-                        src: app.image,
-                        alt: 'Screenshot 2',
-                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
-                    },
-                    {
-                        src: app.image,
-                        alt: 'Screenshot 3',
-                        placeholder: 'https://via.placeholder.com/280x500/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
+                        alt: 'Ảnh ứng dụng',
+                        placeholder: 'https://via.placeholder.com/220x400/2563eb/FFFFFF?text=Hình+ảnh+ứng+dụng'
                     }
                 );
             }
@@ -1095,7 +1091,7 @@
                     <div class="screenshots-wrapper" id="screenshotsWrapper">
             `;
             
-            // Thêm các ảnh vào wrapper
+            // Thêm các ảnh vào wrapper - CHỈ CÓ ẢNH, KHÔNG CÓ BACKGROUND, KHÔNG CÓ VIỀN
             imagesToShow.forEach((img, index) => {
                 screenshotsHTML += `
                     <div class="screenshot-item">
@@ -1111,10 +1107,10 @@
                     
                     <!-- Navigation arrows - chỉ hiện khi có nhiều ảnh -->
                     ${imagesToShow.length > 1 ? `
-                        <div class="screenshot-nav prev" onclick="scrollScreenshots(-280)">
+                        <div class="screenshot-nav prev" onclick="scrollScreenshots(-220)">
                             <i class="fas fa-chevron-left"></i>
                         </div>
-                        <div class="screenshot-nav next" onclick="scrollScreenshots(280)">
+                        <div class="screenshot-nav next" onclick="scrollScreenshots(220)">
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     ` : ''}
@@ -1529,7 +1525,7 @@
             // Cập nhật counter khi scroll
             wrapper.addEventListener('scroll', function() {
                 const scrollLeft = wrapper.scrollLeft;
-                const itemWidth = 280; // Chiều rộng mỗi item + gap
+                const itemWidth = 220; // Chiều rộng mỗi item (đã giảm)
                 const currentIndex = Math.round(scrollLeft / itemWidth) + 1;
                 
                 if (counter) {
