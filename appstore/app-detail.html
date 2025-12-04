@@ -1112,20 +1112,6 @@
             console.log('🔍 Toàn bộ dữ liệu app (TRƯỚC khi xử lý):', app);
             console.log('📋 Tất cả keys:', Object.keys(app));
             
-            // Kiểm tra các tên trường có thể có
-            const screenshotFields = [
-                'Screenshot1', 'Screenshot2', 'Screenshot3', // Chính xác như Google Sheets
-                'screenshot1', 'screenshot2', 'screenshot3', // lowercase
-                'screenshot_1', 'screenshot_2', 'screenshot_3' // với dấu gạch dưới
-            ];
-            
-            // Tìm trường screenshot trong dữ liệu
-            screenshotFields.forEach(field => {
-                if (app[field] !== undefined) {
-                    console.log(`✅ Tìm thấy trường ${field}:`, app[field]);
-                }
-            });
-            
             // Đảm bảo app có viplink1 và không phải là null/undefined
             if (!app.viplink1 || app.viplink1 === 'null' || app.viplink1 === 'undefined') {
                 app.viplink1 = '';
@@ -1142,23 +1128,17 @@
             }
             
             // Đảm bảo ảnh minh hoạ có giá trị mặc định
-            // Kiểm tra nhiều tên trường khác nhau
-            if (!app.Screenshot1 && !app.screenshot1) {
+            // Lấy trực tiếp từ dữ liệu Google Sheets (index 10, 11, 12)
+            if (!app.screenshot1 || app.screenshot1 === 'null' || app.screenshot1 === 'undefined') {
                 app.screenshot1 = '';
-            } else {
-                app.screenshot1 = app.Screenshot1 || app.screenshot1 || '';
             }
             
-            if (!app.Screenshot2 && !app.screenshot2) {
+            if (!app.screenshot2 || app.screenshot2 === 'null' || app.screenshot2 === 'undefined') {
                 app.screenshot2 = '';
-            } else {
-                app.screenshot2 = app.Screenshot2 || app.screenshot2 || '';
             }
             
-            if (!app.Screenshot3 && !app.screenshot3) {
+            if (!app.screenshot3 || app.screenshot3 === 'null' || app.screenshot3 === 'undefined') {
                 app.screenshot3 = '';
-            } else {
-                app.screenshot3 = app.Screenshot3 || app.screenshot3 || '';
             }
             
             console.log('📸 Dữ liệu screenshot SAU khi xử lý:', {
@@ -1197,7 +1177,7 @@
 
         // HÀM ĐÃ SỬA: Tạo HTML cho ảnh minh hoạ với scroll ngang - FIXED
         function createScreenshotsHTML(app) {
-            // Lấy ảnh từ dữ liệu app
+            // Lấy ảnh từ dữ liệu app (chính xác từ Google Sheets)
             const screenshot1 = app.screenshot1 || '';
             const screenshot2 = app.screenshot2 || '';
             const screenshot3 = app.screenshot3 || '';
@@ -1206,16 +1186,16 @@
                 screenshot1, 
                 screenshot2, 
                 screenshot3,
-                'screenshot1 length': screenshot1.length,
-                'screenshot2 length': screenshot2.length,
-                'screenshot3 length': screenshot3.length
+                'screenshot1 có giá trị?': screenshot1 && screenshot1.trim() !== '',
+                'screenshot2 có giá trị?': screenshot2 && screenshot2.trim() !== '',
+                'screenshot3 có giá trị?': screenshot3 && screenshot3.trim() !== ''
             });
             
             // Tạo danh sách ảnh để hiển thị
             const imagesToShow = [];
             
-            // THAY ĐỔI: Kiểm tra đơn giản - có nội dung là hiển thị
-            if (screenshot1 && screenshot1.trim() !== '') {
+            // Kiểm tra đơn giản - có nội dung là hiển thị
+            if (screenshot1 && screenshot1.trim() !== '' && screenshot1 !== 'null' && screenshot1 !== 'undefined') {
                 imagesToShow.push({
                     src: screenshot1,
                     alt: 'Ảnh minh hoạ 1',
@@ -1224,7 +1204,7 @@
                 console.log('✅ Thêm ảnh 1:', screenshot1.substring(0, 50) + '...');
             }
             
-            if (screenshot2 && screenshot2.trim() !== '') {
+            if (screenshot2 && screenshot2.trim() !== '' && screenshot2 !== 'null' && screenshot2 !== 'undefined') {
                 imagesToShow.push({
                     src: screenshot2,
                     alt: 'Ảnh minh hoạ 2',
@@ -1233,7 +1213,7 @@
                 console.log('✅ Thêm ảnh 2:', screenshot2.substring(0, 50) + '...');
             }
             
-            if (screenshot3 && screenshot3.trim() !== '') {
+            if (screenshot3 && screenshot3.trim() !== '' && screenshot3 !== 'null' && screenshot3 !== 'undefined') {
                 imagesToShow.push({
                     src: screenshot3,
                     alt: 'Ảnh minh hoạ 3',
@@ -1486,14 +1466,6 @@
             app = processAppData(app);
             
             console.log('🔍 App data after processing:', app);
-            console.log('📸 Screenshots after processing:', {
-                screenshot1: app.screenshot1,
-                screenshot2: app.screenshot2,
-                screenshot3: app.screenshot3,
-                'Screenshot1 raw': app.Screenshot1,
-                'Screenshot2 raw': app.Screenshot2,
-                'Screenshot3 raw': app.Screenshot3
-            });
             
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -1627,7 +1599,7 @@
             // Sử dụng createScreenshotsHTML đã được sửa để hiển thị ảnh minh hoạ
             const screenshotsHTML = createScreenshotsHTML(app);
 
-            // Hiển thị nội dung - VỚI KÍCH THƯỚC ĐÃ ĐƯỢC THU NHỎ
+            // Hiển thị nội dung
             document.getElementById('appContent').innerHTML = `
                 <div class="app-header">
                     <img src="${app.image}" alt="${app.name}" class="app-icon-large" 
@@ -1852,7 +1824,6 @@
         window.addEventListener('error', function(e) {
             if (e.target.tagName === 'IMG') {
                 console.log('Lỗi tải hình ảnh:', e.target.src);
-                // Không cần xử lý gì thêm vì đã có onerror trong HTML
             }
         }, true);
     </script>
