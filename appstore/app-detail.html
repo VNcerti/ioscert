@@ -302,14 +302,14 @@
         }
 
         .description-text {
-                margin-left: -3.7px;
+            margin-left: -3.7px;
             color: var(--text-secondary);
             line-height: 1.5;
             font-size: 13px;
             flex: 1;
         }
 
-        /* Screenshots */
+        /* Screenshots Section */
         .screenshots-section {
             margin-bottom: 25px;
         }
@@ -872,7 +872,7 @@
     </nav>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywHM36jEQpXFXzBTdG-EcbdbKWbtMyKeOSjNwUt-XahtstAmm1F_R2fr8JWUms_A1jsQ/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT69NhY5MpHSXRlGnkiOXctZNAdiEBOQ49pdms9pDR58hb5rHToQlpwZ9ESzUJxN8f2A/exec';
         const CACHE_KEY = 'xspace_apps_cache';
         const CACHE_TIMESTAMP_KEY = 'xspace_cache_timestamp';
         const CACHE_DURATION = 30 * 60 * 1000; // 30 phút
@@ -896,6 +896,17 @@
             // Đảm bảo downloadlink có giá trị
             if (!app.downloadlink || app.downloadlink === 'null' || app.downloadlink === 'undefined') {
                 app.downloadlink = '';
+            }
+            
+            // Đảm bảo ảnh minh hoạ có giá trị mặc định
+            if (!app.screenshot1 || app.screenshot1 === 'null' || app.screenshot1 === 'undefined') {
+                app.screenshot1 = '';
+            }
+            if (!app.screenshot2 || app.screenshot2 === 'null' || app.screenshot2 === 'undefined') {
+                app.screenshot2 = '';
+            }
+            if (!app.screenshot3 || app.screenshot3 === 'null' || app.screenshot3 === 'undefined') {
+                app.screenshot3 = '';
             }
             
             return app;
@@ -924,6 +935,86 @@
             });
             descriptionHTML += '</div>';
             return descriptionHTML;
+        }
+
+        // HÀM MỚI: Tạo HTML cho ảnh minh hoạ
+        function createScreenshotsHTML(app) {
+            // Lấy ảnh từ dữ liệu app
+            const screenshot1 = app.screenshot1 || '';
+            const screenshot2 = app.screenshot2 || '';
+            const screenshot3 = app.screenshot3 || '';
+            
+            // Nếu có ít nhất 1 ảnh minh hoạ hợp lệ, hiển thị ảnh đó
+            // Nếu không có ảnh minh hoạ, hiển thị ảnh logo ứng dụng (theo code gốc)
+            
+            let screenshotsHTML = '<div class="screenshots-grid">';
+            
+            // Tạo danh sách ảnh để hiển thị
+            const imagesToShow = [];
+            
+            // Thêm ảnh minh hoạ nếu có
+            if (screenshot1 && screenshot1.startsWith('http')) {
+                imagesToShow.push({
+                    src: screenshot1,
+                    alt: 'Ảnh minh hoạ 1',
+                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+1'
+                });
+            }
+            
+            if (screenshot2 && screenshot2.startsWith('http')) {
+                imagesToShow.push({
+                    src: screenshot2,
+                    alt: 'Ảnh minh hoạ 2',
+                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+2'
+                });
+            }
+            
+            if (screenshot3 && screenshot3.startsWith('http')) {
+                imagesToShow.push({
+                    src: screenshot3,
+                    alt: 'Ảnh minh hoạ 3',
+                    placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Ảnh+minh+hoạ+3'
+                });
+            }
+            
+            // Nếu không có ảnh minh hoạ nào, sử dụng ảnh logo (theo code gốc)
+            if (imagesToShow.length === 0) {
+                console.log('📱 Không có ảnh minh hoạ, sử dụng ảnh logo');
+                imagesToShow.push(
+                    {
+                        src: app.image,
+                        alt: 'Screenshot 1',
+                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+1'
+                    },
+                    {
+                        src: app.image,
+                        alt: 'Screenshot 2',
+                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+2'
+                    },
+                    {
+                        src: app.image,
+                        alt: 'Screenshot 3',
+                        placeholder: 'https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+3'
+                    }
+                );
+            }
+            
+            // Giới hạn tối đa 3 ảnh để hiển thị
+            const displayImages = imagesToShow.slice(0, 3);
+            
+            // Tạo HTML cho các ảnh
+            displayImages.forEach((img, index) => {
+                screenshotsHTML += `
+                    <img src="${img.src}" alt="${img.alt}" class="screenshot" 
+                         loading="lazy"
+                         onerror="this.src='${img.placeholder}'">
+                `;
+            });
+            
+            screenshotsHTML += '</div>';
+            
+            console.log(`📸 Hiển thị ${displayImages.length} ảnh:`, displayImages);
+            return screenshotsHTML;
         }
 
         // Hiển thị skeleton loading cho trang chi tiết
@@ -1039,7 +1130,7 @@
             return expiryDate >= today;
         }
 
-        // FIXED: Tải thông tin ứng dụng với cache - ĐÃ SỬA LỖI LINK VIP
+        // FIXED: Tải thông tin ứng dụng với cache
         async function loadAppDetail() {
             if (!appId) {
                 showError('Không tìm thấy ID ứng dụng');
@@ -1090,14 +1181,17 @@
             }
         }
 
-        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ SỬA LỖI LINK VIP VÀ SỬ DỤNG MÔ TẢ ĐẦY ĐỦ
+        // FIXED: Hiển thị chi tiết ứng dụng - ĐÃ CẬP NHẬT VỚI ẢNH MINH HOẠ
         function displayAppDetail(app) {
             // Xử lý dữ liệu app để đảm bảo cấu trúc đúng
             app = processAppData(app);
             
             console.log('🔍 App data after processing:', app);
-            console.log('📱 VIP Link:', app.viplink1);
-            console.log('🔗 Free Link:', app.downloadlink);
+            console.log('📸 Screenshots:', {
+                screenshot1: app.screenshot1,
+                screenshot2: app.screenshot2,
+                screenshot3: app.screenshot3
+            });
             
             const categoryLabels = {
                 'game': 'Trò chơi',
@@ -1105,8 +1199,7 @@
                 'entertainment': 'Giải trí',
                 'photo': 'Chụp ảnh',
                 'clone': 'Nhân bản',
-                'premium': 'Mở khoá Premium', // THÊM LABEL MỚI
-                'other': 'Khác'
+                'premium': 'Mở khoá Premium'
             };
 
             let categories = [];
@@ -1144,7 +1237,7 @@
                 loginPrompt.style.display = 'none';
             }
 
-            // FIXED: Tạo nút tải VIP với kiểm tra link chính xác
+            // Tạo nút tải VIP
             let vipButtonHTML = '';
             
             // Kiểm tra link VIP có hợp lệ không
@@ -1190,7 +1283,7 @@
                 `;
             }
 
-            // FIXED: Tạo nút tải miễn phí với kiểm tra link chính xác
+            // Tạo nút tải miễn phí
             let freeButtonHTML = '';
             
             // Kiểm tra link miễn phí có hợp lệ không
@@ -1226,8 +1319,11 @@
                 `;
             }
 
-            // THAY ĐỔI QUAN TRỌNG: Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
+            // Sử dụng createFullDescriptionHTML để hiển thị mô tả ĐẦY ĐỦ
             const descriptionHTML = createFullDescriptionHTML(app.description);
+            
+            // Sử dụng createScreenshotsHTML để hiển thị ảnh minh hoạ
+            const screenshotsHTML = createScreenshotsHTML(app);
 
             // Hiển thị nội dung
             document.getElementById('appContent').innerHTML = `
@@ -1271,17 +1367,7 @@
 
                 <div class="screenshots-section">
                     <h2 class="section-title">Hình ảnh ứng dụng</h2>
-                    <div class="screenshots-grid">
-                        <img src="${app.image}" alt="Screenshot 1" class="screenshot" 
-                             loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+1'">
-                        <img src="${app.image}" alt="Screenshot 2" class="screenshot" 
-                             loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+2'">
-                        <img src="${app.image}" alt="Screenshot 3" class="screenshot" 
-                             loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/300x300/2563eb/FFFFFF?text=Screenshot+3'">
-                    </div>
+                    ${screenshotsHTML}
                 </div>
 
                 <div class="support-section" style="text-align: center; margin-top: 30px; padding: 16px; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
@@ -1295,7 +1381,7 @@
             `;
         }
 
-        // FIXED: Hàm tải ứng dụng miễn phí - ĐÃ SỬA LỖI KIỂM TRA LINK
+        // Hàm tải ứng dụng miễn phí
         function downloadApp(downloadLink, appName) {
             console.log('🔗 Download link:', downloadLink);
             console.log('📱 App name:', appName);
@@ -1325,12 +1411,12 @@
             }
         }
 
-        // FIXED: Hàm tải ứng dụng VIP - ĐÃ SỬA LỖI KIỂM TRA LINK
+        // Hàm tải ứng dụng VIP
         function downloadVIP(downloadLink, appName) {
             console.log('👑 VIP Download link:', downloadLink);
             console.log('📱 App name:', appName);
             
-            // Kiểm tra link hợp lệ - GIẢM BỚT ĐIỀU KIỆN KIỂM TRA
+            // Kiểm tra link hợp lệ
             if (!downloadLink || 
                 downloadLink === '' || 
                 downloadLink === 'null' ||
@@ -1367,7 +1453,7 @@
             }
         }
 
-        // Yêu cầu nâng cấp để tải VIP - ĐÃ SỬA: CHUYỂN HƯỚNG ĐẾN TRANG PAYMENT
+        // Yêu cầu nâng cấp để tải VIP
         function requirePremiumForVIP() {
             if (confirm('Tài khoản của bạn chưa được cấp phép vui lòng nâng cấp để sử dụng dịch vụ VIP.\n\nNâng cấp tài khoản Premium ngay?')) {
                 window.location.href = 'payment.html';
@@ -1425,4 +1511,4 @@
         }, true);
     </script>
 </body>
-</html> 
+</html>
