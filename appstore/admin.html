@@ -537,6 +537,41 @@
             font-weight: 600;
         }
 
+        /* Screenshots Preview */
+        .screenshots-preview {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .screenshots-preview h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .screenshots-preview h4 i {
+            color: var(--primary);
+        }
+
+        .screenshots-grid-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .screenshot-preview {
+            width: 100%;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--background);
+        }
+
         /* Analytics Section */
         .analytics-section {
             background: var(--surface);
@@ -848,6 +883,10 @@
             .categories-group {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .screenshots-grid-preview {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 480px) {
@@ -866,6 +905,10 @@
             .nav-tabs {
                 flex-direction: column;
                 width: 100%;
+            }
+            
+            .screenshots-grid-preview {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -950,9 +993,9 @@
                         <div class="form-group">
                             <label class="form-label" for="imageUrl">
                                 <i class="fas fa-image"></i>
-                                URL ảnh ứng dụng
+                                URL ảnh logo ứng dụng
                             </label>
-                            <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-image.jpg" required>
+                            <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-logo.jpg" required>
                         </div>
 
                         <div class="form-group">
@@ -1003,6 +1046,31 @@
                             <input type="url" id="vipLink1" class="form-input" placeholder="https://example.com/vip-download">
                         </div>
 
+                        <!-- THÊM 3 TRƯỜNG ẢNH MINH HOẠ MỚI -->
+                        <div class="form-group">
+                            <label class="form-label" for="screenshot1">
+                                <i class="fas fa-image"></i>
+                                Ảnh minh hoạ 1 (Không bắt buộc)
+                            </label>
+                            <input type="url" id="screenshot1" class="form-input" placeholder="https://example.com/screenshot1.jpg">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="screenshot2">
+                                <i class="fas fa-image"></i>
+                                Ảnh minh hoạ 2 (Không bắt buộc)
+                            </label>
+                            <input type="url" id="screenshot2" class="form-input" placeholder="https://example.com/screenshot2.jpg">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="screenshot3">
+                                <i class="fas fa-image"></i>
+                                Ảnh minh hoạ 3 (Không bắt buộc)
+                            </label>
+                            <input type="url" id="screenshot3" class="form-input" placeholder="https://example.com/screenshot3.jpg">
+                        </div>
+
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-folder"></i>
@@ -1039,7 +1107,6 @@
                                     <span>Nhân bản</span>
                                 </label>
 
-                                <!-- THÊM MỤC MỚI: Mở khoá Premium -->
                                 <input type="checkbox" id="category-premium" class="category-checkbox" value="premium">
                                 <label for="category-premium" class="category-label">
                                     <i class="fas fa-unlock category-icon"></i>
@@ -1077,6 +1144,16 @@
                             <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
                             <div class="preview-tags" id="previewTags">
                                 <!-- Tags will be added here -->
+                            </div>
+                            
+                            <!-- Thêm phần preview ảnh minh hoạ -->
+                            <div class="screenshots-preview">
+                                <h4><i class="fas fa-images"></i> Ảnh minh hoạ:</h4>
+                                <div class="screenshots-grid-preview">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+1" alt="Screenshot 1" class="screenshot-preview" id="previewScreenshot1">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+2" alt="Screenshot 2" class="screenshot-preview" id="previewScreenshot2">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+3" alt="Screenshot 3" class="screenshot-preview" id="previewScreenshot3">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1465,7 +1542,7 @@
     </footer>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8phB2nlyB9Ku0pOOECicDvYVYSWTdLajUcbxDSxbeOiaBEU_f0hbF-_N1hk1GJoJgSQ/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT69NhY5MpHSXRlGnkiOXctZNAdiEBOQ49pdms9pDR58hb5rHToQlpwZ9ESzUJxN8f2A/exec';
         const TELEGRAM_BOT_TOKEN = '8058800234:AAHBr6SmzLsuHU2oD5VtJDrGobnR_Afoj9M';
         const TELEGRAM_CHAT_ID = '@xspace_ipa';
         const BASE_APP_URL = 'https://ioscert.site/appstore/app-detail.html?id=';
@@ -1501,6 +1578,9 @@
         const appDescriptionInput = document.getElementById('appDescription');
         const downloadLinkInput = document.getElementById('downloadLink');
         const vipLink1Input = document.getElementById('vipLink1');
+        const screenshot1Input = document.getElementById('screenshot1');
+        const screenshot2Input = document.getElementById('screenshot2');
+        const screenshot3Input = document.getElementById('screenshot3');
         const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
         const submitBtn = document.getElementById('submitBtn');
         const refreshAnalyticsBtn = document.getElementById('refreshAnalytics');
@@ -1516,6 +1596,9 @@
         const previewVersion = document.getElementById('previewVersion');
         const previewDescription = document.getElementById('previewDescription');
         const previewTags = document.getElementById('previewTags');
+        const previewScreenshot1 = document.getElementById('previewScreenshot1');
+        const previewScreenshot2 = document.getElementById('previewScreenshot2');
+        const previewScreenshot3 = document.getElementById('previewScreenshot3');
         
         // Message elements
         const successMessage = document.getElementById('successMessage');
@@ -1796,8 +1879,6 @@
         });
 
         // ========== CÁC HÀM KHÁC GIỮ NGUYÊN TỪ CODE CŨ ==========
-        // (Giữ nguyên tất cả các hàm khác như loadAppStats, loadVisitStats, updatePreview, v.v.)
-        // ... [Các hàm khác giữ nguyên] ...
 
         // Tải thống kê ứng dụng
         async function loadAppStats() {
@@ -2081,7 +2162,7 @@
 
         // Cập nhật preview khi người dùng nhập
         function updatePreview() {
-            // Cập nhật hình ảnh
+            // Cập nhật hình ảnh logo
             if (imageUrlInput.value) {
                 previewImage.src = imageUrlInput.value;
                 previewIcon.src = imageUrlInput.value;
@@ -2098,6 +2179,25 @@
             
             // Cập nhật mô tả
             previewDescription.textContent = appDescriptionInput.value || 'Mô tả ứng dụng sẽ hiển thị ở đây...';
+            
+            // Cập nhật ảnh minh hoạ
+            if (screenshot1Input.value) {
+                previewScreenshot1.src = screenshot1Input.value;
+            } else {
+                previewScreenshot1.src = 'https://via.placeholder.com/80/1e293b/475569?text=Ảnh+1';
+            }
+            
+            if (screenshot2Input.value) {
+                previewScreenshot2.src = screenshot2Input.value;
+            } else {
+                previewScreenshot2.src = 'https://via.placeholder.com/80/1e293b/475569?text=Ảnh+2';
+            }
+            
+            if (screenshot3Input.value) {
+                previewScreenshot3.src = screenshot3Input.value;
+            } else {
+                previewScreenshot3.src = 'https://via.placeholder.com/80/1e293b/475569?text=Ảnh+3';
+            }
             
             // Cập nhật danh mục
             updatePreviewTags();
@@ -2367,7 +2467,10 @@ Cài đặt ngay : ${appUrl}
                     downloadlink: downloadLinkInput.value,
                     viplink1: vipLink1Input.value,
                     categories: selectedCategories.join(','),
-                    updatedate: new Date().toLocaleDateString('vi-VN')
+                    updatedate: new Date().toLocaleDateString('vi-VN'),
+                    screenshot1: screenshot1Input.value || '', // THÊM ẢNH MINH HOẠ 1
+                    screenshot2: screenshot2Input.value || '', // THÊM ẢNH MINH HOẠ 2
+                    screenshot3: screenshot3Input.value || ''  // THÊM ẢNH MINH HOẠ 3
                 };
                 
                 console.log('📤 Dữ liệu gửi đi:', appData);
@@ -2479,6 +2582,9 @@ Cài đặt ngay : ${appUrl}
         appVersionInput.addEventListener('input', updatePreview);
         appDescriptionInput.addEventListener('input', updatePreview);
         vipLink1Input.addEventListener('input', updatePreview);
+        screenshot1Input.addEventListener('input', updatePreview);
+        screenshot2Input.addEventListener('input', updatePreview);
+        screenshot3Input.addEventListener('input', updatePreview);
         
         // Thêm sự kiện cho các checkbox danh mục
         categoryCheckboxes.forEach(checkbox => {
