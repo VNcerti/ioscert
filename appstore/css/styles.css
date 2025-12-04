@@ -126,96 +126,51 @@ body {
     color: var(--primary);
 }
 
-/* Hero Section - ĐÃ CẬP NHẬT VỚI NỀN VIDEO APPLE */
+/* Hero Section */
 .hero {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(29, 78, 216, 0.9));
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     padding: 24px 0;
     margin-bottom: 16px;
     border-radius: 0 0 16px 16px;
-    position: relative;
-    overflow: hidden;
-    min-height: 220px;
-    display: flex;
-    align-items: center;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.85));
-    z-index: 1;
-}
-
-.hero-video-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    opacity: 0.25;
-    min-width: 100%;
-    min-height: 100%;
 }
 
 .hero-content {
-    position: relative;
     text-align: center;
-    max-width: 420px;
+    max-width: 400px;
     margin: 0 auto;
-    z-index: 2;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    backdrop-filter: blur(5px);
 }
 
 .hero h1 {
     font-size: 18px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     line-height: 1.3;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .hero p {
     font-size: 12px;
-    opacity: 0.95;
+    opacity: 0.9;
     margin-bottom: 16px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-    line-height: 1.5;
 }
 
 .cta-button {
     background: white;
     color: var(--primary);
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 8px 16px;
+    border-radius: 16px;
     text-decoration: none;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     transition: all 0.3s ease;
-    font-size: 13px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 2;
-    border: none;
-    cursor: pointer;
+    font-size: 12px;
 }
 
 .cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Categories */
@@ -329,7 +284,7 @@ body {
     object-fit: contain;
     flex-shrink: 0;
     padding: 4px;
-    align-self: center;
+    align-self: center; /* Thêm dòng này để căn giữa theo chiều dọc */
 }
 
 .app-content {
@@ -343,7 +298,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 4px;
+    margin-bottom: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
 }
 
 .app-info {
@@ -365,7 +320,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
 }
 
 .app-tag {
@@ -382,7 +337,7 @@ body {
     gap: 12px;
     font-size: 10px;
     color: var(--text-muted);
-    margin-bottom: 2px;
+    margin-bottom: 2px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
 }
 
 .app-meta-item {
@@ -409,8 +364,8 @@ body {
     flex: 1;
     margin-top: -4px;
     margin-bottom: -8px;
-    white-space: pre-line;
-    word-break: break-word;
+    white-space: pre-line; /* QUAN TRỌNG: Giữ nguyên xuống dòng */
+    word-break: break-word; /* Ngắt từ khi cần thiết */
 }
 
 /* MỚI: Style cho description với icon check có nền tròn */
@@ -449,19 +404,20 @@ body {
 .check-icon-container i {
     font-size: 6px;
     color: #ffffff;
+
 }
 
 .description-text {
     flex: 1;
     line-height: 1.3;
-    margin-left: -3.65px;
-    margin-top: -1px;
+margin-left : -3.65px;
+margin-top : -1px;
 }
 
 .app-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 4px;
+    margin-top: 4px; /* ĐÃ SỬA: Giảm khoảng cách xuống */
 }
 
 .download-btn {
@@ -517,7 +473,7 @@ body {
     opacity: 0.9;
     margin-bottom: 12px;
     line-height: 1.3;
-    white-space: pre-line;
+    white-space: pre-line; /* Đảm bảo featured cũng xuống dòng */
 }
 
 .featured-image {
@@ -688,14 +644,14 @@ body {
     width: 90px;
     height: 90px;
     border-radius: 21px;
-    align-self: center;
+    align-self: center; /* ĐÃ SỬA: Căn giữa skeleton logo */
 }
 
 .skeleton-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 6px; /* ĐÃ SỬA: Giảm khoảng cách giữa các phần tử skeleton */
 }
 
 .skeleton-title {
@@ -752,10 +708,6 @@ body {
         font-size: 16px;
     }
     
-    .hero {
-        min-height: 200px;
-    }
-    
     .app-card {
         padding: 10px;
         gap: 10px;
@@ -804,25 +756,10 @@ body {
     
     .hero {
         padding: 20px 0;
-        min-height: 180px;
-    }
-    
-    .hero-content {
-        padding: 15px;
-        max-width: 320px;
     }
     
     .hero h1 {
         font-size: 15px;
-    }
-    
-    .hero p {
-        font-size: 11px;
-    }
-    
-    .cta-button {
-        padding: 8px 16px;
-        font-size: 12px;
     }
     
     .app-card {
@@ -850,18 +787,4 @@ body {
     .nav-label {
         font-size: 8px;
     }
-}
-
-/* Thêm style cho video loading */
-.video-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 8px 16px;
-    border-radius: 8px;
-}
+} 
