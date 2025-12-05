@@ -1154,38 +1154,28 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label" for="appDescription">
-                                        <i class="fas fa-align-left"></i>
-                                        Mô tả ngắn
+                                    <label class="form-label" for="downloadLink">
+                                        <i class="fas fa-download"></i>
+                                        Liên kết tải miễn phí
                                     </label>
-                                    <input type="text" id="appDescription" class="form-input" placeholder="Mô tả ngắn về ứng dụng" required>
+                                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="fullDescription">
-                                    <i class="fas fa-file-alt"></i>
-                                    Mô tả chi tiết
+                                <label class="form-label" for="appDescription">
+                                    <i class="fas fa-align-left"></i>
+                                    Mô tả ứng dụng
                                 </label>
-                                <textarea id="fullDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." rows="3"></textarea>
+                                <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả ứng dụng..." required></textarea>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label" for="downloadLink">
-                                        <i class="fas fa-download"></i>
-                                        Link tải miễn phí
-                                    </label>
-                                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="vipLink1">
-                                        <i class="fas fa-crown"></i>
-                                        Link tải VIP
-                                    </label>
-                                    <input type="url" id="vipLink1" class="form-input" placeholder="https://example.com/vip-download">
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label" for="vipLink1">
+                                    <i class="fas fa-crown"></i>
+                                    Liên kết tải VIP #1
+                                </label>
+                                <input type="url" id="vipLink1" class="form-input" placeholder="https://example.com/vip-download">
                             </div>
 
                             <div class="form-group">
@@ -1194,11 +1184,11 @@
                                     Ảnh minh hoạ
                                 </label>
                                 <div class="form-row">
-                                    <input type="url" id="screenshot1" class="form-input" placeholder="Ảnh 1 (URL)">
-                                    <input type="url" id="screenshot2" class="form-input" placeholder="Ảnh 2 (URL)">
+                                    <input type="url" id="screenshot1" class="form-input" placeholder="Ảnh minh hoạ 1 (URL)">
+                                    <input type="url" id="screenshot2" class="form-input" placeholder="Ảnh minh hoạ 2 (URL)">
                                 </div>
                                 <div style="margin-top: 8px;">
-                                    <input type="url" id="screenshot3" class="form-input" placeholder="Ảnh 3 (URL)">
+                                    <input type="url" id="screenshot3" class="form-input" placeholder="Ảnh minh hoạ 3 (URL)">
                                 </div>
                             </div>
 
@@ -1717,7 +1707,6 @@
         const appDeveloperInput = document.getElementById('appDeveloper');
         const appVersionInput = document.getElementById('appVersion');
         const appDescriptionInput = document.getElementById('appDescription');
-        const fullDescriptionInput = document.getElementById('fullDescription');
         const downloadLinkInput = document.getElementById('downloadLink');
         const vipLink1Input = document.getElementById('vipLink1');
         const screenshot1Input = document.getElementById('screenshot1');
