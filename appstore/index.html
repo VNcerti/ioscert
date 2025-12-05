@@ -11,6 +11,41 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <style>
+        /* Ripple effect cho theme toggle */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* Pulse effect cho nút Telegram */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .telegram-btn:hover {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -28,13 +63,13 @@
                     <input type="text" id="searchInput" placeholder="Tìm kiếm ứng dụng...">
                 </div>
                 <div class="user-actions">
-                    <!-- Thêm icon chuyển đổi chế độ sáng/tối -->
+                    <!-- Nút chuyển đổi chế độ sáng/tối -->
                     <button class="icon-btn theme-toggle" id="themeToggle">
                         <i class="fas fa-sun theme-icon sun-icon"></i>
                         <i class="fas fa-moon theme-icon moon-icon"></i>
                     </button>
-                    <!-- Icon chuông mở liên kết Telegram -->
-                    <a href="https://t.me/xspace_ipa" target="_blank" class="icon-btn" id="telegramBtn">
+                    <!-- Nút Telegram -->
+                    <a href="https://t.me/xspace_ipa" target="_blank" class="icon-btn telegram-btn" id="telegramBtn">
                         <i class="fas fa-bell"></i>
                     </a>
                 </div>
@@ -116,7 +151,7 @@
                     </div>
                     <div class="category-name">Nhân bản</div>
                 </div>
-                <!-- Mở khoá Premium -->
+                <!-- THÊM MỤC MỚI: Mở khoá Premium -->
                 <div class="category-card" data-category="premium">
                     <div class="category-icon">
                         <i class="fas fa-unlock"></i>
@@ -192,6 +227,7 @@
                     </div>
                     <div class="nav-label">Trò chơi</div>
                 </a>
+                <!-- ĐÃ ĐỔI "YÊU CẦU" THÀNH "TÀI KHOẢN" -->
                 <a href="account.html" class="nav-item">
                     <div class="nav-icon">
                         <i class="fas fa-user"></i>
@@ -214,6 +250,7 @@
             constructor() {
                 this.themeToggle = document.getElementById('themeToggle');
                 this.htmlElement = document.documentElement;
+                this.body = document.body;
                 this.init();
             }
             
@@ -222,20 +259,16 @@
                 const savedTheme = localStorage.getItem('theme');
                 
                 // Áp dụng theme đã lưu hoặc mặc định (light)
-                if (savedTheme) {
-                    this.setTheme(savedTheme);
+                if (savedTheme === 'dark') {
+                    this.setTheme('dark');
                 } else {
                     // Mặc định là light mode
                     this.setTheme('light');
+                    localStorage.setItem('theme', 'light');
                 }
                 
                 // Thêm sự kiện click cho nút chuyển đổi
-                this.themeToggle.addEventListener('click', () => this.toggleTheme());
-                
-                // Thêm class để animation mượt mà
-                setTimeout(() => {
-                    document.body.classList.add('theme-transition');
-                }, 100);
+                this.themeToggle.addEventListener('click', (e) => this.toggleTheme(e));
             }
             
             setTheme(theme) {
@@ -245,15 +278,18 @@
                 
                 // Cập nhật icon
                 this.updateThemeIcon(isDark);
+                
+                // Cập nhật meta theme-color cho viền trên cùng
+                this.updateMetaThemeColor(isDark);
             }
             
-            toggleTheme() {
+            toggleTheme(e) {
                 const currentTheme = this.htmlElement.getAttribute('data-theme');
                 const isDark = currentTheme === 'dark';
                 this.setTheme(isDark ? 'light' : 'dark');
                 
-                // Thêm hiệu ứng ripple cho nút bấm
-                this.createRippleEffect(event);
+                // Thêm hiệu ứng ripple
+                this.createRippleEffect(e);
             }
             
             updateThemeIcon(isDark) {
@@ -262,15 +298,37 @@
                 
                 if (isDark) {
                     sunIcon.style.opacity = '0';
-                    sunIcon.style.transform = 'rotate(90deg)';
+                    sunIcon.style.transform = 'rotate(90deg) scale(0.5)';
                     moonIcon.style.opacity = '1';
-                    moonIcon.style.transform = 'rotate(0deg)';
+                    moonIcon.style.transform = 'rotate(0deg) scale(1)';
                 } else {
                     sunIcon.style.opacity = '1';
-                    sunIcon.style.transform = 'rotate(0deg)';
+                    sunIcon.style.transform = 'rotate(0deg) scale(1)';
                     moonIcon.style.opacity = '0';
-                    moonIcon.style.transform = 'rotate(-90deg)';
+                    moonIcon.style.transform = 'rotate(-90deg) scale(0.5)';
                 }
+            }
+            
+            updateMetaThemeColor(isDark) {
+                // Cập nhật màu theme cho thanh địa chỉ và UI trình duyệt
+                const themeColor = isDark ? '#0f172a' : '#ffffff';
+                
+                let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                if (!metaThemeColor) {
+                    metaThemeColor = document.createElement('meta');
+                    metaThemeColor.name = 'theme-color';
+                    document.head.appendChild(metaThemeColor);
+                }
+                metaThemeColor.content = themeColor;
+                
+                // Cập nhật màu cho Safari
+                let metaAppleThemeColor = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+                if (!metaAppleThemeColor) {
+                    metaAppleThemeColor = document.createElement('meta');
+                    metaAppleThemeColor.name = 'apple-mobile-web-app-status-bar-style';
+                    document.head.appendChild(metaAppleThemeColor);
+                }
+                metaAppleThemeColor.content = isDark ? 'black' : 'default';
             }
             
             createRippleEffect(event) {
@@ -290,82 +348,31 @@
                 }
                 
                 button.appendChild(circle);
-            }
-        }
-        
-        // Quản lý chức năng Telegram
-        class TelegramManager {
-            constructor() {
-                this.telegramBtn = document.getElementById('telegramBtn');
-                this.init();
-            }
-            
-            init() {
-                // Thêm hiệu ứng hover cho nút Telegram
-                this.telegramBtn.addEventListener('mouseenter', () => {
-                    this.telegramBtn.style.transform = 'scale(1.1) rotate(15deg)';
-                    this.telegramBtn.querySelector('i').style.transform = 'scale(1.2)';
-                });
                 
-                this.telegramBtn.addEventListener('mouseleave', () => {
-                    this.telegramBtn.style.transform = '';
-                    this.telegramBtn.querySelector('i').style.transform = '';
-                });
-                
-                // Thêm hiệu ứng click
-                this.telegramBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.open(this.telegramBtn.href, '_blank');
-                    
-                    // Thêm hiệu ứng click
-                    this.telegramBtn.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.telegramBtn.style.transform = '';
-                    }, 200);
-                });
+                // Xóa ripple sau khi animation kết thúc
+                setTimeout(() => {
+                    if (circle.parentNode === button) {
+                        button.removeChild(circle);
+                    }
+                }, 600);
             }
         }
         
         // Khởi tạo khi trang được tải
         document.addEventListener('DOMContentLoaded', () => {
             const themeManager = new ThemeManager();
-            const telegramManager = new TelegramManager();
             
-            // Thêm CSS cho ripple effect
-            const style = document.createElement('style');
-            style.textContent = `
-                .ripple {
-                    position: absolute;
-                    border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.7);
-                    transform: scale(0);
-                    animation: ripple-animation 0.6s linear;
-                }
-                
-                @keyframes ripple-animation {
-                    to {
-                        transform: scale(4);
-                        opacity: 0;
-                    }
-                }
-                
-                .theme-toggle {
-                    position: relative;
-                    overflow: hidden;
-                }
-            `;
-            document.head.appendChild(style);
+            // Kiểm tra và áp dụng theme ngay lập tức để tránh flash
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
         });
         
-        // Thêm hiệu ứng cho các nút khi hover
-        document.querySelectorAll('.icon-btn').forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px) scale(1.05)';
-            });
-            
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-            });
+        // Xử lý nút Telegram
+        document.getElementById('telegramBtn').addEventListener('click', function(e) {
+            // Mở trong tab mới
+            window.open(this.href, '_blank');
         });
     </script>
 </body>
