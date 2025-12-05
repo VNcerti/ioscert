@@ -12,6 +12,10 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         :root {
@@ -31,11 +35,32 @@
             --nav-height: 50px;
         }
 
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-light: #1e293b;
+            --secondary: #f59e0b;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        html {
+            background-color: var(--background);
+        }
+
         body {
             background: var(--background);
             color: var(--text-primary);
             line-height: 1.5;
             padding-bottom: var(--nav-height);
+            min-height: 100vh;
         }
 
         .container {
@@ -186,7 +211,7 @@
             padding: 14px 16px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--card-shadow);
         }
 
         .download-title {
@@ -299,7 +324,7 @@
         }
 
         .check-icon-container {
-            background: #2793ea;
+            background: var(--primary);
             color: white;
             width: 16px;
             height: 16px;
@@ -405,7 +430,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--surface);
             border: 1px solid var(--border);
             width: 36px;
             height: 36px;
@@ -567,18 +592,18 @@
 
         /* Debug Info */
         .debug-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 10px;
             margin-top: 10px;
             font-size: 11px;
-            color: #6c757d;
+            color: var(--text-muted);
             display: none;
         }
 
         .debug-toggle {
-            color: #f1f2f4;
+            color: var(--text-muted);
             cursor: pointer;
             font-size: 11px;
             margin-top: 5px;
@@ -865,6 +890,48 @@
     </nav>
 
     <script>
+        // ==================== THEME MANAGEMENT ====================
+        // Tự động áp dụng theme từ localStorage
+        function applyThemeFromStorage() {
+            const savedTheme = localStorage.getItem('theme');
+            const htmlElement = document.documentElement;
+            
+            if (savedTheme === 'dark') {
+                htmlElement.setAttribute('data-theme', 'dark');
+            } else {
+                htmlElement.setAttribute('data-theme', 'light');
+                // Đảm bảo mặc định là light nếu chưa có
+                if (!savedTheme) {
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            
+            // Cập nhật meta theme-color cho viền trên cùng
+            updateMetaThemeColor(savedTheme === 'dark');
+        }
+        
+        function updateMetaThemeColor(isDark) {
+            // Cập nhật màu theme cho thanh địa chỉ và UI trình duyệt
+            const themeColor = isDark ? '#0f172a' : '#ffffff';
+            
+            let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (!metaThemeColor) {
+                metaThemeColor = document.createElement('meta');
+                metaThemeColor.name = 'theme-color';
+                document.head.appendChild(metaThemeColor);
+            }
+            metaThemeColor.content = themeColor;
+            
+            // Cập nhật màu cho Safari
+            let metaAppleThemeColor = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+            if (!metaAppleThemeColor) {
+                metaAppleThemeColor = document.createElement('meta');
+                metaAppleThemeColor.name = 'apple-mobile-web-app-status-bar-style';
+                document.head.appendChild(metaAppleThemeColor);
+            }
+            metaAppleThemeColor.content = isDark ? 'black' : 'default';
+        }
+        
         // ==================== CONFIGURATION ====================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0LVtKoyrSs7ZiEoXR-UKbHpl-jNAudKHY2LuwQvHr_Tam87cs7ue7iY5eJCOHWvD2sA/exec';
         
@@ -1017,7 +1084,7 @@
             return isUrl;
         }
         
-        // Xử lý dữ liệu app - FIXED VERSION
+        // Xử lý dữ liệu app
         function processAppData(app) {
             console.log('🔍 Processing app data...');
             
@@ -1026,10 +1093,7 @@
             app.downloadlink = app.downloadlink || '';
             app.categories = app.categories || 'other';
             
-            // Xử lý screenshot - QUAN TRỌNG!
-            // Cố gắng tìm screenshot bằng nhiều cách
-            
-            // Cách 1: Kiểm tra các key có thể có
+            // Xử lý screenshot
             const possibleKeys = {
                 'screenshot1': ['screenshot1', 'Screenshot1', 'screenshot_1', 'image1', 'Image1'],
                 'screenshot2': ['screenshot2', 'Screenshot2', 'screenshot_2', 'image2', 'Image2'],
@@ -1065,9 +1129,9 @@
             
             // Cách 2: Nếu không tìm thấy, thử lấy từ index của mảng
             if (!foundScreenshot1 && Array.isArray(app)) {
-                if (app.length > 10) foundScreenshot1 = app[10] || ''; // Index 10 là screenshot1
-                if (app.length > 11) foundScreenshot2 = app[11] || ''; // Index 11 là screenshot2
-                if (app.length > 12) foundScreenshot3 = app[12] || ''; // Index 12 là screenshot3
+                if (app.length > 10) foundScreenshot1 = app[10] || '';
+                if (app.length > 11) foundScreenshot2 = app[11] || '';
+                if (app.length > 12) foundScreenshot3 = app[12] || '';
             }
             
             // Gán giá trị cuối cùng
@@ -1075,7 +1139,6 @@
             app.screenshot2 = foundScreenshot2;
             app.screenshot3 = foundScreenshot3;
             
-            // Log kết quả
             console.log('📸 Screenshot results:');
             console.log('- Screenshot 1:', app.screenshot1, 'Valid:', isValidImageUrl(app.screenshot1));
             console.log('- Screenshot 2:', app.screenshot2, 'Valid:', isValidImageUrl(app.screenshot2));
@@ -1111,7 +1174,7 @@
             return html;
         }
         
-        // Tạo HTML cho screenshots - RELIABLE VERSION
+        // Tạo HTML cho screenshots
         function createScreenshotsHTML(app) {
             console.log('🖼️ Creating screenshots HTML...');
             
@@ -1426,7 +1489,6 @@
                 if (result.success && result.data) {
                     // Tìm app theo ID
                     const app = result.data.find(a => {
-                        // So sánh cả số và chuỗi
                         return a.id == appId || a.id === appId || a.id.toString() === appId.toString();
                     });
                     
@@ -1520,7 +1582,10 @@
             console.log('📱 App detail page initialized');
             console.log('🔗 App ID from URL:', appId);
             
-            // Load app detail ngay lập tức
+            // Áp dụng theme từ localStorage ngay khi DOM loaded
+            applyThemeFromStorage();
+            
+            // Load app detail
             loadAppDetail();
             
             // Thêm event listener cho các button download
