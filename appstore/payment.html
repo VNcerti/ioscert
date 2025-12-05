@@ -581,7 +581,7 @@
             color: var(--text-primary);
         }
 
-        /* QR Section */
+        /* QR Section - ĐÃ TĂNG KÍCH THƯỚC */
         .qr-section {
             text-align: center;
             margin: 20px 0;
@@ -592,22 +592,34 @@
         }
 
         .qr-code {
-            max-width: 200px;
+            max-width: 280px; /* TĂNG TỪ 200px LÊN 280px */
             margin: 0 auto 12px;
             border-radius: 8px;
             overflow: hidden;
+            background: white;
+            padding: 12px;
         }
 
         .qr-code img {
             width: 100%;
             height: auto;
             display: block;
+            border-radius: 4px;
         }
 
-        .qr-details {
-            margin-top: 12px;
-            font-size: 12px;
+        .qr-loading {
+            width: 100%;
+            height: 280px; /* TĂNG CHIỀU CAO */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* XOÁ PHẦN QR DETAILS KHÔNG CẦN THIẾT */
+        .qr-details {
+            display: none; /* ẨN HOÀN TOÀN PHẦN NÀY */
         }
 
         /* Discount Section */
@@ -932,6 +944,24 @@
             .payment-info-title {
                 font-size: 22px;
             }
+            
+            .qr-code {
+                max-width: 240px; /* KÍCH THƯỚC TRÊN MOBILE */
+            }
+            
+            .qr-loading {
+                height: 240px; /* CHIỀU CAO TRÊN MOBILE */
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .qr-code {
+                max-width: 320px; /* KÍCH THƯỚC LỚN HƠN TRÊN TABLET/DESKTOP */
+            }
+            
+            .qr-loading {
+                height: 320px;
+            }
         }
     </style>
 </head>
@@ -1154,13 +1184,13 @@
 
                 <div class="qr-section">
                     <h4 class="order-title">Quét mã QR để thanh toán</h4>
-                    <div class="qr-code">
-                        <img src="https://i.imgur.com/mjFOBtz.png" alt="QR Code">
+                    <div class="qr-code" id="qrCodeContainer">
+                        <div class="qr-loading" id="qrLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tạo mã QR...
+                        </div>
+                        <img id="qrCodeImage" style="display: none;" alt="QR Code">
                     </div>
-                    <div class="qr-details">
-                        <p>311435</p>
-                        <p>VU TUNG LAM</p>
-                    </div>
+                    <!-- ĐÃ XOÁ PHẦN QR DETAILS -->
                 </div>
 
                 <!-- Discount Section -->
@@ -1284,6 +1314,7 @@
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8phB2nlyB9Ku0pOOECicDvYVYSWTdLajUcbxDSxbeOiaBEU_f0hbF-_N1hk1GJoJgSQ/exec';
+        const VIETQR_BASE_URL = 'https://img.vietqr.io/image/mbbank-311435-compact2.png';
 
         // DOM Elements
         const userInfoCard = document.getElementById('userInfoCard');
@@ -1303,6 +1334,11 @@
         const bankAccount = document.getElementById('bankAccount');
         const paymentNote = document.getElementById('paymentNote');
         const paymentAmount = document.getElementById('paymentAmount');
+
+        // QR Code Elements
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        const qrLoading = document.getElementById('qrLoading');
+        const qrCodeImage = document.getElementById('qrCodeImage');
 
         // Discount Elements
         const discountCodeInput = document.getElementById('discountCode');
@@ -1376,9 +1412,10 @@
                     userMessage.innerHTML = `Xin chào <strong>${currentUser.username}</strong>, hãy chọn gói Premium muốn nâng cấp.`;
                     
                     // Update payment note with username
-                    paymentNote.textContent = `PAY ${currentUser.username.toUpperCase()}`;
+                    const paymentNoteText = `PAY ${currentUser.username.toUpperCase()}`;
+                    paymentNote.textContent = paymentNoteText;
                     document.querySelectorAll('[data-copy="PAY ADMIN"]').forEach(btn => {
-                        btn.setAttribute('data-copy', `PAY ${currentUser.username.toUpperCase()}`);
+                        btn.setAttribute('data-copy', paymentNoteText);
                     });
                 }
             } else {
@@ -1519,9 +1556,88 @@
                 // Show payment info
                 paymentInfo.classList.add('active');
                 
+                // Generate QR code với thông tin mới
+                generateQRCode(planData[plan].price);
+                
                 // ĐƯA TRANG LÊN ĐẦU KHI VÀO PHẦN THANH TOÁN
                 window.scrollTo(0, 0);
             }
+        }
+
+        // Generate QR Code với API VietQR
+        function generateQRCode(amount) {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+            
+            // Hiển thị loading
+            qrLoading.style.display = 'flex';
+            qrCodeImage.style.display = 'none';
+            
+            // Tạo nội dung chuyển khoản: PAY + USERNAME (không dấu, không ký tự đặc biệt)
+            const username = currentUser.username.toUpperCase();
+            const paymentDescription = `PAY ${username}`;
+            
+            // Mã hóa URL an toàn
+            const encodedDescription = encodeURIComponent(paymentDescription);
+            
+            // Tạo URL VietQR với các tham số
+            const qrUrl = `${VIETQR_BASE_URL}?amount=${amount}&addInfo=${encodedDescription}&accountName=VU%20TUNG%20LAM`;
+            
+            // Tải và hiển thị QR code
+            qrCodeImage.onload = function() {
+                qrLoading.style.display = 'none';
+                qrCodeImage.style.display = 'block';
+            };
+            
+            qrCodeImage.onerror = function() {
+                qrLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không thể tải mã QR';
+                qrCodeImage.style.display = 'none';
+            };
+            
+            // Set image source
+            qrCodeImage.src = qrUrl;
+            
+            // Cập nhật thông tin thanh toán
+            paymentNote.textContent = paymentDescription;
+            
+            // Cập nhật nút copy
+            document.querySelectorAll('[data-copy="PAY ADMIN"]').forEach(btn => {
+                btn.setAttribute('data-copy', paymentDescription);
+            });
+        }
+
+        // Update QR code khi có giảm giá
+        function updateQRCodeWithDiscount() {
+            if (!selectedPlan || !currentDiscount || isActivationCode) return;
+            
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+            
+            // Hiển thị loading
+            qrLoading.style.display = 'flex';
+            qrCodeImage.style.display = 'none';
+            
+            // Tạo nội dung chuyển khoản
+            const username = currentUser.username.toUpperCase();
+            const paymentDescription = `PAY ${username}`;
+            const encodedDescription = encodeURIComponent(paymentDescription);
+            
+            // Tạo URL VietQR với số tiền sau giảm giá
+            const qrUrl = `${VIETQR_BASE_URL}?amount=${finalPrice}&addInfo=${encodedDescription}&accountName=VU%20TUNG%20LAM`;
+            
+            // Tải và hiển thị QR code
+            qrCodeImage.onload = function() {
+                qrLoading.style.display = 'none';
+                qrCodeImage.style.display = 'block';
+            };
+            
+            qrCodeImage.onerror = function() {
+                qrLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không thể tải mã QR';
+                qrCodeImage.style.display = 'none';
+            };
+            
+            // Set image source
+            qrCodeImage.src = qrUrl;
         }
 
         // Apply discount
@@ -1541,6 +1657,9 @@
             
             discountInfo.style.display = 'block';
             
+            // Cập nhật QR code với số tiền mới
+            updateQRCodeWithDiscount();
+            
             // Hiển thị thông báo thành công
             showDiscountMessage(`✅ Áp dụng mã giảm giá ${discountData.discount_percent}% thành công!`, 'success');
             
@@ -1552,12 +1671,12 @@
         async function applyActivationCode(activationData) {
             isActivationCode = true;
             
-            // Hiển thị thông báo thành công
-            showDiscountMessage(`✅ Kích hoạt thành công! Gói ${activationData.package_type.toUpperCase()} đã được kích hoạt.`, 'success');
-            
-            // Ẩn các phần thanh toán không cần thiết
+            // Ẩn QR code section vì không cần thanh toán
             document.querySelector('.qr-section').style.display = 'none';
             document.querySelector('.bank-info').style.display = 'none';
+            
+            // Hiển thị thông báo thành công
+            showDiscountMessage(`✅ Kích hoạt thành công! Gói ${activationData.package_type.toUpperCase()} đã được kích hoạt.`, 'success');
             
             // Thay đổi nút xác nhận
             confirmPaymentBtn.innerHTML = '<i class="fas fa-check-circle"></i> Hoàn tất kích hoạt';
@@ -1566,6 +1685,11 @@
             selectedPlanName.textContent = `Gói ${activationData.package_type.toUpperCase()} (Kích hoạt)`;
             selectedPlanPrice.textContent = '0đ';
             paymentAmount.textContent = '0đ';
+            
+            // Cập nhật discount info
+            discountAmount.textContent = '-100%';
+            finalAmount.textContent = '0đ';
+            discountInfo.style.display = 'block';
             
             // Đánh dấu đã sử dụng mã kích hoạt
             const currentUser = getCurrentUser();
