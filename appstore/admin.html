@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
-        /* RESET & BASE */
         * {
             margin: 0;
             padding: 0;
@@ -43,20 +42,20 @@
         body {
             background: var(--background);
             color: var(--text-primary);
-            line-height: 1.3;
+            line-height: 1.4;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 10px;
+            padding: 0 15px;
             flex: 1;
         }
 
-        /* HEADER - COMPACT */
+        /* Header - Compact */
         .header {
             background: var(--glass-effect);
             border-bottom: 1px solid var(--border);
@@ -64,76 +63,69 @@
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
-            padding: 6px 0;
         }
 
         .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
+            padding: 10px 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 14px;
+            gap: 6px;
+            font-size: 16px;
             font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            white-space: nowrap;
         }
 
         .logo-icon {
             background: var(--gradient);
-            width: 24px;
-            height: 24px;
-            border-radius: 5px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 11px;
-            flex-shrink: 0;
+            font-size: 12px;
         }
 
-        /* NAVIGATION - COMPACT */
+        /* Navigation - Compact */
         .nav-container {
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .nav-tabs {
             display: flex;
-            gap: 2px;
+            gap: 3px;
             background: var(--surface);
-            padding: 2px;
-            border-radius: 5px;
+            padding: 3px;
+            border-radius: 6px;
             border: 1px solid var(--border);
-            flex-wrap: wrap;
         }
 
         .nav-tab {
-            padding: 4px 8px;
+            padding: 5px 10px;
             border: none;
             background: transparent;
             color: var(--text-secondary);
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 10px;
+            font-size: 11px;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             white-space: nowrap;
-            min-height: 24px;
         }
 
         .nav-tab:hover {
@@ -149,18 +141,17 @@
         .back-btn {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: var(--surface);
             color: var(--text-primary);
             text-decoration: none;
             font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 5px;
             transition: all 0.2s ease;
             border: 1px solid var(--border);
-            font-size: 10px;
+            font-size: 11px;
             white-space: nowrap;
-            min-height: 24px;
         }
 
         .back-btn:hover {
@@ -168,22 +159,20 @@
             color: white;
         }
 
-        /* MAIN CONTENT - COMPACT */
+        /* Main Content - Compact */
         .main-content {
-            padding: 12px 0 20px;
+            padding: 15px 0;
         }
 
         .page-header {
             text-align: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 15px;
         }
 
         .page-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -191,10 +180,10 @@
 
         .page-subtitle {
             color: var(--text-secondary);
-            font-size: 11px;
+            font-size: 12px;
         }
 
-        /* TAB CONTENT */
+        /* Tab Content */
         .tab-content {
             display: none;
         }
@@ -203,26 +192,40 @@
             display: block;
         }
 
-        /* STATS CARDS - COMPACT */
+        /* Stats Cards - Compact */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 6px;
-            margin-bottom: 12px;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .stat-card {
             background: var(--surface);
-            border-radius: 5px;
-            padding: 8px;
+            border-radius: 6px;
+            padding: 10px;
             text-align: center;
             border: 1px solid var(--border);
             box-shadow: var(--card-shadow);
             transition: all 0.2s ease;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
         .stat-card:hover {
@@ -231,14 +234,14 @@
         }
 
         .stat-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+            width: 26px;
+            height: 26px;
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 3px;
-            font-size: 10px;
+            margin: 0 auto 5px;
+            font-size: 12px;
         }
 
         .stat-icon.primary {
@@ -267,58 +270,84 @@
         }
 
         .stat-number {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 800;
-            margin-bottom: 1px;
+            margin-bottom: 3px;
             color: var(--text-primary);
-            line-height: 1.2;
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 600;
-            line-height: 1.2;
         }
 
-        /* FORM SECTIONS - COMPACT */
+        /* Analytics Grid - Compact */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Upload Grid - Compact */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .form-section {
             background: var(--surface);
-            border-radius: 6px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 15px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
-            margin-bottom: 10px;
+            height: 100%;
         }
 
         .section-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
+            gap: 6px;
         }
 
         .section-title i {
             color: var(--primary);
-            font-size: 12px;
-            width: 14px;
-            text-align: center;
         }
 
-        /* FORM GRID - COMPACT */
+        /* Cải tiến form layout - Compact */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .form-group {
-            margin-bottom: 6px;
+            margin-bottom: 10px;
         }
 
         .full-width {
@@ -328,31 +357,29 @@
         .form-label {
             display: block;
             font-weight: 600;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             color: var(--text-primary);
-            font-size: 11px;
+            font-size: 12px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .form-label i {
             color: var(--primary);
-            width: 10px;
-            font-size: 10px;
-            text-align: center;
+            width: 12px;
+            font-size: 11px;
         }
 
         .form-input {
             width: 100%;
-            padding: 6px 8px;
+            padding: 8px 10px;
             border: 1px solid var(--border);
-            border-radius: 5px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 12px;
             transition: all 0.2s ease;
             background: var(--background);
             color: var(--text-primary);
-            min-height: 32px;
         }
 
         .form-input:focus {
@@ -362,38 +389,51 @@
         }
 
         .form-textarea {
-            min-height: 50px;
+            min-height: 60px;
             resize: vertical;
-            font-size: 11px;
-            padding: 6px 8px;
+            font-size: 12px;
         }
 
-        /* CATEGORIES - COMPACT */
         .categories-group {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 5px;
-            margin-top: 5px;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 6px;
+            margin-top: 6px;
         }
 
-        .category-checkbox, .category-radio {
+        @media (max-width: 768px) {
+            .categories-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .category-checkbox {
+            display: none;
+        }
+
+        .category-radio {
             display: none;
         }
 
         .category-label {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 6px;
+            gap: 5px;
+            padding: 6px 8px;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s ease;
             background: var(--background);
             color: var(--text-secondary);
             font-weight: 600;
-            font-size: 9px;
-            min-height: 26px;
+            font-size: 10px;
         }
 
         .category-label:hover {
@@ -408,28 +448,26 @@
         }
 
         .category-icon {
-            font-size: 9px;
-            width: 10px;
+            font-size: 10px;
+            width: 12px;
         }
 
-        /* BUTTONS - COMPACT */
         .submit-btn {
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 11px;
+            gap: 6px;
+            font-size: 12px;
             width: 100%;
             justify-content: center;
-            margin-top: 8px;
-            min-height: 32px;
+            margin-top: 12px;
         }
 
         .submit-btn:hover {
@@ -443,42 +481,42 @@
             transform: none;
         }
 
-        /* PREVIEW SECTION - COMPACT */
+        /* Preview Section - Compact */
         .preview-section {
             background: var(--surface);
-            border-radius: 6px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 15px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
-            margin-bottom: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .preview-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
+            gap: 6px;
         }
 
         .preview-title i {
             color: var(--primary);
-            font-size: 12px;
         }
 
         .preview-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .preview-card {
             background: var(--background);
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
@@ -487,26 +525,26 @@
 
         .preview-image {
             width: 100%;
-            height: 80px;
+            height: 100px;
             object-fit: cover;
             background: var(--gradient);
         }
 
         .preview-card-content {
-            padding: 8px;
+            padding: 10px;
         }
 
         .preview-header {
             display: flex;
             align-items: flex-start;
-            gap: 5px;
-            margin-bottom: 4px;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .preview-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 5px;
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
             object-fit: cover;
             flex-shrink: 0;
             border: 1px solid var(--border);
@@ -518,10 +556,10 @@
         }
 
         .preview-name {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
-            margin-bottom: 1px;
-            line-height: 1.2;
+            margin-bottom: 2px;
+            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -530,8 +568,8 @@
 
         .preview-developer {
             color: var(--text-secondary);
-            font-size: 9px;
-            margin-bottom: 2px;
+            font-size: 10px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -539,16 +577,16 @@
 
         .preview-meta {
             display: flex;
-            gap: 5px;
-            font-size: 8px;
+            gap: 6px;
+            font-size: 9px;
             color: var(--text-muted);
         }
 
         .preview-description {
             color: var(--text-secondary);
-            font-size: 9px;
-            line-height: 1.2;
-            margin-bottom: 4px;
+            font-size: 10px;
+            line-height: 1.3;
+            margin-bottom: 6px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -558,108 +596,117 @@
         .preview-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 2px;
-            margin-bottom: 4px;
+            gap: 3px;
+            margin-bottom: 6px;
         }
 
         .preview-tag {
             background: var(--primary);
             color: white;
-            padding: 1px 4px;
-            border-radius: 2px;
-            font-size: 7px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 8px;
             font-weight: 600;
         }
 
-        /* SCREENSHOTS PREVIEW - COMPACT */
+        /* Screenshots Preview - Compact */
         .screenshots-preview {
-            padding-top: 8px;
+            padding-top: 10px;
             border-top: 1px solid var(--border);
         }
 
         .screenshots-preview h4 {
-            font-size: 11px;
-            margin-bottom: 6px;
+            font-size: 12px;
+            margin-bottom: 8px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .screenshots-preview h4 i {
             color: var(--primary);
-            font-size: 10px;
         }
 
         .screenshots-grid-preview {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .screenshots-grid-preview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .screenshots-grid-preview {
+                grid-template-columns: 1fr;
+            }
         }
 
         .screenshot-preview {
             width: 100%;
-            height: 50px;
+            height: 60px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 5px;
             border: 1px solid var(--border);
             background: var(--background);
         }
 
-        /* ANALYTICS SECTION - COMPACT */
+        /* Analytics Section - Compact */
         .analytics-section {
             background: var(--surface);
-            border-radius: 6px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 15px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .analytics-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .refresh-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 4px 6px;
-            border-radius: 4px;
+            padding: 5px 8px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 3px;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 600;
-            min-height: 22px;
         }
 
         .refresh-btn:hover {
             background: var(--primary-dark);
         }
 
-        .recent-visits, .daily-visits-list, .codes-list {
+        .recent-visits {
             background: var(--background);
-            border-radius: 5px;
-            padding: 8px;
+            border-radius: 6px;
+            padding: 12px;
             border: 1px solid var(--border);
-            max-height: 250px;
+            max-height: 350px;
             overflow-y: auto;
         }
 
-        /* VISIT ITEMS - COMPACT */
         .visit-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 0;
+            gap: 10px;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border);
-            font-size: 10px;
+            font-size: 11px;
         }
 
         .visit-item:last-child {
@@ -667,15 +714,15 @@
         }
 
         .visit-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
             background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 10px;
+            font-size: 11px;
             flex-shrink: 0;
         }
 
@@ -687,31 +734,48 @@
         .visit-time {
             color: var(--text-primary);
             font-weight: 600;
-            margin-bottom: 2px;
-            font-size: 9px;
+            margin-bottom: 3px;
+            font-size: 10px;
         }
 
         .visit-details {
             display: flex;
-            gap: 8px;
-            font-size: 8px;
+            gap: 10px;
+            font-size: 9px;
             color: var(--text-secondary);
             flex-wrap: wrap;
         }
 
         .visit-ip {
             background: var(--surface-light);
-            padding: 1px 4px;
-            border-radius: 2px;
+            padding: 2px 5px;
+            border-radius: 3px;
             font-family: monospace;
         }
 
-        /* DAILY VISITS - COMPACT */
+        /* Daily Visits Section - Compact */
+        .daily-visits-section {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .daily-visits-list {
+            background: var(--background);
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
         .daily-visit-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid var(--border);
         }
 
@@ -722,17 +786,17 @@
         .daily-visit-date {
             color: var(--text-primary);
             font-weight: 600;
-            font-size: 10px;
+            font-size: 11px;
         }
 
         .daily-visit-count {
             background: var(--primary);
             color: white;
-            padding: 2px 5px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 5px;
             font-weight: 700;
-            font-size: 9px;
-            min-width: 30px;
+            font-size: 10px;
+            min-width: 35px;
             text-align: center;
         }
 
@@ -748,16 +812,16 @@
             background: var(--info);
         }
 
-        /* MESSAGES - COMPACT */
+        /* Messages - Compact */
         .message {
-            padding: 8px 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
             display: none;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             border: 1px solid transparent;
-            font-size: 10px;
+            font-size: 11px;
         }
 
         .message-success {
@@ -772,11 +836,11 @@
             border-color: rgba(239, 68, 68, 0.3);
         }
 
-        /* LOADING */
+        /* Loading */
         .loading {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border: 2px solid rgba(255,255,255,.3);
             border-radius: 50%;
             border-top-color: #fff;
@@ -787,28 +851,50 @@
             to { transform: rotate(360deg); }
         }
 
-        /* FOOTER - COMPACT */
+        /* Footer - Compact */
         .footer {
             background: var(--surface);
             border-top: 1px solid var(--border);
-            padding: 10px 0;
-            margin-top: 15px;
+            padding: 12px 0;
+            margin-top: 20px;
             text-align: center;
         }
 
         .footer-content {
             color: var(--text-secondary);
-            font-size: 9px;
+            font-size: 10px;
         }
 
-        /* CODE MANAGEMENT - COMPACT */
+        /* Code Management Styles - Compact */
+        .codes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .codes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .codes-list {
+            background: var(--background);
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
         .code-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid var(--border);
-            font-size: 10px;
+            font-size: 11px;
         }
 
         .code-item:last-child {
@@ -822,21 +908,20 @@
         .code-value {
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 2px;
-            font-size: 10px;
+            margin-bottom: 3px;
         }
 
         .code-details {
             display: flex;
-            gap: 8px;
-            font-size: 8px;
+            gap: 10px;
+            font-size: 9px;
             color: var(--text-secondary);
         }
 
         .code-status {
-            padding: 1px 4px;
-            border-radius: 2px;
-            font-size: 7px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 8px;
             font-weight: 600;
         }
 
@@ -855,111 +940,18 @@
             color: white;
         }
 
-        /* UPGRADE FORM - COMPACT */
-        .user-preview-card {
-            background: var(--background);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
-        .user-info-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .user-avatar {
-            background: var(--primary);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .user-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .user-name {
-            margin: 0 0 2px 0;
-            color: var(--text-primary);
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-email {
-            color: var(--text-secondary);
-            font-size: 10px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-type {
-            color: var(--text-muted);
-            font-size: 9px;
-        }
-
-        .user-vip-info {
-            color: var(--text-secondary);
-            font-size: 10px;
-            padding: 6px;
-            background: var(--surface);
-            border-radius: 4px;
-        }
-
-        /* RESPONSIVE */
+        /* Responsive Header */
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 6px;
-            }
-            
-            .categories-group {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 4px;
-            }
-            
-            .screenshots-grid-preview {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
             .header-content {
                 flex-direction: column;
-                align-items: stretch;
-                gap: 6px;
+                gap: 8px;
+                text-align: center;
             }
             
             .nav-container {
+                width: 100%;
                 justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 8px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 4px;
-            }
-            
-            .screenshots-grid-preview {
-                grid-template-columns: 1fr;
+                flex-wrap: wrap;
             }
             
             .nav-tabs {
@@ -968,18 +960,73 @@
             }
         }
 
-        /* FIXED DIMENSIONS TO PREVENT LAYOUT SHIFT */
-        input, textarea, select, button {
-            min-height: 32px;
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                width: 100%;
+            }
         }
-        
-        .form-input, .form-textarea {
-            line-height: 1.2;
+
+        /* Upgrade Form Styles - Compact */
+        .user-preview-card {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-top: 10px;
         }
-        
-        /* PREVENT CONTENT JUMP */
-        .tab-content {
-            min-height: 300px;
+
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            background: var(--primary);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            margin: 0 0 3px 0;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .user-type {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .user-vip-info {
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 8px;
+            background: var(--surface);
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -1052,195 +1099,198 @@
                     </div>
                 </div>
 
-                <!-- Upload Form -->
-                <section class="form-section">
-                    <h2 class="section-title">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        Upload Ứng Dụng Mới
-                    </h2>
-
-                    <form class="upload-form" id="uploadForm">
-                        <div class="form-grid">
-                            <!-- Basic Information -->
-                            <div class="form-group full-width">
-                                <label class="form-label" for="appName">
-                                    <i class="fas fa-tag"></i>
-                                    Tên ứng dụng *
-                                </label>
-                                <input type="text" id="appName" class="form-input" placeholder="Nhập tên ứng dụng" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="appDeveloper">
-                                    <i class="fas fa-user-tie"></i>
-                                    Nhà phát triển *
-                                </label>
-                                <input type="text" id="appDeveloper" class="form-input" placeholder="Nhà phát triển" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="appVersion">
-                                    <i class="fas fa-code-branch"></i>
-                                    Phiên bản *
-                                </label>
-                                <input type="text" id="appVersion" class="form-input" placeholder="Ví dụ: 1.0.0" required>
-                            </div>
-
-                            <!-- Images -->
-                            <div class="form-group full-width">
-                                <label class="form-label" for="imageUrl">
-                                    <i class="fas fa-image"></i>
-                                    URL ảnh logo ứng dụng *
-                                </label>
-                                <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-logo.jpg" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="screenshot1">
-                                    <i class="fas fa-image"></i>
-                                    Ảnh minh hoạ 1
-                                </label>
-                                <input type="url" id="screenshot1" class="form-input" placeholder="URL ảnh minh hoạ">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="screenshot2">
-                                    <i class="fas fa-image"></i>
-                                    Ảnh minh hoạ 2
-                                </label>
-                                <input type="url" id="screenshot2" class="form-input" placeholder="URL ảnh minh hoạ">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="screenshot3">
-                                    <i class="fas fa-image"></i>
-                                    Ảnh minh hoạ 3
-                                </label>
-                                <input type="url" id="screenshot3" class="form-input" placeholder="URL ảnh minh hoạ">
-                            </div>
-
-                            <!-- Download Links -->
-                            <div class="form-group">
-                                <label class="form-label" for="downloadLink">
-                                    <i class="fas fa-download"></i>
-                                    Link tải miễn phí *
-                                </label>
-                                <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="vipLink1">
-                                    <i class="fas fa-crown"></i>
-                                    Link tải VIP
-                                </label>
-                                <input type="url" id="vipLink1" class="form-input" placeholder="https://example.com/vip-download">
-                            </div>
-
-                            <!-- Description -->
-                            <div class="form-group full-width">
-                                <label class="form-label" for="appDescription">
-                                    <i class="fas fa-align-left"></i>
-                                    Mô tả ứng dụng *
-                                </label>
-                                <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." rows="2" required></textarea>
-                            </div>
-
-                            <!-- Categories -->
-                            <div class="form-group full-width">
-                                <label class="form-label">
-                                    <i class="fas fa-folder"></i>
-                                    Danh mục ứng dụng *
-                                </label>
-                                <div class="categories-group">
-                                    <input type="checkbox" id="category-game" class="category-checkbox" value="game">
-                                    <label for="category-game" class="category-label">
-                                        <i class="fas fa-gamepad category-icon"></i>
-                                        <span>Trò chơi</span>
-                                    </label>
-
-                                    <input type="checkbox" id="category-social" class="category-checkbox" value="social">
-                                    <label for="category-social" class="category-label">
-                                        <i class="fas fa-users category-icon"></i>
-                                        <span>Mạng xã hội</span>
-                                    </label>
-
-                                    <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
-                                    <label for="category-entertainment" class="category-label">
-                                        <i class="fas fa-film category-icon"></i>
-                                        <span>Giải trí</span>
-                                    </label>
-
-                                    <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
-                                    <label for="category-photo" class="category-label">
-                                        <i class="fas fa-camera category-icon"></i>
-                                        <span>Chụp ảnh</span>
-                                    </label>
-
-                                    <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
-                                    <label for="category-clone" class="category-label">
-                                        <i class="fas fa-copy category-icon"></i>
-                                        <span>Nhân bản</span>
-                                    </label>
-
-                                    <input type="checkbox" id="category-premium" class="category-checkbox" value="premium">
-                                    <label for="category-premium" class="category-label">
-                                        <i class="fas fa-unlock category-icon"></i>
-                                        <span>Mở khoá Premium</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="submit-btn" id="submitBtn">
+                <!-- Upload Grid -->
+                <div class="upload-grid">
+                    <!-- Upload Form -->
+                    <section class="form-section">
+                        <h2 class="section-title">
                             <i class="fas fa-cloud-upload-alt"></i>
-                            Upload Ứng Dụng
-                        </button>
-                    </form>
-                </section>
+                            Upload Ứng Dụng Mới
+                        </h2>
 
-                <!-- Preview Section -->
-                <section class="preview-section">
-                    <h2 class="preview-title">
-                        <i class="fas fa-eye"></i>
-                        Xem Trước
-                    </h2>
-                    <div class="preview-content">
-                        <div class="preview-card" id="appPreview">
-                            <img src="https://via.placeholder.com/280x80/7c3aed/FFFFFF?text=Preview+Image" alt="Preview" class="preview-image" id="previewImage">
-                            <div class="preview-card-content">
-                                <div class="preview-header">
-                                    <img src="https://via.placeholder.com/30/7c3aed/FFFFFF?text=App" alt="App Icon" class="preview-icon" id="previewIcon">
-                                    <div class="preview-info">
-                                        <h3 class="preview-name" id="previewName">Tên ứng dụng</h3>
-                                        <div class="preview-developer" id="previewDeveloper">Nhà phát triển</div>
-                                        <div class="preview-meta">
-                                            <span id="previewVersion">Phiên bản: 1.0.0</span>
-                                        </div>
+                        <form class="upload-form" id="uploadForm">
+                            <div class="form-grid">
+                                <!-- Basic Information -->
+                                <div class="form-group full-width">
+                                    <label class="form-label" for="appName">
+                                        <i class="fas fa-tag"></i>
+                                        Tên ứng dụng *
+                                    </label>
+                                    <input type="text" id="appName" class="form-input" placeholder="Nhập tên ứng dụng" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="appDeveloper">
+                                        <i class="fas fa-user-tie"></i>
+                                        Nhà phát triển *
+                                    </label>
+                                    <input type="text" id="appDeveloper" class="form-input" placeholder="Nhà phát triển" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="appVersion">
+                                        <i class="fas fa-code-branch"></i>
+                                        Phiên bản *
+                                    </label>
+                                    <input type="text" id="appVersion" class="form-input" placeholder="Ví dụ: 1.0.0" required>
+                                </div>
+
+                                <!-- Images -->
+                                <div class="form-group full-width">
+                                    <label class="form-label" for="imageUrl">
+                                        <i class="fas fa-image"></i>
+                                        URL ảnh logo ứng dụng *
+                                    </label>
+                                    <input type="url" id="imageUrl" class="form-input" placeholder="https://example.com/app-logo.jpg" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="screenshot1">
+                                        <i class="fas fa-image"></i>
+                                        Ảnh minh hoạ 1
+                                    </label>
+                                    <input type="url" id="screenshot1" class="form-input" placeholder="URL ảnh minh hoạ">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="screenshot2">
+                                        <i class="fas fa-image"></i>
+                                        Ảnh minh hoạ 2
+                                    </label>
+                                    <input type="url" id="screenshot2" class="form-input" placeholder="URL ảnh minh hoạ">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="screenshot3">
+                                        <i class="fas fa-image"></i>
+                                        Ảnh minh hoạ 3
+                                    </label>
+                                    <input type="url" id="screenshot3" class="form-input" placeholder="URL ảnh minh hoạ">
+                                </div>
+
+                                <!-- Download Links -->
+                                <div class="form-group">
+                                    <label class="form-label" for="downloadLink">
+                                        <i class="fas fa-download"></i>
+                                        Link tải miễn phí *
+                                    </label>
+                                    <input type="url" id="downloadLink" class="form-input" placeholder="https://example.com/download" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="vipLink1">
+                                        <i class="fas fa-crown"></i>
+                                        Link tải VIP
+                                    </label>
+                                    <input type="url" id="vipLink1" class="form-input" placeholder="https://example.com/vip-download">
+                                </div>
+
+                                <!-- Description -->
+                                <div class="form-group full-width">
+                                    <label class="form-label" for="appDescription">
+                                        <i class="fas fa-align-left"></i>
+                                        Mô tả ứng dụng *
+                                    </label>
+                                    <textarea id="appDescription" class="form-input form-textarea" placeholder="Mô tả chi tiết về ứng dụng..." rows="3" required></textarea>
+                                </div>
+
+                                <!-- Categories -->
+                                <div class="form-group full-width">
+                                    <label class="form-label">
+                                        <i class="fas fa-folder"></i>
+                                        Danh mục ứng dụng *
+                                    </label>
+                                    <div class="categories-group">
+                                        <input type="checkbox" id="category-game" class="category-checkbox" value="game">
+                                        <label for="category-game" class="category-label">
+                                            <i class="fas fa-gamepad category-icon"></i>
+                                            <span>Trò chơi</span>
+                                        </label>
+
+                                        <input type="checkbox" id="category-social" class="category-checkbox" value="social">
+                                        <label for="category-social" class="category-label">
+                                            <i class="fas fa-users category-icon"></i>
+                                            <span>Mạng xã hội</span>
+                                        </label>
+
+                                        <input type="checkbox" id="category-entertainment" class="category-checkbox" value="entertainment">
+                                        <label for="category-entertainment" class="category-label">
+                                            <i class="fas fa-film category-icon"></i>
+                                            <span>Giải trí</span>
+                                        </label>
+
+                                        <input type="checkbox" id="category-photo" class="category-checkbox" value="photo">
+                                        <label for="category-photo" class="category-label">
+                                            <i class="fas fa-camera category-icon"></i>
+                                            <span>Chụp ảnh</span>
+                                        </label>
+
+                                        <input type="checkbox" id="category-clone" class="category-checkbox" value="clone">
+                                        <label for="category-clone" class="category-label">
+                                            <i class="fas fa-copy category-icon"></i>
+                                            <span>Nhân bản</span>
+                                        </label>
+
+                                        <input type="checkbox" id="category-premium" class="category-checkbox" value="premium">
+                                        <label for="category-premium" class="category-label">
+                                            <i class="fas fa-unlock category-icon"></i>
+                                            <span>Mở khoá Premium</span>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
-                                <div class="preview-tags" id="previewTags">
-                                    <!-- Tags will be added here -->
+                            </div>
+
+                            <button type="submit" class="submit-btn" id="submitBtn">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Upload Ứng Dụng
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- Preview Section -->
+                    <section class="preview-section">
+                        <h2 class="preview-title">
+                            <i class="fas fa-eye"></i>
+                            Xem Trước
+                        </h2>
+                        <div class="preview-content">
+                            <div class="preview-card" id="appPreview">
+                                <img src="https://via.placeholder.com/280x100/7c3aed/FFFFFF?text=Preview+Image" alt="Preview" class="preview-image" id="previewImage">
+                                <div class="preview-card-content">
+                                    <div class="preview-header">
+                                        <img src="https://via.placeholder.com/35/7c3aed/FFFFFF?text=App" alt="App Icon" class="preview-icon" id="previewIcon">
+                                        <div class="preview-info">
+                                            <h3 class="preview-name" id="previewName">Tên ứng dụng</h3>
+                                            <div class="preview-developer" id="previewDeveloper">Nhà phát triển</div>
+                                            <div class="preview-meta">
+                                                <span id="previewVersion">Phiên bản: 1.0.0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="preview-description" id="previewDescription">Mô tả ứng dụng sẽ hiển thị ở đây...</div>
+                                    <div class="preview-tags" id="previewTags">
+                                        <!-- Tags will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Screenshots Preview -->
+                            <div class="screenshots-preview">
+                                <h4><i class="fas fa-images"></i> Ảnh minh hoạ:</h4>
+                                <div class="screenshots-grid-preview">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+1" alt="Screenshot 1" class="screenshot-preview" id="previewScreenshot1">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+2" alt="Screenshot 2" class="screenshot-preview" id="previewScreenshot2">
+                                    <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+3" alt="Screenshot 3" class="screenshot-preview" id="previewScreenshot3">
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Screenshots Preview -->
-                        <div class="screenshots-preview">
-                            <h4><i class="fas fa-images"></i> Ảnh minh hoạ:</h4>
-                            <div class="screenshots-grid-preview">
-                                <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+1" alt="Screenshot 1" class="screenshot-preview" id="previewScreenshot1">
-                                <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+2" alt="Screenshot 2" class="screenshot-preview" id="previewScreenshot2">
-                                <img src="https://via.placeholder.com/80/1e293b/475569?text=Ảnh+3" alt="Screenshot 3" class="screenshot-preview" id="previewScreenshot3">
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
 
             <!-- Analytics Tab Content -->
             <div class="tab-content" id="analyticsTab">
-                <!-- Stats Cards -->
+                <!-- Stats Cards (9 cột) -->
                 <div class="stats-grid">
                     <!-- Tổng ứng dụng -->
                     <div class="stat-card">
@@ -1328,51 +1378,53 @@
                 </div>
 
                 <!-- Analytics Grid -->
-                <!-- Lượt truy cập gần đây -->
-                <section class="analytics-section">
-                    <div class="analytics-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-chart-bar"></i>
-                            Lượt truy cập gần đây
-                        </h2>
-                        <button class="refresh-btn" id="refreshAnalytics">
-                            <i class="fas fa-sync-alt"></i>
-                            Làm mới
-                        </button>
-                    </div>
-                    
-                    <div class="recent-visits">
-                        <div id="recentVisitsList">
-                            <div class="visit-item">
-                                <div class="visit-info">
-                                    <div class="visit-time">Đang tải dữ liệu...</div>
+                <div class="analytics-grid">
+                    <!-- Lượt truy cập gần đây -->
+                    <section class="analytics-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Lượt truy cập gần đây
+                            </h2>
+                            <button class="refresh-btn" id="refreshAnalytics">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="recent-visits">
+                            <div id="recentVisitsList">
+                                <div class="visit-item">
+                                    <div class="visit-info">
+                                        <div class="visit-time">Đang tải dữ liệu...</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Lượng truy cập chi tiết theo ngày -->
-                <section class="analytics-section">
-                    <div class="analytics-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-calendar-alt"></i>
-                            Lượng truy cập chi tiết
-                        </h2>
-                        <button class="refresh-btn" id="refreshDailyVisits">
-                            <i class="fas fa-sync-alt"></i>
-                            Làm mới
-                        </button>
-                    </div>
-                    
-                    <div class="daily-visits-list">
-                        <div id="dailyVisitsList">
-                            <div class="daily-visit-item">
-                                <div class="daily-visit-date">Đang tải dữ liệu...</div>
+                    <!-- Lượng truy cập chi tiết theo ngày -->
+                    <section class="daily-visits-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Lượng truy cập chi tiết
+                            </h2>
+                            <button class="refresh-btn" id="refreshDailyVisits">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="daily-visits-list">
+                            <div id="dailyVisitsList">
+                                <div class="daily-visit-item">
+                                    <div class="daily-visit-date">Đang tải dữ liệu...</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
 
             <!-- Upgrade Tab Content -->
@@ -1408,7 +1460,7 @@
                                 Email người dùng cần nâng cấp
                             </label>
                             <input type="email" id="userEmail" class="form-input" placeholder="Nhập email của người dùng" required>
-                            <button type="button" class="submit-btn" id="searchUserBtn" style="margin-top: 6px; padding: 5px 10px; font-size: 10px;">
+                            <button type="button" class="submit-btn" id="searchUserBtn" style="margin-top: 6px; padding: 6px 12px; font-size: 11px;">
                                 <i class="fas fa-search"></i>
                                 Tìm người dùng
                             </button>
@@ -1420,7 +1472,7 @@
                                 Gói thời gian
                             </label>
                             <div class="categories-group" id="vipPackagesList">
-                                <div style="color: var(--text-muted); text-align: center; padding: 10px; font-size: 10px;">
+                                <div style="color: var(--text-muted); text-align: center; padding: 15px; font-size: 11px;">
                                     Đang tải gói VIP...
                                 </div>
                             </div>
@@ -1433,16 +1485,16 @@
                     </form>
 
                     <!-- Nút tạo gói mặc định -->
-                    <div style="text-align: center; margin-top: 6px;">
-                        <button type="button" class="submit-btn" onclick="createDefaultPackages()" style="background: var(--info); max-width: 160px; margin: 0 auto; padding: 6px 12px; font-size: 10px;">
+                    <div style="text-align: center; margin-top: 8px;">
+                        <button type="button" class="submit-btn" onclick="createDefaultPackages()" style="background: var(--info); max-width: 180px; margin: 0 auto; padding: 8px 15px; font-size: 11px;">
                             <i class="fas fa-plus"></i>
                             Tạo Gói VIP Mặc Định
                         </button>
                     </div>
 
                     <!-- User Search Results -->
-                    <div id="userPreviewSection" style="display: none; margin-top: 10px;">
-                        <h3 class="section-title" style="font-size: 12px;">
+                    <div id="userPreviewSection" style="display: none; margin-top: 15px;">
+                        <h3 class="section-title" style="font-size: 14px;">
                             <i class="fas fa-user"></i>
                             Thông tin người dùng
                         </h3>
@@ -1567,60 +1619,62 @@
                         Tạo Mã
                     </button>
 
-                    <div id="createdCodesResult" style="margin-top: 8px; display: none;">
-                        <h4 style="margin-bottom: 6px; font-size: 11px;">Mã đã tạo:</h4>
-                        <div id="codesList" style="background: var(--background); padding: 6px; border-radius: 4px; border: 1px solid var(--border); max-height: 120px; overflow-y: auto; font-size: 10px;"></div>
+                    <div id="createdCodesResult" style="margin-top: 12px; display: none;">
+                        <h4 style="margin-bottom: 8px; font-size: 13px;">Mã đã tạo:</h4>
+                        <div id="codesList" style="background: var(--background); padding: 8px; border-radius: 5px; border: 1px solid var(--border); max-height: 150px; overflow-y: auto; font-size: 11px;"></div>
                     </div>
                 </section>
 
                 <!-- Codes Grid -->
-                <!-- Discount Codes List -->
-                <section class="analytics-section">
-                    <div class="analytics-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-tag"></i>
-                            Mã Giảm Giá
-                        </h2>
-                        <button class="refresh-btn" id="refreshDiscountCodes">
-                            <i class="fas fa-sync-alt"></i>
-                            Làm mới
-                        </button>
-                    </div>
-                    
-                    <div class="codes-list">
-                        <div id="discountCodesList">
-                            <div class="code-item">
-                                <div class="code-info">
-                                    <div class="code-value">Đang tải dữ liệu...</div>
+                <div class="codes-grid">
+                    <!-- Discount Codes List -->
+                    <section class="analytics-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-tag"></i>
+                                Mã Giảm Giá
+                            </h2>
+                            <button class="refresh-btn" id="refreshDiscountCodes">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="codes-list">
+                            <div id="discountCodesList">
+                                <div class="code-item">
+                                    <div class="code-info">
+                                        <div class="code-value">Đang tải dữ liệu...</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Activation Codes List -->
-                <section class="analytics-section">
-                    <div class="analytics-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-key"></i>
-                            Mã Kích Hoạt
-                        </h2>
-                        <button class="refresh-btn" id="refreshActivationCodes">
-                            <i class="fas fa-sync-alt"></i>
-                            Làm mới
-                        </button>
-                    </div>
-                    
-                    <div class="codes-list">
-                        <div id="activationCodesList">
-                            <div class="code-item">
-                                <div class="code-info">
-                                    <div class="code-value">Đang tải dữ liệu...</div>
+                    <!-- Activation Codes List -->
+                    <section class="analytics-section">
+                        <div class="analytics-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-key"></i>
+                                Mã Kích Hoạt
+                            </h2>
+                            <button class="refresh-btn" id="refreshActivationCodes">
+                                <i class="fas fa-sync-alt"></i>
+                                Làm mới
+                            </button>
+                        </div>
+                        
+                        <div class="codes-list">
+                            <div id="activationCodesList">
+                                <div class="code-item">
+                                    <div class="code-info">
+                                        <div class="code-value">Đang tải dữ liệu...</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
         </div>
     </main>
@@ -1883,7 +1937,7 @@
             codesList.innerHTML = '';
             codes.forEach(code => {
                 const codeElement = document.createElement('div');
-                codeElement.style.padding = '3px 0';
+                codeElement.style.padding = '4px 0';
                 codeElement.style.borderBottom = '1px solid var(--border)';
                 codeElement.textContent = code;
                 codesList.appendChild(codeElement);
@@ -2619,7 +2673,7 @@ Cài đặt ngay : ${appUrl}
         // Load VIP packages
         async function loadVIPPackages() {
             try {
-                vipPackagesList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 10px; font-size: 10px;"><div class="loading"></div> Đang tải gói VIP...</div>';
+                vipPackagesList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 15px; font-size: 11px;"><div class="loading"></div> Đang tải gói VIP...</div>';
                 
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getVIPPackages&t=${Date.now()}`);
                 
