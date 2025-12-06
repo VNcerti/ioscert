@@ -371,6 +371,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-primary);
 }
 
 .app-tags {
@@ -380,6 +381,7 @@ body {
     margin-bottom: 4px;
 }
 
+/* CHỈNH SỬA APP-TAG CHO CHẾ ĐỘ TỐI */
 .app-tag {
     background: var(--primary-light);
     color: var(--primary);
@@ -387,6 +389,12 @@ body {
     border-radius: 6px;
     font-size: 9px;
     font-weight: 500;
+}
+
+/* Chỉ áp dụng màu #181f2e cho chế độ tối */
+[data-theme="dark"] .app-tag {
+    background: #181f2e;
+    color: var(--primary);
 }
 
 .app-meta {
@@ -491,6 +499,7 @@ body {
 
 .download-btn:hover {
     background: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 /* Featured Section */
@@ -550,6 +559,17 @@ body {
     background: rgba(0, 0, 0, 0.5);
     z-index: 2000;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .search-modal-content {
@@ -561,6 +581,16 @@ body {
     border-radius: 0 0 20px 20px;
     padding: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 .search-modal-header {
@@ -577,8 +607,8 @@ body {
     border-radius: 12px;
     font-size: 16px;
     background: var(--surface);
-    outline: none;
     color: var(--text-primary);
+    outline: none;
 }
 
 .search-modal-input:focus {
@@ -592,6 +622,11 @@ body {
     color: var(--text-secondary);
     cursor: pointer;
     padding: 8px;
+    transition: color 0.2s ease;
+}
+
+.close-search:hover {
+    color: var(--primary);
 }
 
 .search-results {
@@ -634,9 +669,14 @@ body {
     color: var(--primary);
 }
 
+.nav-item:hover {
+    transform: translateY(-2px);
+}
+
 .nav-icon {
     font-size: 16px;
     margin-bottom: 2px;
+    transition: transform 0.3s ease;
 }
 
 .nav-label {
@@ -693,6 +733,9 @@ body {
     gap: 12px;
     padding: 12px;
     height: 110px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
 }
 
 .skeleton-logo {
@@ -746,6 +789,31 @@ body {
     100% {
         background-position: -200% 0;
     }
+}
+
+/* Debug Info - CHỈNH SỬA CHO CHẾ ĐỘ TỐI */
+.debug-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    display: none;
+}
+
+.debug-toggle {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+/* Chế độ tối cho debug-toggle */
+[data-theme="dark"] .debug-toggle {
+    color: #1e293b;
 }
 
 /* Responsive */
