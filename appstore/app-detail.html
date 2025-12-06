@@ -591,25 +591,29 @@
         }
 
         /* Debug Info */
-        .debug-info {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 11px;
-            color: var(--text-muted);
-            display: none;
-        }
+     .debug-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    display: none;
+}
 
-        .debug-toggle {
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 11px;
-            margin-top: 5px;
-            display: inline-block;
-        }
+.debug-toggle {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
+    margin-top: 5px;
+    display: inline-block;
+}
 
+/* Chế độ tối cho debug-toggle */
+[data-theme="dark"] .debug-toggle {
+    color: #1e293b;
+}
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
