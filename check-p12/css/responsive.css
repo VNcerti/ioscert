@@ -1,0 +1,73 @@
+/* Responsive Design */
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+    
+    .container {
+        padding: 20px;
+        border-radius: var(--radius);
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .section {
+        padding: 18px;
+        margin-bottom: 16px;
+    }
+    
+    .btn {
+        padding: 14px;
+        font-size: 1rem;
+    }
+    
+    .result-title {
+        font-size: 1.2rem;
+    }
+    
+    .cert-info {
+        margin-bottom: 14px;
+        padding-bottom: 14px;
+    }
+    
+    .progress-container {
+        height: 28px;
+    }
+    
+    .progress-bar {
+        font-size: 0.9rem;
+    }
+    
+    .loading-step-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 350px) {
+    .container {
+        padding: 16px;
+    }
+    
+    h1 {
+        font-size: 1.4rem;
+    }
+    
+    .section {
+        padding: 16px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .file-input-label {
+        padding: 24px 16px;
+    }
+}
