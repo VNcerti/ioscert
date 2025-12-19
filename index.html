@@ -693,6 +693,34 @@ background: #4461ee;
     <!-- ========== ESIGN LIST ========== -->
     <div id="esign-list" class="app-grid">
 
+ <!-- ESign Item: Commission.on.Elections -->
+ <div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-signature"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        ESign 5.0.2
+        <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="Commission.on.Elections">
+        <i class="fas fa-map-marker-alt"></i> Commission.on.Elections
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-esign-commiss">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-esign-commiss" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End ESign Item:Commission.on.Elections -->
+
+      
  <!-- ESign Item: Wasu Media & Network Co., Ltd. -->
  <div class="app-card">
   <div class="app-header">
@@ -1021,7 +1049,36 @@ background: #4461ee;
     <!-- ========== CERT LIST ========== -->
     <div id="cert-list" class="app-grid hidden">
 
+<!-- Cert Item: Commission.on.Elections -->
+<div class="app-card">
+  <div class="app-header">
+    <div class="app-icon">
+      <i class="fas fa-certificate"></i>
+      <img src="https://i.imgur.com/75R0Rgw.png" alt="NEW" class="new-badge">
+    </div>
+    <div>
+      <div class="app-title">
+        Certificate File
+        <span class="status-dot"></span>
+      </div>
+      <div class="app-meta" data-i18n="Commission.on.Elections">
+        <i class="fas fa-map-marker-alt"></i> Commission.on.Elections
+      </div>
+      <div class="download-count">
+        <i class="fas fa-user"></i>
+        <span id="counter-cert-commiss">Đang tải dữ liệu...</span>
+      </div>
+    </div>
+  </div>
+  <a id="download-cert-commiss" class="download-btn" href="#">
+    Download <i class="fas fa-download"></i>
+  </a>
+</div>
+<!-- End Cert Item: Commission.on.Elections -->
 
+
+
+      
 <!-- Cert Item: Wasu Media & Network Co., Ltd. -->
 <div class="app-card">
   <div class="app-header">
@@ -1898,6 +1955,7 @@ background: #4461ee;
     // Khởi tạo các nút download khi trang tải xong
     window.addEventListener("load", () => {
       const esignButtons = [
+           { btnId: 'download-esign-commiss', linkId: 'esign-wasu', url: 'https://authtool.app/app-store/WiK7OjjXnI/' },   
        { btnId: 'download-esign-wasu', linkId: 'esign-wasu', url: 'https://link4sub.com/BZ9p' },      
          { btnId: 'download-esign-Etisalat', linkId: 'esign-Etisalat', url: 'https://link4sub.com/dmS5' },
       { btnId: 'download-esign-ola', linkId: 'esign-ola', url: 'https://link4sub.com/oXbA' },
@@ -1914,6 +1972,7 @@ background: #4461ee;
       ];
 
       const certButtons = [
+         { btnId: 'download-cert-commiss', linkId: 'cert-wasu', url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/Commission.on.Elections.zip' },   
         { btnId: 'download-cert-wasu', linkId: 'cert-wasu', url: 'https://link4m.com/wTHB6k' },      
       { btnId: 'download-cert-Etisalat', linkId: 'cert-Etisalat', url: 'https://link4m.com/92x5t' },
         { btnId: 'download-cert-global', linkId: 'cert-global', url: 'https://link4m.com/4bQLgsj' },
