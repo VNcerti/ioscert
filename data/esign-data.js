@@ -1,5 +1,110 @@
-<script>
-<!--
-document.write(unescape("//%20data/esign-data.js%0Aexport%20const%20esignItems%20%3D%20%5B%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-commiss%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Commission.on.Elections%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20statusDot%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/IoM8%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-wasu%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Wasu%20Media%20%26%20Network%20Co.%2C%20Ltd.%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20statusDot%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/BZ9p%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-Etisalat%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Etisalat%20-%20Emirates%20Telecommunications%20Corporation%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20statusDot%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/dmS5%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-ola%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27OLA%20CITY%20GLOBAL%20LIMITED%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/oXbA%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-global%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27GLOBAL%20TAKEOFF%2C%20INC%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/JjFO%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-zheshang%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27China%20Zheshang%20Bank%20Co.%2C%20Ltd%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20badge%3A%20true%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/JjFO%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-bmw%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27BMW%20Brilliance%20Automotive%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/jh5D%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-beijing%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Beijing%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/K8V9%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-railway%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27China%20Railway%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/9WWn%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-dtt%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Dtt%20Technology%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/y6nn%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-tcl%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27TCL%20Household%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/Xnjk%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-wuling%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27Wuling%20Power%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/OKaz%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-vietnamcert%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27VietNamCert.01%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/bsZQ%27%0A%20%20%7D%2C%0A%20%20%7B%0A%20%20%20%20id%3A%20%27esign-nsl%27%2C%0A%20%20%20%20title%3A%20%27ESign%205.0.2%27%2C%0A%20%20%20%20company%3A%20%27National%20Science%20Library%27%2C%0A%20%20%20%20icon%3A%20%27fas%20fa-signature%27%2C%0A%20%20%20%20url%3A%20%27https%3A//link4sub.com/2k3j%27%0A%20%20%7D%0A%5D%3B"));
-//-->
-</script>
+// data/esign-data.js
+export const esignItems = [
+  {
+    id: 'esign-commiss',
+    title: 'ESign 5.0.2',
+    company: 'Commission.on.Elections',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/IoM8'
+  },
+  {
+    id: 'esign-wasu',
+    title: 'ESign 5.0.2',
+    company: 'Wasu Media & Network Co., Ltd.',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/BZ9p'
+  },
+  {
+    id: 'esign-Etisalat',
+    title: 'ESign 5.0.2',
+    company: 'Etisalat - Emirates Telecommunications Corporation',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/dmS5'
+  },
+  {
+    id: 'esign-ola',
+    title: 'ESign 5.0.2',
+    company: 'OLA CITY GLOBAL LIMITED',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/oXbA'
+  },
+  {
+    id: 'esign-global',
+    title: 'ESign 5.0.2',
+    company: 'GLOBAL TAKEOFF, INC',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/JjFO'
+  },
+  {
+    id: 'esign-zheshang',
+    title: 'ESign 5.0.2',
+    company: 'China Zheshang Bank Co., Ltd',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/JjFO'
+  },
+  {
+    id: 'esign-bmw',
+    title: 'ESign 5.0.2',
+    company: 'BMW Brilliance Automotive',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/jh5D'
+  },
+  {
+    id: 'esign-beijing',
+    title: 'ESign 5.0.2',
+    company: 'Beijing',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/K8V9'
+  },
+  {
+    id: 'esign-railway',
+    title: 'ESign 5.0.2',
+    company: 'China Railway',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/9WWn'
+  },
+  {
+    id: 'esign-dtt',
+    title: 'ESign 5.0.2',
+    company: 'Dtt Technology',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/y6nn'
+  },
+  {
+    id: 'esign-tcl',
+    title: 'ESign 5.0.2',
+    company: 'TCL Household',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/Xnjk'
+  },
+  {
+    id: 'esign-wuling',
+    title: 'ESign 5.0.2',
+    company: 'Wuling Power',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/OKaz'
+  },
+  {
+    id: 'esign-vietnamcert',
+    title: 'ESign 5.0.2',
+    company: 'VietNamCert.01',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/bsZQ'
+  },
+  {
+    id: 'esign-nsl',
+    title: 'ESign 5.0.2',
+    company: 'National Science Library',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/2k3j'
+  }
+];
