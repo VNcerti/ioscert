@@ -1,110 +1,102 @@
-// data/esign-data.js
-export const esignItems = [
+// data/cert-data.js
+export const certItems = [
   {
-    id: 'esign-commiss',
-    title: 'ESign 5.0.2',
+    id: 'cert-commiss',
+    title: 'Certificate File',
     company: 'Commission.on.Elections',
-    icon: 'fas fa-signature',
+    icon: 'fas fa-certificate',
     badge: true,
     statusDot: true,
-    url: 'https://link4sub.com/IoM8'
+    url: 'https://link4m.com/RW7iy7At'
   },
   {
-    id: 'esign-wasu',
-    title: 'ESign 5.0.2',
+    id: 'cert-wasu',
+    title: 'Certificate File',
     company: 'Wasu Media & Network Co., Ltd.',
-    icon: 'fas fa-signature',
+    icon: 'fas fa-certificate',
     badge: true,
     statusDot: true,
-    url: 'https://link4sub.com/BZ9p'
+    url: 'https://link4m.com/wTHB6k'
   },
   {
-    id: 'esign-Etisalat',
-    title: 'ESign 5.0.2',
+    id: 'cert-Etisalat',
+    title: 'Certificate File',
     company: 'Etisalat - Emirates Telecommunications Corporation',
-    icon: 'fas fa-signature',
+    icon: 'fas fa-certificate',
     badge: true,
     statusDot: true,
-    url: 'https://link4sub.com/dmS5'
+    url: 'https://link4m.com/92x5t'
   },
   {
-    id: 'esign-ola',
-    title: 'ESign 5.0.2',
-    company: 'OLA CITY GLOBAL LIMITED',
-    icon: 'fas fa-signature',
-    badge: true,
-    url: 'https://link4sub.com/oXbA'
-  },
-  {
-    id: 'esign-global',
-    title: 'ESign 5.0.2',
+    id: 'cert-global',
+    title: 'Certificate File',
     company: 'GLOBAL TAKEOFF, INC',
-    icon: 'fas fa-signature',
+    icon: 'fas fa-certificate',
     badge: true,
-    url: 'https://link4sub.com/JjFO'
+    url: 'https://link4m.com/4bQLgsj'
   },
   {
-    id: 'esign-zheshang',
-    title: 'ESign 5.0.2',
+    id: 'cert-zheshang',
+    title: 'Certificate File',
     company: 'China Zheshang Bank Co., Ltd',
-    icon: 'fas fa-signature',
+    icon: 'fas fa-certificate',
     badge: true,
-    url: 'https://link4sub.com/JjFO'
+    url: 'https://link4m.com/epZLK'
   },
   {
-    id: 'esign-bmw',
-    title: 'ESign 5.0.2',
+    id: 'cert-bmw',
+    title: 'Certificate File',
     company: 'BMW Brilliance Automotive',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/jh5D'
+    icon: 'fas fa-certificate',
+    url: 'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file'
   },
   {
-    id: 'esign-beijing',
-    title: 'ESign 5.0.2',
+    id: 'cert-beijing',
+    title: 'Certificate File',
     company: 'Beijing',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/K8V9'
+    icon: 'fas fa-certificate',
+    url: 'https://link4m.com/phPY35Qe'
   },
   {
-    id: 'esign-railway',
-    title: 'ESign 5.0.2',
+    id: 'cert-railway',
+    title: 'Certificate File',
     company: 'China Railway',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/9WWn'
+    icon: 'fas fa-certificate',
+    url: 'https://link4m.com/tB8urR'
   },
   {
-    id: 'esign-dtt',
-    title: 'ESign 5.0.2',
+    id: 'cert-dtt',
+    title: 'Certificate File',
     company: 'Dtt Technology',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/y6nn'
+    icon: 'fas fa-certificate',
+    url: 'https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file'
   },
   {
-    id: 'esign-tcl',
-    title: 'ESign 5.0.2',
+    id: 'cert-tcl',
+    title: 'Certificate File',
     company: 'TCL Household',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/Xnjk'
+    icon: 'fas fa-certificate',
+    url: 'https://link4m.com/kZuQ2sb'
   },
   {
-    id: 'esign-wuling',
-    title: 'ESign 5.0.2',
+    id: 'cert-wuling',
+    title: 'Certificate File',
     company: 'Wuling Power',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/OKaz'
+    icon: 'fas fa-certificate',
+    url: 'https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file'
   },
   {
-    id: 'esign-vietnamcert',
-    title: 'ESign 5.0.2',
+    id: 'cert-vietnamcert',
+    title: 'Certificate File',
     company: 'VietNamCert.01',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/bsZQ'
+    icon: 'fas fa-certificate',
+    url: 'https://yeumoney.com/3GTBHW'
   },
   {
-    id: 'esign-nsl',
-    title: 'ESign 5.0.2',
+    id: 'cert-nsl',
+    title: 'Certificate File',
     company: 'National Science Library',
-    icon: 'fas fa-signature',
-    url: 'https://link4sub.com/2k3j'
+    icon: 'fas fa-certificate',
+    url: 'https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file'
   }
 ];
