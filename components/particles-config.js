@@ -1,5 +1,90 @@
-<script>
-<!--
-document.write(unescape("//%20components/particles-config.js%0Aexport%20function%20initParticles%28%29%20%7B%0A%20%20%20%20const%20currentTheme%20%3D%20document.documentElement.getAttribute%28%27data-theme%27%29%20%7C%7C%20%27dark%27%3B%0A%20%20%20%20%0A%20%20%20%20particlesJS%28%22particles-js%22%2C%20%7B%0A%20%20%20%20%20%20%22particles%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22number%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20150%2C%0A%20%20%20%20%20%20%20%20%20%20%22density%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22enable%22%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value_area%22%3A%20800%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22color%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20currentTheme%20%3D%3D%3D%20%27dark%27%20%3F%20%22%23ffffff%22%20%3A%20%22%23000000%22%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22shape%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22circle%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22stroke%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22width%22%3A%200%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22color%22%3A%20currentTheme%20%3D%3D%3D%20%27dark%27%20%3F%20%22%23000000%22%20%3A%20%22%23000000%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22opacity%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22value%22%3A%200.3%2C%0A%20%20%20%20%20%20%20%20%20%20%22random%22%3A%20true%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22size%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22value%22%3A%202%2C%0A%20%20%20%20%20%20%20%20%20%20%22random%22%3A%20true%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22line_linked%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22enable%22%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%22distance%22%3A%20140%2C%0A%20%20%20%20%20%20%20%20%20%20%22color%22%3A%20currentTheme%20%3D%3D%3D%20%27dark%27%20%3F%20%22%23ffffff%22%20%3A%20%22%23000000%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22opacity%22%3A%200.2%2C%0A%20%20%20%20%20%20%20%20%20%20%22width%22%3A%201%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22move%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22enable%22%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%22speed%22%3A%201.2%2C%0A%20%20%20%20%20%20%20%20%20%20%22direction%22%3A%20%22none%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22random%22%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%22straight%22%3A%20false%2C%0A%20%20%20%20%20%20%20%20%20%20%22out_mode%22%3A%20%22out%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22bounce%22%3A%20false%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22interactivity%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22detect_on%22%3A%20%22canvas%22%2C%0A%20%20%20%20%20%20%20%20%22events%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22onhover%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22enable%22%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22mode%22%3A%20%22repulse%22%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%22onclick%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22enable%22%3A%20false%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%22resize%22%3A%20true%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22modes%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22repulse%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22distance%22%3A%2070%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22duration%22%3A%200.4%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22retina_detect%22%3A%20true%0A%20%20%20%20%7D%29%3B%0A%20%20%7D%0A%20%20%0A%20%20export%20function%20updateParticlesTheme%28%29%20%7B%0A%20%20%20%20const%20currentTheme%20%3D%20document.documentElement.getAttribute%28%27data-theme%27%29%20%7C%7C%20%27dark%27%3B%0A%20%20%20%20%0A%20%20%20%20if%20%28window.pJSDom%20%26%26%20window.pJSDom.length%20%3E%200%29%20%7B%0A%20%20%20%20%20%20const%20pJS%20%3D%20window.pJSDom%5B0%5D.pJS%3B%0A%20%20%20%20%20%20%0A%20%20%20%20%20%20if%20%28currentTheme%20%3D%3D%3D%20%27dark%27%29%20%7B%0A%20%20%20%20%20%20%20%20pJS.particles.color.value%20%3D%20%22%23ffffff%22%3B%0A%20%20%20%20%20%20%20%20pJS.particles.line_linked.color%20%3D%20%22%23ffffff%22%3B%0A%20%20%20%20%20%20%20%20pJS.particles.line_linked.opacity%20%3D%200.2%3B%0A%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20pJS.particles.color.value%20%3D%20%22%23000000%22%3B%0A%20%20%20%20%20%20%20%20pJS.particles.line_linked.color%20%3D%20%22%23000000%22%3B%0A%20%20%20%20%20%20%20%20pJS.particles.line_linked.opacity%20%3D%200.2%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%0A%20%20%20%20%20%20pJS.fn.particlesRefresh%28%29%3B%0A%20%20%20%20%7D%0A%20%20%7D"));
-//-->
-</script>
+// components/particles-config.js
+export function initParticles() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 150,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": currentTheme === 'dark' ? "#ffffff" : "#000000"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": currentTheme === 'dark' ? "#000000" : "#000000"
+          }
+        },
+        "opacity": {
+          "value": 0.3,
+          "random": true
+        },
+        "size": {
+          "value": 2,
+          "random": true
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 140,
+          "color": currentTheme === 'dark' ? "#ffffff" : "#000000",
+          "opacity": 0.2,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 1.2,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": false
+          },
+          "resize": true
+        },
+        "modes": {
+          "repulse": {
+            "distance": 70,
+            "duration": 0.4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  }
+  
+  export function updateParticlesTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    
+    if (window.pJSDom && window.pJSDom.length > 0) {
+      const pJS = window.pJSDom[0].pJS;
+      
+      if (currentTheme === 'dark') {
+        pJS.particles.color.value = "#ffffff";
+        pJS.particles.line_linked.color = "#ffffff";
+        pJS.particles.line_linked.opacity = 0.2;
+      } else {
+        pJS.particles.color.value = "#000000";
+        pJS.particles.line_linked.color = "#000000";
+        pJS.particles.line_linked.opacity = 0.2;
+      }
+      
+      pJS.fn.particlesRefresh();
+    }
+  }
