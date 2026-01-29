@@ -1,6 +1,15 @@
 // data/cert-data.js
 export const certItems = [
   {
+    id: 'cert-China Academy of Railway Sciences',
+    title: 'Certificate File',
+    company: 'China Academy of Railway Sciences',
+    icon: 'fas fa-certificate',
+    badge: true,
+    statusDot: true,
+    url: 'https://github.com/VNcerti/ioscert/releases/download/v1.0.0/292vncert_certificate.zip'
+  },
+  {
     id: 'cert-commiss',
     title: 'Certificate File',
     company: 'Commission.on.Elections',
