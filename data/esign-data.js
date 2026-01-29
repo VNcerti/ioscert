@@ -1,6 +1,15 @@
 // data/esign-data.js
 export const esignItems = [
   {
+    id: 'esign-China Academy of Railway Sciences',
+    title: 'ESign 5.0.2',
+    company: 'China Academy of Railway Sciences',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/CEhT4K5ooS'
+  },
+  {
     id: 'esign-commiss',
     title: 'ESign 5.0.2',
     company: 'Commission.on.Elections',
