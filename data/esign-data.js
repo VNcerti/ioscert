@@ -1,1 +1,119 @@
-const _0x153999=_0x2e12;function _0x2e12(_0x187482,_0x46c2d2){_0x187482=_0x187482-0x13b;const _0x4189bd=_0x4189();let _0x2e1218=_0x4189bd[_0x187482];return _0x2e1218;}(function(_0x732e71,_0x1633eb){const _0x272197=_0x2e12,_0x3d73ae=_0x732e71();while(!![]){try{const _0x244b90=-parseInt(_0x272197(0x14c))/0x1*(parseInt(_0x272197(0x13f))/0x2)+parseInt(_0x272197(0x153))/0x3*(parseInt(_0x272197(0x14e))/0x4)+parseInt(_0x272197(0x13c))/0x5*(parseInt(_0x272197(0x163))/0x6)+-parseInt(_0x272197(0x13d))/0x7+-parseInt(_0x272197(0x14f))/0x8+parseInt(_0x272197(0x150))/0x9*(-parseInt(_0x272197(0x162))/0xa)+parseInt(_0x272197(0x156))/0xb;if(_0x244b90===_0x1633eb)break;else _0x3d73ae['push'](_0x3d73ae['shift']());}catch(_0x3d66ff){_0x3d73ae['push'](_0x3d73ae['shift']());}}}(_0x4189,0x312cc));function _0x4189(){const _0x28bca2=['GLOBAL\x20TAKEOFF,\x20INC','China\x20Academy\x20of\x20Railway\x20Sciences','cert-bmw','China\x20Zheshang\x20Bank\x20Co.,\x20Ltd','https://yeumoney.com/3GTBHW','Certificate\x20File','VietNamCert.01','https://link4m.com/phL230','cert-dtt','46310aqcYgI','672ILsUAA','https://link4m.com/RW7iy7At','https://www.mediafire.com/file/mi9yi0okxf4slvl/National+Science+Library,Chinese+Academy+of+Sciences.zip/file','Etisalat\x20-\x20Emirates\x20Telecommunications\x20Corporation','https://link4m.com/epZLK','17040REuWds','1997485fiDWQL','cert-tcl','154apwwFe','fas\x20fa-certificate','cert-China\x20Academy\x20of\x20Railway\x20Sciences','cert-railway','https://link4m.com/tB8urR','https://link4m.com/92x5t','cert-vietnamcert','Beijing','cert-Etisalat','https://link4m.com/4bQLgsj','cert-zheshang','https://link4m.com/wTHB6k','https://www.mediafire.com/file/gt97g58vxmuqpcm/Wuling+Power+Corporation.zip/file','1667hbQfSn','https://link4m.com/phPY35Qe','2624ZnOTsC','2875328ODITqc','261HtzDyQ','Dtt\x20Technology','Wasu\x20Media\x20&\x20Network\x20Co.,\x20Ltd.','1038mIREJI','Commission.on.Elections','https://www.mediafire.com/file/sxjfhmdlax9tdfy/Dtt+Technology+Co.zip/file','5501947WgKbEp','cert-nsl','TCL\x20Household'];_0x4189=function(){return _0x28bca2;};return _0x4189();}export const certItems=[{'id':_0x153999(0x141),'title':_0x153999(0x15e),'company':_0x153999(0x15a),'icon':_0x153999(0x140),'badge':!![],'statusDot':!![],'url':_0x153999(0x160)},{'id':'cert-commiss','title':'Certificate\x20File','company':_0x153999(0x154),'icon':_0x153999(0x140),'badge':!![],'statusDot':!![],'url':_0x153999(0x164)},{'id':'cert-wasu','title':_0x153999(0x15e),'company':_0x153999(0x152),'icon':_0x153999(0x140),'badge':!![],'statusDot':!![],'url':_0x153999(0x14a)},{'id':_0x153999(0x147),'title':_0x153999(0x15e),'company':_0x153999(0x166),'icon':_0x153999(0x140),'badge':!![],'statusDot':!![],'url':_0x153999(0x144)},{'id':'cert-global','title':_0x153999(0x15e),'company':_0x153999(0x159),'icon':_0x153999(0x140),'badge':!![],'url':_0x153999(0x148)},{'id':_0x153999(0x149),'title':'Certificate\x20File','company':_0x153999(0x15c),'icon':'fas\x20fa-certificate','badge':!![],'url':_0x153999(0x13b)},{'id':_0x153999(0x15b),'title':'Certificate\x20File','company':'BMW\x20Brilliance\x20Automotive','icon':_0x153999(0x140),'url':'https://www.mediafire.com/file/bleytnn30nu8pby/China+Zheshang+Bank+Co.,+Ltd.zip/file'},{'id':'cert-beijing','title':_0x153999(0x15e),'company':_0x153999(0x146),'icon':_0x153999(0x140),'url':_0x153999(0x14d)},{'id':_0x153999(0x142),'title':'Certificate\x20File','company':'China\x20Railway','icon':_0x153999(0x140),'url':_0x153999(0x143)},{'id':_0x153999(0x161),'title':_0x153999(0x15e),'company':_0x153999(0x151),'icon':_0x153999(0x140),'url':_0x153999(0x155)},{'id':_0x153999(0x13e),'title':_0x153999(0x15e),'company':_0x153999(0x158),'icon':_0x153999(0x140),'url':'https://link4m.com/kZuQ2sb'},{'id':'cert-wuling','title':_0x153999(0x15e),'company':'Wuling\x20Power','icon':_0x153999(0x140),'url':_0x153999(0x14b)},{'id':_0x153999(0x145),'title':_0x153999(0x15e),'company':_0x153999(0x15f),'icon':'fas\x20fa-certificate','url':_0x153999(0x15d)},{'id':_0x153999(0x157),'title':_0x153999(0x15e),'company':'National\x20Science\x20Library','icon':_0x153999(0x140),'url':_0x153999(0x165)}];
+// data/esign-data.js
+export const esignItems = [
+  {
+    id: 'esign-China Academy of Railway Sciences',
+    title: 'ESign 5.0.2',
+    company: 'China Academy of Railway Sciences',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://modos.site/view.html?id=0YIjwNIm'
+  },
+  {
+    id: 'esign-commiss',
+    title: 'ESign 5.0.2',
+    company: 'Commission.on.Elections',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/IoM8'
+  },
+  {
+    id: 'esign-wasu',
+    title: 'ESign 5.0.2',
+    company: 'Wasu Media & Network Co., Ltd.',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/BZ9p'
+  },
+  {
+    id: 'esign-Etisalat',
+    title: 'ESign 5.0.2',
+    company: 'Etisalat - Emirates Telecommunications Corporation',
+    icon: 'fas fa-signature',
+    badge: true,
+    statusDot: true,
+    url: 'https://link4sub.com/dmS5'
+  },
+  {
+    id: 'esign-ola',
+    title: 'ESign 5.0.2',
+    company: 'OLA CITY GLOBAL LIMITED',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/oXbA'
+  },
+  {
+    id: 'esign-global',
+    title: 'ESign 5.0.2',
+    company: 'GLOBAL TAKEOFF, INC',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/JjFO'
+  },
+  {
+    id: 'esign-zheshang',
+    title: 'ESign 5.0.2',
+    company: 'China Zheshang Bank Co., Ltd',
+    icon: 'fas fa-signature',
+    badge: true,
+    url: 'https://link4sub.com/JjFO'
+  },
+  {
+    id: 'esign-bmw',
+    title: 'ESign 5.0.2',
+    company: 'BMW Brilliance Automotive',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/jh5D'
+  },
+  {
+    id: 'esign-beijing',
+    title: 'ESign 5.0.2',
+    company: 'Beijing',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/K8V9'
+  },
+  {
+    id: 'esign-railway',
+    title: 'ESign 5.0.2',
+    company: 'China Railway',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/9WWn'
+  },
+  {
+    id: 'esign-dtt',
+    title: 'ESign 5.0.2',
+    company: 'Dtt Technology',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/y6nn'
+  },
+  {
+    id: 'esign-tcl',
+    title: 'ESign 5.0.2',
+    company: 'TCL Household',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/Xnjk'
+  },
+  {
+    id: 'esign-wuling',
+    title: 'ESign 5.0.2',
+    company: 'Wuling Power',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/OKaz'
+  },
+  {
+    id: 'esign-vietnamcert',
+    title: 'ESign 5.0.2',
+    company: 'VietNamCert.01',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/bsZQ'
+  },
+  {
+    id: 'esign-nsl',
+    title: 'ESign 5.0.2',
+    company: 'National Science Library',
+    icon: 'fas fa-signature',
+    url: 'https://link4sub.com/2k3j'
+  }
+];
