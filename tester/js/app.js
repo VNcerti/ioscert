@@ -32,8 +32,10 @@ new Vue({
         
         // Data mới cho phần chọn ứng dụng
         selectedApp: '',
-        selectedIpaFile: null, // File IPA sẽ được dùng để ký
-        customIpaFile: null,   // Chỉ lưu file custom để hiển thị
+        // CHỈ TỒN TẠI 1 BIẾN IPA DUY NHẤT - TUÂN THỦ YÊU CẦU
+        ipa: null,  // Biến IPA duy nhất dùng chung cho cả auto và custom
+        // Biến lưu file custom chỉ để hiển thị
+        customIpaFile: null,
         appStatusText: '',
         appStatusClass: '',
         appStatusIcon: '',
@@ -67,27 +69,43 @@ new Vue({
         
         canSign() {
             console.log('=== CAN SIGN CHECK ===');
-            console.log('1. Selected App:', this.selectedApp);
-            console.log('2. Selected IPA File:', this.selectedIpaFile);
-            console.log('3. Cert ZIP:', this.certZip);
-            console.log('4. Password:', this.password ? 'Đã nhập' : 'Chưa nhập');
-            console.log('5. P12:', this.p12 ? 'Có' : 'Không');
-            console.log('6. Mobileprovision:', this.mobileprovision ? 'Có' : 'Không');
+            console.log('1. IPA file:', this.ipa ? `Có (${this.ipa.name}, ${this.formatFileSize(this.ipa.size)})` : 'Không');
+            console.log('2. Cert ZIP:', this.certZip ? 'Đã chọn' : 'Chưa chọn');
+            console.log('3. Password:', this.password ? 'Đã nhập' : 'Chưa nhập');
+            console.log('4. P12:', this.p12 ? 'Có' : 'Không');
+            console.log('5. Mobileprovision:', this.mobileprovision ? 'Có' : 'Không');
+            console.log('6. Selected App:', this.selectedApp || 'Không');
             
-            // Kiểm tra xem có đủ điều kiện để ký không
-            if (!this.certZip || !this.password) {
-                console.log('❌ Thiếu certZip hoặc password');
+            // Validate các trường bắt buộc
+            if (!this.ipa) {
+                console.log('❌ Thiếu file IPA!');
                 return false;
             }
             
-            // Kiểm tra IPA: có thể là auto-load hoặc upload thủ công
-            if (this.selectedApp && this.selectedIpaFile) {
-                console.log('✅ Đủ điều kiện ký!');
-                return true;
+            if (!this.certZip) {
+                console.log('❌ Thiếu file ZIP chứng chỉ!');
+                return false;
             }
             
-            console.log('❌ Chưa chọn app hoặc chưa có IPA file');
-            return false;
+            if (!this.password) {
+                console.log('❌ Thiếu mật khẩu chứng chỉ!');
+                return false;
+            }
+            
+            // Check if zip extraction was successful
+            if (!this.p12 || !this.mobileprovision) {
+                console.log('❌ File zip không chứa đủ file cần thiết!');
+                return false;
+            }
+            
+            // Kiểm tra kích thước IPA
+            if (this.ipa.size === 0) {
+                console.log('❌ IPA file có kích thước = 0');
+                return false;
+            }
+            
+            console.log('✅ Đủ điều kiện ký!');
+            return true;
         },
         
         signButtonText() {
@@ -130,9 +148,9 @@ new Vue({
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         },
         
-        // Method chọn app
+        // Method chọn app auto
         async selectApp(appKey) {
-            console.log('Selecting app:', appKey);
+            console.log('Selecting auto app:', appKey);
             
             if (this.selectedApp === appKey) {
                 // Nếu đang chọn lại app đang chọn, bỏ chọn
@@ -157,7 +175,7 @@ new Vue({
             this.appStatusClass = 'loading';
             this.appStatusIcon = 'fas fa-spinner fa-spin';
             
-            // Load IPA từ URL
+            // Load IPA từ URL và gán vào biến ipa duy nhất
             await this.loadIpaFromUrl(appKey);
         },
         
@@ -202,22 +220,31 @@ new Vue({
                 return;
             }
             
-            // Lưu file vào cả customIpaFile (để hiển thị) và selectedIpaFile (để upload)
-            this.customIpaFile = file;
-            this.selectedIpaFile = file; // QUAN TRỌNG: Gán file vào selectedIpaFile
+            // GHI NHỚ: CHỈ TỒN TẠI 1 BIẾN IPA DUY NHẤT
+            // Gán file vào biến ipa duy nhất
+            this.ipa = file;
+            this.customIpaFile = file; // Lưu riêng để hiển thị
             
-            console.log('✅ Custom IPA file saved:', {
+            console.log('✅ Custom IPA file saved to this.ipa:', {
                 name: file.name,
                 size: file.size,
                 type: file.type,
-                selectedIpaFile: this.selectedIpaFile ? 'Có' : 'Không'
+                'this.ipa exists': !!this.ipa
             });
             
+            // Cập nhật status
             this.appStatusText = `Đã chọn: ${file.name} (${this.formatFileSize(file.size)})`;
             this.appStatusClass = 'success';
             this.appStatusIcon = 'fas fa-check-circle';
             
-            // Force update canSign computation
+            // Reset trạng thái các app auto
+            this.appStatus = {
+                'esign': '',
+                'gbox': '',
+                'sca': ''
+            };
+            
+            // Force update
             this.$forceUpdate();
         },
         
@@ -225,7 +252,7 @@ new Vue({
         clearSelectedApp() {
             console.log('Clearing selected app');
             this.selectedApp = '';
-            this.selectedIpaFile = null;
+            this.ipa = null; // XÓA BIẾN IPA DUY NHẤT
             this.customIpaFile = null;
             this.appStatusText = '';
             this.appStatusClass = '';
@@ -245,11 +272,6 @@ new Vue({
             
             // Force update
             this.$forceUpdate();
-        },
-        
-        // Lấy class status cho app
-        getAppStatusClass(appKey) {
-            return this.appStatus[appKey] || '';
         },
         
         loadPasswordSuggestions() {
@@ -412,8 +434,8 @@ new Vue({
                 const sizeInMB = (blob.size / 1024 / 1024).toFixed(2);
                 this.appSizes[appKey] = `${sizeInMB} MB`;
                 
-                // Tạo File object từ Blob - QUAN TRỌNG: Gán vào selectedIpaFile
-                this.selectedIpaFile = new File([blob], filename, {
+                // QUAN TRỌNG: Gán vào biến ipa duy nhất
+                this.ipa = new File([blob], filename, {
                     type: contentType || 'application/octet-stream'
                 });
                 
@@ -423,21 +445,21 @@ new Vue({
                 this.appStatusClass = 'success';
                 this.appStatusIcon = 'fas fa-check-circle';
                 
-                console.log('✅ IPA auto-loaded:', {
+                console.log('✅ IPA auto-loaded to this.ipa:', {
                     name: filename,
                     size: blob.size,
-                    type: this.selectedIpaFile.type,
-                    selectedIpaFile: this.selectedIpaFile ? 'Có' : 'Không'
+                    type: this.ipa.type,
+                    'this.ipa exists': !!this.ipa
                 });
                 
-                // Force update canSign computation
+                // Force update
                 this.$forceUpdate();
                 
             } catch (error) {
                 console.error('Lỗi tải IPA:', error);
                 
-                // Reset
-                this.selectedIpaFile = null;
+                // Reset - QUAN TRỌNG: Xóa biến ipa duy nhất
+                this.ipa = null;
                 this.appStatus[appKey] = 'error';
                 
                 if (error.name === 'AbortError') {
@@ -471,7 +493,7 @@ new Vue({
                     await this.extractZipFile(file);
                 }
                 
-                // Force update canSign computation
+                // Force update
                 this.$forceUpdate();
             }
         },
@@ -532,13 +554,19 @@ new Vue({
         
         async upload() {
             console.log('=== UPLOAD START ===');
-            console.log('Selected App:', this.selectedApp);
-            console.log('Selected IPA File:', this.selectedIpaFile);
-            console.log('Cert ZIP:', this.certZip);
-            console.log('Password:', this.password);
             
-            // Validate required fields với debug chi tiết
-            if (!this.selectedIpaFile) {
+            // DEBUG BẮT BUỘC: Kiểm tra biến ipa
+            console.log('DEBUG IPA CHECK:', {
+                'this.ipa': this.ipa,
+                'ipa.name': this.ipa ? this.ipa.name : 'null',
+                'ipa.size': this.ipa ? this.formatFileSize(this.ipa.size) : 'null',
+                'ipa.type': this.ipa ? this.ipa.type : 'null',
+                'selectedApp': this.selectedApp,
+                'isCustom': this.selectedApp === 'custom'
+            });
+            
+            // Validate required fields
+            if (!this.ipa) {
                 alert('❌ Chưa chọn file IPA! Vui lòng chọn ứng dụng hoặc upload IPA.');
                 console.log('❌ Upload failed: No IPA file selected');
                 return;
@@ -564,7 +592,7 @@ new Vue({
             }
             
             // Kiểm tra kích thước IPA
-            if (this.selectedIpaFile.size === 0) {
+            if (this.ipa.size === 0) {
                 alert('❌ IPA file bị lỗi (kích thước = 0). Vui lòng thử lại!');
                 console.log('❌ Upload failed: IPA file size is 0');
                 return;
@@ -601,22 +629,25 @@ new Vue({
                 }
             }, 100);
             
-            // Tạo FormData
+            // Tạo FormData - SỬ DỤNG BIẾN IPA DUY NHẤT
             const fd = new FormData();
-            fd.append('ipa', this.selectedIpaFile, this.selectedIpaFile.name);
+            fd.append('ipa', this.ipa, this.ipa.name);
             fd.append('p12', this.p12, this.p12.name);
             fd.append('mp', this.mobileprovision, this.mobileprovision.name);
             fd.append('password', this.password);
             
+            // Thêm các trường optional từ code cũ (để tương thích backend)
+            fd.append('app_name', this.selectedAppName || '');
+            fd.append('bundle_id', '');
+            
             // Debug chi tiết
             console.log('=== UPLOAD DEBUG DETAILS ===');
             console.log('Upload URL:', SignUrl);
-            console.log('Selected App:', this.selectedApp);
-            console.log('IPA File Details:', {
-                name: this.selectedIpaFile.name,
-                size: this.selectedIpaFile.size,
-                type: this.selectedIpaFile.type,
-                isCustom: this.selectedApp === 'custom'
+            console.log('IPA Details:', {
+                name: this.ipa.name,
+                size: this.ipa.size,
+                type: this.ipa.type,
+                source: this.selectedApp === 'custom' ? 'Custom Upload' : 'Auto Load'
             });
             console.log('P12 File:', {
                 name: this.p12.name,
@@ -916,22 +947,22 @@ new Vue({
             });
         },
         
-        selectedApp(newVal, oldVal) {
-            // Nếu đổi app, reset IPA upload thủ công
-            if (newVal && oldVal !== newVal && newVal !== 'custom') {
-                this.appStatusText = '';
-                this.appStatusClass = '';
-                this.appStatusIcon = '';
-            }
-            // Force update canSign khi selectedApp thay đổi
+        // Thêm watcher cho biến ipa duy nhất
+        ipa(newVal) {
+            console.log('IPA variable changed:', newVal ? `Có file (${newVal.name})` : 'Không có file');
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
         },
         
-        selectedIpaFile(newVal) {
-            console.log('selectedIpaFile changed:', newVal ? 'Có file' : 'Không có file');
-            // Force update canSign khi selectedIpaFile thay đổ
+        selectedApp(newVal, oldVal) {
+            // Nếu đổi từ custom sang auto app, reset customIpaFile
+            if (oldVal === 'custom' && newVal !== 'custom') {
+                this.customIpaFile = null;
+                if (this.$refs.customIpaInput) {
+                    this.$refs.customIpaInput.value = '';
+                }
+            }
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
