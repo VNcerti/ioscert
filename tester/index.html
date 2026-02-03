@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Ký file IPA trực tuyến</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+    <link rel="icon" href="https://i.imgur.com/5zPuxRU.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="Keywords" content="ipa sign,ios sign,app sign,ipa signer,ios signer,app signer,ipa resign,ios resign,app resign,ipa signature,ios signature,app signature,ios app signer,ipa signer tool,apple developer enterprise certificate sign,app free resign,Windows platform signature,mac platform xcode signature,iphone signer without jailbreak,ipa resign tool,IPA签名工具,IOS签名工具,APP签名工具,苹果IPA签名工具,苹果IOS签名工具,苹果APP签名工具,企业签名工具,免费签名工具,重签名去锁,windows签名工具,mac签名工具,win/mac平台在线签名"/>
     <meta name="description" content="Ký IPA trực tuyến, ios signer, app signer, IPA miễn phí, không cần macOS, dùng certificate doanh nghiệp..."/>
     
     <!-- External CSS -->
+    <link rel="stylesheet" href="https://sign.ipasign.cc/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -16,11 +17,13 @@
     <link rel="stylesheet" href="css/style.css">
     
     <!-- External JS -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/vue.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/axios.min.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/index.js"></script>
+    <script type="text/javascript" src="https://sign.ipasign.cc/js/qrcode.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Thêm thư viện JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -29,11 +32,7 @@
         <header class="header">
             <div class="container">
                 <div class="header-content">
-                    <h1 class="logo">
-                        <i class="fas fa-mobile-alt"></i>
-                        Unlimited IPA Signature Tool
-                    </h1>
-                    <div class="header-subtitle">Ký IPA trực tuyến không cần macOS</div>
+                    <h1 class="logo">Unlimited IPA Notation Tool</h1>
                 </div>
             </div>
         </header>
@@ -46,19 +45,19 @@
                         <div class="feature-icon">
                             <i class="fas fa-check"></i>
                         </div>
-                        <span>Không cần MacOS - Chạy trực tiếp trên trình duyệt</span>
+                        <span>Công cụ ký IPA trực tuyến không cần MacOS</span>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">
                             <i class="fas fa-check"></i>
                         </div>
-                        <span>Tự động 24/7 - Dễ sử dụng - Không quảng cáo</span>
+                        <span>Hệ thống tự động 24/7, dễ sử dụng, không quảng cáo</span>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">
                             <i class="fas fa-check"></i>
                         </div>
-                        <span>Ký IPA dung lượng lớn không giới hạn</span>
+                        <span>Ký/tinh chỉnh file IPA dung lượng lớn không giới hạn</span>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">
@@ -68,9 +67,9 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">
-                            <i class="fas fa-certificate"></i>
+                            <i class="fas fa-check"></i>
                         </div>
-                        <span><a href="https://chungchip12.com/" target="_blank" class="cert-link">Mua chứng chỉ tại: Chungchip12.com</a></span>
+                        <span><a href="https://chungchip12.com/" target="_blank" style="color: inherit; text-decoration: none;">Mua chứng chỉ ký iPA tại : Chungchip12.com</a></span>
                     </div>
                 </div>
             </div>
@@ -80,7 +79,7 @@
         <main class="main-content">
             <div class="container">
                 <!-- Step 1: File Selection -->
-                <transition name="slide">
+                <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep1">
                         <div class="card-header">
                             <h2 class="card-title">
@@ -89,169 +88,137 @@
                             </h2>
                         </div>
                         <div class="card-body">
-                            <!-- App Selection -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-apple-alt"></i>
-                                    Chọn ứng dụng hoặc upload IPA
-                                </label>
-                                <div class="app-selection-grid">
-                                    <!-- eSign -->
-                                    <div class="app-option" 
-                                         :class="{ selected: selectedApp === 'esign' }"
-                                         @click="selectApp('esign')">
-                                        <div class="app-option-content">
-                                            <div class="app-icon">
-                                                <i class="fas fa-signature"></i>
+                            <div class="grid">
+                                <!-- App Selection với Icons -->
+                                <div class="form-group">
+                                    <label class="form-label">Chọn ứng dụng (Tự động tải IPA)</label>
+                                    <div class="app-selection-grid">
+                                        <!-- eSign -->
+                                        <div class="app-option" 
+                                             :class="{ selected: selectedApp === 'esign' }"
+                                             @click="selectApp('esign')">
+                                            <div class="app-option-content">
+                                                <div class="app-icon-container">
+                                                    <img src="https://i.imgur.com/6ZevcRc.png" class="app-icon" alt="eSign">
+                                                </div>
+                                                <div class="app-info">
+                                                    <div class="app-name">ESign</div>
+                                                    <div class="app-version">5.0.2</div>
+                                                </div>
                                             </div>
-                                            <div class="app-info">
-                                                <div class="app-name">ESign</div>
-                                                <div class="app-version">5.0.2</div>
+                                        </div>
+                                        
+                                        <!-- Scarlet -->
+                                        <div class="app-option" 
+                                             :class="{ selected: selectedApp === 'sca' }"
+                                             @click="selectApp('sca')">
+                                            <div class="app-option-content">
+                                                <div class="app-icon-container">
+                                                    <img src="https://i.imgur.com/DK2YeTt.png" class="app-icon" alt="Scarlet">
+                                                </div>
+                                                <div class="app-info">
+                                                    <div class="app-name">Scarlet</div>
+                                                    <div class="app-version">Latest</div>
+                                                </div>
                                             </div>
-                                            <div class="app-status-indicator" :class="appStatus['esign']"></div>
+                                        </div>
+                                        
+                                        <!-- GBox -->
+                                        <div class="app-option" 
+                                             :class="{ selected: selectedApp === 'gbox' }"
+                                             @click="selectApp('gbox')">
+                                            <div class="app-option-content">
+                                                <div class="app-icon-container">
+                                                    <img src="https://i.imgur.com/Oinvr76.png" class="app-icon" alt="GBox">
+                                                </div>
+                                                <div class="app-info">
+                                                    <div class="app-name">GBox</div>
+                                                    <div class="app-version">Latest</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Upload IPA thủ công -->
+                                        <div class="app-option upload-option" 
+                                             :class="{ selected: selectedApp === 'custom' }"
+                                             @click="selectCustomIpa">
+                                            <div class="app-option-content">
+                                                <div class="app-icon-container">
+                                                    <i class="fas fa-plus-circle upload-icon"></i>
+                                                </div>
+                                                <div class="app-info">
+                                                    <div class="app-name">Upload</div>
+                                                    <div class="app-version">Custom IPA</div>
+                                                    <input type="file" @change="handleCustomIpa" ref="customIpaInput" accept=".ipa" class="custom-ipa-input" id="customIpa">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     
-                                    <!-- Scarlet -->
-                                    <div class="app-option" 
-                                         :class="{ selected: selectedApp === 'sca' }"
-                                         @click="selectApp('sca')">
-                                        <div class="app-option-content">
-                                            <div class="app-icon">
-                                                <i class="fas fa-heart"></i>
-                                            </div>
-                                            <div class="app-info">
-                                                <div class="app-name">Scarlet</div>
-                                                <div class="app-version">Latest</div>
-                                            </div>
-                                            <div class="app-status-indicator" :class="appStatus['sca']"></div>
+                                    <!-- Trạng thái app được chọn -->
+                                    <div class="selected-app-status" v-if="selectedApp && appStatusText">
+                                        <div class="app-status" :class="appStatusClass">
+                                            <span class="app-status-text">{{ appStatusText }}</span>
+                                            <i v-if="appStatusIcon" :class="appStatusIcon"></i>
                                         </div>
                                     </div>
                                     
-                                    <!-- GBox -->
-                                    <div class="app-option" 
-                                         :class="{ selected: selectedApp === 'gbox' }"
-                                         @click="selectApp('gbox')">
-                                        <div class="app-option-content">
-                                            <div class="app-icon">
-                                                <i class="fas fa-box"></i>
-                                            </div>
-                                            <div class="app-info">
-                                                <div class="app-name">GBox</div>
-                                                <div class="app-version">Latest</div>
-                                            </div>
-                                            <div class="app-status-indicator" :class="appStatus['gbox']"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Upload Custom IPA -->
-                                    <div class="app-option custom-option" 
-                                         :class="{ selected: selectedApp === 'custom' }"
-                                         @click="selectCustomIpa">
-                                        <div class="app-option-content">
-                                            <div class="app-icon">
-                                                <i class="fas fa-upload"></i>
-                                            </div>
-                                            <div class="app-info">
-                                                <div class="app-name">Upload IPA</div>
-                                                <div class="app-version">Tùy chọn</div>
-                                            </div>
-                                            <input type="file" @change="handleCustomIpa" ref="customIpaInput" accept=".ipa" class="custom-ipa-input" id="customIpa">
-                                        </div>
+                                    <div class="app-hint">
+                                        <i class="fas fa-info-circle"></i> Chọn 1 trong 3 ứng dụng có sẵn hoặc upload file IPA của bạn
                                     </div>
                                 </div>
                                 
-                                <!-- Selected App Status -->
-                                <div class="selected-app-status" v-if="selectedApp">
-                                    <div class="app-status-display" :class="appStatusClass">
-                                        <i :class="appStatusIcon"></i>
-                                        <span>{{ appStatusText }}</span>
-                                        <button v-if="selectedApp === 'custom' && customIpaFile" @click="clearCustomIpa" class="clear-btn">
-                                            <i class="fas fa-times"></i>
+                                <!-- IPA File Info (chỉ hiển thị khi đã chọn app) -->
+                                <div class="form-group" v-if="selectedApp === 'custom' && customIpaFile">
+                                    <label class="form-label">File IPA đã chọn</label>
+                                    <div class="ipa-info-container">
+                                        <div class="ipa-info">
+                                            <i class="fas fa-file-alt"></i>
+                                            <span>{{ customIpaFile.name }} ({{ formatFileSize(customIpaFile.size) }})</span>
+                                        </div>
+                                        <button class="clear-app-btn" @click="clearSelectedApp">
+                                            <i class="fas fa-times"></i> Xóa
                                         </button>
                                     </div>
                                 </div>
                                 
-                                <div class="app-hint">
-                                    <i class="fas fa-info-circle"></i> Chọn ứng dụng có sẵn hoặc upload file IPA của bạn
-                                </div>
-                            </div>
-                            
-                            <!-- Certificate ZIP File -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-file-archive"></i>
-                                    File chứng chỉ (.zip)
-                                </label>
-                                <div class="file-input-container">
-                                    <input type="file" @change="handleCertZip" ref="certZipInput" accept=".zip" class="file-input" id="certZip">
-                                    <label for="certZip" class="file-input-label" :class="certZipClass">
-                                        <span class="file-name">{{ certZipText }}</span>
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                    </label>
-                                </div>
-                                <div class="file-hint">
-                                    <i class="fas fa-info-circle"></i> File ZIP phải chứa cả file .p12 và .mobileprovision
-                                </div>
-                                
-                                <!-- Extracted Files Info -->
-                                <div class="extracted-files" v-if="p12 || mobileprovision">
-                                    <div class="extracted-file" v-if="p12">
-                                        <i class="fas fa-file-certificate"></i>
-                                        <span>{{ p12.name }}</span>
+                                <!-- Certificate ZIP File -->
+                                <div class="form-group">
+                                    <label class="form-label">File ZIP (.P12 và .Mobileprovision)</label>
+                                    <div class="file-input-container">
+                                        <input type="file" @change="getFile($event)" ref="certZip" required accept=".zip" class="file-input" id="certZip">
+                                        <label for="certZip" class="file-input-label" :class="certZipCss">
+                                            <span class="file-name">{{ certZipText }}</span>
+                                            <i class="fas fa-file-archive file-icon"></i>
+                                        </label>
                                     </div>
-                                    <div class="extracted-file" v-if="mobileprovision">
-                                        <i class="fas fa-file-code"></i>
-                                        <span>{{ mobileprovision.name }}</span>
+                                    <div class="file-hint">
+                                        File ZIP phải chứa cả file .p12 và .mobileprovision
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <!-- Password -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-key"></i>
-                                    Mật khẩu chứng chỉ
-                                </label>
-                                <div class="password-container">
-                                    <input type="password" v-model="password" placeholder="Nhập mật khẩu" 
-                                           class="text-input" :class="passwordClass"
-                                           @focus="showPasswordSuggestions = true">
-                                    <button class="toggle-password" @click="togglePasswordVisibility">
-                                        <i :class="passwordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                                    </button>
-                                </div>
                                 
-                                <!-- Password Suggestions -->
-                                <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
-                                    <div class="suggestions-title">Mật khẩu đã dùng:</div>
-                                    <div class="suggestion-list">
-                                        <span class="suggestion-item" v-for="suggestion in passwordSuggestions" 
-                                              :key="suggestion" @click="selectPassword(suggestion)">
+                                <!-- Password -->
+                                <div class="form-group">
+                                    <label class="form-label">Mật khẩu chứng chỉ</label>
+                                    <input type="text" v-model="password" ref="pwd" placeholder="Nhập mật khẩu" required class="text-input" :class="pwdCss" @focus="showPasswordSuggestions = true" @blur="hidePasswordSuggestions">
+                                    <div class="password-suggestions" v-if="showPasswordSuggestions && passwordSuggestions.length > 0">
+                                        <span class="password-suggestion" v-for="suggestion in passwordSuggestions" :key="suggestion" @click="selectPassword(suggestion)">
                                             {{ suggestion }}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Sign Button -->
-                            <button class="btn btn-primary btn-sign" @click="upload" :disabled="!canSign">
+                            <button class="btn" @click="upload" :disabled="!canSign">
                                 <i class="fas fa-signature"></i>
                                 {{ signButtonText }}
                             </button>
-                            
-                            <!-- Validation Errors -->
-                            <div class="validation-errors" v-if="validationErrors.length > 0">
-                                <div class="error-item" v-for="error in validationErrors" :key="error">
-                                    <i class="fas fa-exclamation-circle"></i> {{ error }}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </transition>
                 
                 <!-- Step 2: Upload Progress -->
-                <transition name="slide">
+                <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep2">
                         <div class="card-header">
                             <h2 class="card-title">
@@ -260,36 +227,39 @@
                             </h2>
                         </div>
                         <div class="card-body">
-                            <!-- Progress Steps -->
                             <div class="upload-steps">
                                 <div class="step-item" :class="{ active: uploadStep >= 1, completed: uploadStep > 1 }">
-                                    <div class="step-number">1</div>
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-upload"></i>
+                                    </div>
                                     <span class="step-text">Tải IPA</span>
+                                    <div class="step-connector"></div>
                                 </div>
-                                <div class="step-connector" :class="{ active: uploadStep >= 2 }"></div>
-                                
                                 <div class="step-item" :class="{ active: uploadStep >= 2, completed: uploadStep > 2 }">
-                                    <div class="step-number">2</div>
-                                    <span class="step-text">Giải nén ZIP</span>
+                                    <div class="step-icon">
+                                        <i class="fas fa-file-download"></i>
+                                    </div>
+                                    <span class="step-text">Nhận IPA</span>
+                                    <div class="step-connector"></div>
                                 </div>
-                                <div class="step-connector" :class="{ active: uploadStep >= 3 }"></div>
-                                
                                 <div class="step-item" :class="{ active: uploadStep >= 3, completed: uploadStep > 3 }">
-                                    <div class="step-number">3</div>
-                                    <span class="step-text">Xử lý</span>
+                                    <div class="step-icon">
+                                        <i class="fas fa-signature"></i>
+                                    </div>
+                                    <span class="step-text">Bắt đầu ký</span>
+                                    <div class="step-connector"></div>
                                 </div>
-                                <div class="step-connector" :class="{ active: uploadStep >= 4 }"></div>
-                                
                                 <div class="step-item" :class="{ active: uploadStep >= 4, completed: uploadStep > 4 }">
-                                    <div class="step-number">4</div>
+                                    <div class="step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
                                     <span class="step-text">Hoàn tất</span>
                                 </div>
                             </div>
                             
-                            <!-- Progress Bar -->
                             <div class="progress-container">
                                 <div class="progress-label">
-                                    <span>{{ progressText }}</span>
+                                    <span>Đang tải lên...</span>
                                     <span>{{ progressBar }}%</span>
                                 </div>
                                 <div class="progress-bar">
@@ -297,171 +267,91 @@
                                 </div>
                             </div>
                             
-                            <!-- Upload Details -->
-                            <div class="upload-details">
-                                <div class="upload-info">
-                                    <div class="info-item" v-if="uploadFileInfo">
-                                        <i class="fas fa-file-alt"></i>
-                                        <span>{{ uploadFileInfo }}</span>
-                                    </div>
-                                    <div class="info-item" v-if="uploadSpeed">
-                                        <i class="fas fa-tachometer-alt"></i>
-                                        <span>Tốc độ: {{ uploadSpeed }}</span>
-                                    </div>
-                                    <div class="info-item" v-if="estimatedTime">
-                                        <i class="fas fa-clock"></i>
-                                        <span>Còn lại: {{ estimatedTime }}</span>
-                                    </div>
-                                </div>
+                            <div class="upload-details" v-if="uploadDetails">
+                                <p class="upload-detail-text">{{ uploadDetails }}</p>
                             </div>
                         </div>
                     </div>
                 </transition>
                 
                 <!-- Step 3: Processing -->
-                <transition name="slide">
+                <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep3">
                         <div class="card-header">
                             <h2 class="card-title">
-                                <i class="fas fa-cog fa-spin"></i>
+                                <i class="fas fa-cog"></i>
                                 Bước 3: Đang xử lý
                             </h2>
                         </div>
                         <div class="card-body">
                             <div class="processing-container">
-                                <div class="spinner-container">
-                                    <div class="spinner"></div>
-                                </div>
+                                <i class="fas fa-cog spinner"></i>
+                                <p class="processing-text">Đang xử lý file của bạn, vui lòng chờ...</p>
+                                <p>Trạng thái: {{ statusText }}</p>
+                                <p>Job ID: {{ jobId }}</p>
                                 
-                                <h3 class="processing-title">Đang ký IPA của bạn...</h3>
-                                <p class="processing-text">Quá trình này có thể mất vài phút. Vui lòng không đóng trang.</p>
-                                
-                                <div class="processing-details">
-                                    <div class="detail-item">
-                                        <i class="fas fa-id-card"></i>
-                                        <span>Job ID: <strong>{{ jobId }}</strong></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>Trạng thái: <strong>{{ statusText }}</strong></span>
-                                    </div>
-                                    <div class="detail-item" v-if="processingTime">
-                                        <i class="fas fa-clock"></i>
-                                        <span>Thời gian: {{ processingTime }}</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Live Logs -->
                                 <div class="log-container" v-if="logText">
-                                    <div class="log-header">
-                                        <i class="fas fa-terminal"></i>
-                                        <span>Log quá trình</span>
-                                    </div>
-                                    <div class="log-content">{{ logText }}</div>
+                                    {{ logText }}
                                 </div>
-                                
-                                <!-- Cancel Button -->
-                                <button class="btn btn-secondary" @click="cancelProcessing">
-                                    <i class="fas fa-times"></i>
-                                    Hủy bỏ
-                                </button>
                             </div>
                         </div>
                     </div>
                 </transition>
                 
                 <!-- Step 4: Result -->
-                <transition name="slide">
+                <transition name="slide" mode="out-in">
                     <div class="card" v-show="showStep4">
-                        <div class="card-header success-header">
+                        <div class="card-header">
                             <h2 class="card-title">
                                 <i class="fas fa-check-circle"></i>
-                                Bước 4: Ký thành công!
+                                Bước 4: Hoàn tất
                             </h2>
                         </div>
                         <div class="card-body">
                             <div class="result-container">
-                                <div class="success-animation">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                
-                                <h3 class="result-title">🎉 IPA đã được ký thành công!</h3>
-                                <p class="result-subtitle">Bạn có thể cài đặt ứng dụng ngay bây giờ</p>
+                                <i class="fas fa-check-circle success-icon"></i>
+                                <h3 class="result-title">Ký IPA thành công!</h3>
                                 
                                 <div class="result-content">
-                                    <!-- QR Code -->
-                                    <div class="qr-section">
-                                        <h4><i class="fas fa-qrcode"></i> Quét mã QR</h4>
-                                        <div class="qr-container">
-                                            <div id="qrcode"></div>
-                                            <div class="qr-hint">Dùng camera iPhone quét mã</div>
-                                        </div>
+                                    <div class="qr-container">
+                                        <p class="qr-title">Quét mã QR để cài đặt</p>
+                                        <div class="qr-code" id="qrcode"></div>
                                     </div>
                                     
-                                    <!-- Direct Link -->
-                                    <div class="link-section">
-                                        <h4><i class="fas fa-link"></i> Link cài đặt</h4>
-                                        <div class="link-container">
-                                            <input type="text" :value="download" readonly class="link-input" ref="downloadLink">
-                                            <div class="link-actions">
-                                                <button class="btn btn-copy" @click="copyDownloadLink">
-                                                    <i class="fas fa-copy"></i> Copy
-                                                </button>
-                                                <a :href="download" target="_blank" class="btn btn-install">
-                                                    <i class="fas fa-download"></i> Tải ngay
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <div class="link-container">
+                                        <p class="link-title">Bấm vào link để cài đặt</p>
+                                        <a :href="download" target="_blank" class="download-link">{{ download }}</a>
                                     </div>
                                 </div>
                                 
                                 <!-- Share Section -->
                                 <div class="share-section">
-                                    <h4><i class="fas fa-share-alt"></i> Chia sẻ ứng dụng</h4>
-                                    <p class="share-description">Gửi link này cho bạn bè để họ cài đặt mà không cần ký lại</p>
-                                    
-                                    <div class="share-link-container">
-                                        <input type="text" :value="shareUrl" readonly class="share-input" ref="shareUrlInput">
-                                        <button class="btn btn-copy" @click="copyShareUrl">
-                                            <i class="fas fa-copy"></i> Copy Link
+                                    <h4 class="share-title">Chia sẻ ứng dụng</h4>
+                                    <div class="share-url">
+                                        <input type="text" :value="shareUrl" readonly class="share-url-input" ref="shareUrlInput">
+                                        <button class="copy-btn" @click="copyShareUrl">
+                                            <i class="fas fa-copy"></i> Copy
                                         </button>
                                     </div>
-                                    
-                                    <div class="copy-success" :class="{ show: copySuccess }">
-                                        <i class="fas fa-check"></i> Đã sao chép vào clipboard!
+                                    <div class="copy-success" :class="{ show: copySuccess }" ref="copySuccess">
+                                        <i class="fas fa-check"></i> Đã sao chép thành công
                                     </div>
-                                    
-                                    <div class="share-actions">
-                                        <button class="btn btn-whatsapp" @click="shareWhatsApp">
-                                            <i class="fab fa-whatsapp"></i> WhatsApp
-                                        </button>
-                                        <button class="btn btn-telegram" @click="shareTelegram">
-                                            <i class="fab fa-telegram"></i> Telegram
-                                        </button>
-                                        <button class="btn btn-message" @click="shareMessage">
-                                            <i class="fas fa-envelope"></i> Message
-                                        </button>
-                                    </div>
+                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+                                        Gửi link này cho người khác để họ cài đặt trực tiếp mà không cần ký lại!
+                                    </p>
                                 </div>
                                 
-                                <!-- Actions -->
-                                <div class="result-actions">
-                                    <button class="btn btn-primary" @click="startNew">
-                                        <i class="fas fa-redo"></i>
-                                        Ký ứng dụng mới
-                                    </button>
-                                    <button class="btn btn-secondary" @click="viewHistory">
-                                        <i class="fas fa-history"></i>
-                                        Lịch sử ký
-                                    </button>
-                                </div>
+                                <button class="btn" @click="index">
+                                    <i class="fas fa-redo"></i>
+                                    Bắt đầu lại
+                                </button>
                             </div>
                         </div>
                     </div>
                 </transition>
                 
                 <!-- Direct Download View -->
-                <transition name="slide">
+                <transition name="slide" mode="out-in">
                     <div class="card" v-show="showDirectDownload">
                         <div class="card-header">
                             <h2 class="card-title">
@@ -470,24 +360,23 @@
                             </h2>
                         </div>
                         <div class="card-body">
-                            <div class="direct-download-container">
-                                <div class="download-icon">
-                                    <i class="fas fa-mobile-alt"></i>
+                            <div class="result-container">
+                                <i class="fas fa-mobile-alt success-icon"></i>
+                                <h3 class="result-title">Ứng dụng đã sẵn sàng!</h3>
+                                
+                                <div class="result-content">
+                                    <div class="qr-container">
+                                        <p class="qr-title">Quét mã QR để cài đặt</p>
+                                        <div class="qr-code" id="directQrcode"></div>
+                                    </div>
+                                    
+                                    <div class="link-container">
+                                        <p class="link-title">Bấm vào link để cài đặt</p>
+                                        <a :href="directDownloadUrl" target="_blank" class="download-link">{{ directDownloadUrl }}</a>
+                                    </div>
                                 </div>
                                 
-                                <h3>Ứng dụng đã sẵn sàng!</h3>
-                                <p>Quét mã QR hoặc nhấn vào link để cài đặt</p>
-                                
-                                <div class="qr-container">
-                                    <div id="directQrcode"></div>
-                                </div>
-                                
-                                <a :href="directDownloadUrl" target="_blank" class="download-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                    {{ directDownloadUrl }}
-                                </a>
-                                
-                                <button class="btn btn-primary" @click="goToHome">
+                                <button class="btn btn-secondary" @click="goToHome">
                                     <i class="fas fa-home"></i>
                                     Về trang chủ
                                 </button>
@@ -501,21 +390,7 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <div class="footer-content">
-                    <div class="footer-logo">
-                        <i class="fas fa-mobile-alt"></i>
-                        <span>IPA Signer</span>
-                    </div>
-                    <div class="footer-links">
-                        <a href="#"><i class="fas fa-question-circle"></i> Hướng dẫn</a>
-                        <a href="#"><i class="fas fa-shield-alt"></i> Bảo mật</a>
-                        <a href="#"><i class="fas fa-envelope"></i> Liên hệ</a>
-                    </div>
-                    <div class="footer-copyright">
-                        <p>© 2023 VNCERT - Công cụ ký IPA trực tuyến</p>
-                        <p class="footer-note">Công cụ miễn phí cho cộng đồng iOS</p>
-                    </div>
-                </div>
+                <p>© 2023 VNCERT - Công cụ ký IPA trực tuyến</p>
             </div>
         </footer>
     </div>
