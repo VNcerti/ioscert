@@ -931,7 +931,7 @@ new Vue({
         
         selectedIpaFile(newVal) {
             console.log('selectedIpaFile changed:', newVal ? 'Có file' : 'Không có file');
-            // Force update canSign khi selectedIpaFile thay đổi
+            // Force update canSign khi selectedIpaFile thay đổ
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
