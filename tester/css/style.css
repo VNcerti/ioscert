@@ -347,17 +347,37 @@ body {
     box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
 }
 
-.app-option.upload-option {
-    background: rgba(114, 9, 183, 0.1);
-    border-color: rgba(114, 9, 183, 0.3);
+/* NEW: Custom IPA khi có file được chọn */
+.app-option.upload-option.has-file {
+    background: rgba(6, 214, 160, 0.15); /* Nền xanh lá cây nhạt */
+    border-color: var(--success); /* Viền xanh lá cây */
+    border-style: solid; /* Chuyển từ dashed thành solid */
 }
 
-.app-option.upload-option:hover {
+.app-option.upload-option.has-file:hover {
+    background: rgba(6, 214, 160, 0.2);
+    border-color: var(--success);
+}
+
+.app-option.upload-option.has-file.selected {
+    background: rgba(6, 214, 160, 0.2);
+    border-color: var(--success);
+    box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.3);
+}
+
+/* NEW: Style cho upload option khi không có file */
+.app-option.upload-option:not(.has-file) {
+    background: rgba(114, 9, 183, 0.1);
+    border-color: rgba(114, 9, 183, 0.3);
+    border-style: dashed; /* Viền nét đứt khi chưa có file */
+}
+
+.app-option.upload-option:not(.has-file):hover {
     background: rgba(114, 9, 183, 0.15);
     border-color: var(--secondary);
 }
 
-.app-option.upload-option.selected {
+.app-option.upload-option:not(.has-file).selected {
     background: rgba(114, 9, 183, 0.2);
     border-color: var(--secondary);
     box-shadow: 0 0 0 2px rgba(114, 9, 183, 0.3);
@@ -372,6 +392,11 @@ body {
     padding: 0.3rem;
 }
 
+/* NEW: Style cho nội dung khi có file */
+.app-option.upload-option.has-file .app-option-content {
+    gap: 0.4rem;
+}
+
 .app-icon-container {
     width: 50px;
     height: 50px;
@@ -382,6 +407,15 @@ body {
     justify-content: center;
     overflow: hidden;
     padding: 4px;
+}
+
+/* NEW: Icon khi có file */
+.app-option.upload-option.has-file .app-icon-container {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.app-option.upload-option.has-file .upload-icon {
+    color: var(--success); /* Icon xanh lá cây khi có file */
 }
 
 /* Fix for local image display */
@@ -418,7 +452,35 @@ body {
     width: 100%;
 }
 
-.app-name {
+/* NEW: Style cho app-name khi có file */
+.app-option.upload-option.has-file .app-name {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: normal; /* Cho phép xuống dòng */
+    word-break: break-word; /* Tự động ngắt từ */
+    max-height: 2.4em; /* Giới hạn chiều cao */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+/* Style cho app-name khi không có file */
+.app-option.upload-option:not(.has-file) .app-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: white;
+    margin-bottom: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Style cho 3 app auto */
+.app-option:not(.upload-option) .app-name {
     font-weight: 600;
     font-size: 0.85rem;
     color: white;
@@ -434,6 +496,13 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* NEW: Style cho app-version khi có file */
+.app-option.upload-option.has-file .app-version {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
 }
 
 .custom-ipa-input {
