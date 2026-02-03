@@ -92,64 +92,72 @@
                                 <!-- App Selection với Icons -->
                                 <div class="form-group">
                                     <label class="form-label">Chọn ứng dụng (Tự động tải IPA)</label>
-                                    <div class="app-selection-grid">
-                                        <!-- eSign -->
-                                        <div class="app-option" 
-                                             :class="{ selected: selectedApp === 'esign' }"
-                                             @click="selectApp('esign')">
-                                            <div class="app-option-content">
-                                                <div class="app-icon-container">
-                                                    <img src="https://i.imgur.com/6ZevcRc.png" class="app-icon" alt="eSign">
-                                                </div>
-                                                <div class="app-info">
-                                                    <div class="app-name">ESign</div>
-                                                    <div class="app-version">5.0.2</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Scarlet -->
-                                        <div class="app-option" 
-                                             :class="{ selected: selectedApp === 'sca' }"
-                                             @click="selectApp('sca')">
-                                            <div class="app-option-content">
-                                                <div class="app-icon-container">
-                                                    <img src="https://i.imgur.com/DK2YeTt.png" class="app-icon" alt="Scarlet">
-                                                </div>
-                                                <div class="app-info">
-                                                    <div class="app-name">Scarlet</div>
-                                                    <div class="app-version">Latest</div>
+                                    <div class="app-selection-container">
+                                        <div class="app-selection-grid">
+                                            <!-- eSign -->
+                                            <div class="app-option" 
+                                                 :class="{ selected: selectedApp === 'esign' }"
+                                                 @click="selectApp('esign')">
+                                                <div class="app-option-content">
+                                                    <div class="app-icon-container">
+                                                        <img src="https://i.imgur.com/6ZevcRc.png" class="app-icon" alt="eSign">
+                                                    </div>
+                                                    <div class="app-info">
+                                                        <div class="app-name">ESign</div>
+                                                        <div class="app-version">5.0.2</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- GBox -->
-                                        <div class="app-option" 
-                                             :class="{ selected: selectedApp === 'gbox' }"
-                                             @click="selectApp('gbox')">
-                                            <div class="app-option-content">
-                                                <div class="app-icon-container">
-                                                    <img src="https://i.imgur.com/Oinvr76.png" class="app-icon" alt="GBox">
-                                                </div>
-                                                <div class="app-info">
-                                                    <div class="app-name">GBox</div>
-                                                    <div class="app-version">Latest</div>
+                                            
+                                            <!-- Scarlet -->
+                                            <div class="app-option" 
+                                                 :class="{ selected: selectedApp === 'sca' }"
+                                                 @click="selectApp('sca')">
+                                                <div class="app-option-content">
+                                                    <div class="app-icon-container">
+                                                        <img src="https://i.imgur.com/DK2YeTt.png" class="app-icon" alt="Scarlet">
+                                                    </div>
+                                                    <div class="app-info">
+                                                        <div class="app-name">Scarlet</div>
+                                                        <div class="app-version">Latest</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- Upload IPA thủ công -->
-                                        <div class="app-option upload-option" 
-                                             :class="{ selected: selectedApp === 'custom' }"
-                                             @click="selectCustomIpa">
-                                            <div class="app-option-content">
-                                                <div class="app-icon-container">
-                                                    <i class="fas fa-plus-circle upload-icon"></i>
+                                            
+                                            <!-- GBox -->
+                                            <div class="app-option" 
+                                                 :class="{ selected: selectedApp === 'gbox' }"
+                                                 @click="selectApp('gbox')">
+                                                <div class="app-option-content">
+                                                    <div class="app-icon-container">
+                                                        <img src="https://i.imgur.com/Oinvr76.png" class="app-icon" alt="GBox">
+                                                    </div>
+                                                    <div class="app-info">
+                                                        <div class="app-name">GBox</div>
+                                                        <div class="app-version">Latest</div>
+                                                    </div>
                                                 </div>
-                                                <div class="app-info">
-                                                    <div class="app-name">Upload</div>
-                                                    <div class="app-version">Custom IPA</div>
-                                                    <input type="file" @change="handleCustomIpa" ref="customIpaInput" accept=".ipa" class="custom-ipa-input" id="customIpa">
+                                            </div>
+                                            
+                                            <!-- Upload IPA thủ công -->
+                                            <div class="app-option upload-option" 
+                                                 :class="{ selected: selectedApp === 'custom', 'has-file': customIpaFile }"
+                                                 @click="selectCustomIpa">
+                                                <div class="app-option-content">
+                                                    <div class="app-icon-container">
+                                                        <i class="fas fa-plus-circle upload-icon"></i>
+                                                    </div>
+                                                    <div class="app-info">
+                                                        <!-- Hiển thị tên file nếu có, ngược lại hiển thị "Upload" -->
+                                                        <div class="app-name">
+                                                            {{ customIpaFile ? customIpaFile.name : 'Upload' }}
+                                                        </div>
+                                                        <!-- Hiển thị kích thước file nếu có, ngược lại hiển thị "Custom IPA" -->
+                                                        <div class="app-version">
+                                                            {{ customIpaFile ? formatFileSize(customIpaFile.size) : 'Custom IPA' }}
+                                                        </div>
+                                                        <input type="file" @change="handleCustomIpa" ref="customIpaInput" accept=".ipa" class="custom-ipa-input" id="customIpa">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
