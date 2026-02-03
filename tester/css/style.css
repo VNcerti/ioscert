@@ -163,63 +163,161 @@ body {
     font-size: 0.85rem;
 }
 
-/* App Selection với Icons - FIXED RESPONSIVE */
+/* App Selection với Icons - UPDATED LAYOUT */
 .app-selection-container {
     margin-bottom: 1rem;
+    width: 100%;
 }
 
-/* Desktop layout - 4 items in one row */
+/* Desktop layout - NEW DESIGN: 3 apps trên 1 hàng, custom IPA ở hàng thứ 2 */
 @media (min-width: 769px) {
     .app-selection-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* 3 apps cùng kích thước */
+        grid-template-rows: auto auto; /* 2 hàng */
         gap: 1rem;
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* 3 apps đầu tiên */
+    .app-option:not(.upload-option) {
+        grid-row: 1;
+        min-height: 140px; /* Tăng chiều cao */
+    }
+    
+    /* Custom IPA option - chiếm full width */
+    .app-option.upload-option {
+        grid-row: 2;
+        grid-column: 1 / span 3; /* Chiếm cả 3 cột */
+        min-height: 140px; /* Chiều cao bằng với 3 apps trên */
+    }
+    
+    /* Tăng kích thước chung cho tất cả app-option */
+    .app-option {
+        min-height: 140px;
+        padding: 1rem;
+    }
+    
+    .app-icon-container {
+        width: 60px; /* Tăng kích thước icon */
+        height: 60px;
+        border-radius: 12px;
+    }
+    
+    .app-name {
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .app-version {
+        font-size: 0.8rem;
+    }
+    
+    .upload-icon {
+        font-size: 2.2rem; /* Tăng kích thước icon upload */
     }
 }
 
-/* Mobile layout - 3 small + 1 big */
+/* Mobile layout - 3 apps trên, 1 custom dưới */
 @media (max-width: 768px) {
     .app-selection-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr) 2fr; /* 3 nhỏ + 1 lớn */
-        gap: 0.6rem;
+        grid-template-columns: repeat(3, 1fr); /* 3 apps cùng kích thước */
+        grid-template-rows: auto auto; /* 2 hàng */
+        gap: 0.8rem;
+        width: 100%;
+        margin: 0 auto;
     }
     
-    .app-option {
-        min-height: 80px;
-        padding: 0.5rem;
-    }
-    
-    /* 3 app đầu tiên (esign, sca, gbox) */
+    /* 3 apps đầu tiên */
     .app-option:not(.upload-option) {
+        grid-row: 1;
         grid-column: span 1;
+        min-height: 110px;
     }
     
     /* Custom IPA option */
     .app-option.upload-option {
-        grid-column: span 1;
-        grid-row: 2; /* Xuống hàng thứ 2 */
-        grid-column: 1 / -1; /* Chiếm toàn bộ chiều ngang */
+        grid-row: 2;
+        grid-column: 1 / span 3; /* Chiếm cả 3 cột */
+        min-height: 110px;
+    }
+    
+    .app-option {
+        min-height: 110px;
+        padding: 0.7rem;
+    }
+    
+    .app-icon-container {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+    }
+    
+    .app-name {
+        font-size: 0.85rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .app-version {
+        font-size: 0.7rem;
+    }
+    
+    .upload-icon {
+        font-size: 1.8rem;
     }
 }
 
 /* Very small mobile */
 @media (max-width: 480px) {
     .app-selection-grid {
-        grid-template-columns: repeat(3, 1fr) 2fr;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto auto;
         gap: 0.5rem;
     }
     
-    .app-option {
-        min-height: 70px;
-        padding: 0.4rem;
+    /* 3 apps đầu tiên */
+    .app-option:not(.upload-option) {
+        grid-row: 1;
+        grid-column: span 1;
+        min-height: 95px;
     }
     
+    /* Custom IPA option */
     .app-option.upload-option {
-        min-height: 70px;
+        grid-row: 2;
+        grid-column: 1 / span 3;
+        min-height: 95px;
+    }
+    
+    .app-option {
+        min-height: 95px;
+        padding: 0.5rem;
+    }
+    
+    .app-icon-container {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+    }
+    
+    .app-name {
+        font-size: 0.75rem;
+        margin-bottom: 0.1rem;
+    }
+    
+    .app-version {
+        font-size: 0.65rem;
+    }
+    
+    .upload-icon {
+        font-size: 1.5rem;
     }
 }
 
+/* Common styles for all app options */
 .app-option {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
@@ -234,6 +332,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100%;
+    width: 100%;
 }
 
 .app-option:hover {
@@ -268,21 +367,21 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.6rem;
     width: 100%;
     padding: 0.3rem;
 }
 
 .app-icon-container {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 3px;
+    padding: 4px;
 }
 
 /* Fix for local image display */
@@ -311,7 +410,7 @@ body {
 }
 
 .upload-icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--secondary);
 }
 
@@ -321,16 +420,16 @@ body {
 
 .app-name {
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: white;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.15rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .app-version {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);
     white-space: nowrap;
     overflow: hidden;
@@ -385,6 +484,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-align: center;
+    justify-content: center;
 }
 
 .app-hint i {
@@ -947,7 +1048,7 @@ body {
     opacity: 0;
 }
 
-/* Responsive cho desktop */
+/* Responsive cho desktop - UPDATED */
 @media (min-width: 769px) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
@@ -955,28 +1056,36 @@ body {
     }
     
     .app-selection-grid {
-        gap: 1rem;
+        gap: 1.2rem;
+        max-width: 900px;
     }
     
     .app-option {
-        min-height: 100px;
+        min-height: 140px;
     }
     
     .app-icon-container {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
     }
     
     .app-name {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
     }
     
     .app-version {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
     }
     
     .upload-icon {
-        font-size: 1.8rem;
+        font-size: 2.2rem;
+    }
+    
+    /* Center the app selection */
+    .app-selection-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 }
 
@@ -1056,6 +1165,17 @@ body {
     .step-connector {
         top: 11px;
     }
+    
+    /* App selection center */
+    .app-selection-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .app-selection-grid {
+        gap: 0.8rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1112,34 +1232,13 @@ body {
     }
     
     /* App selection responsive */
+    .app-selection-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    
     .app-selection-grid {
-        gap: 0.4rem;
-    }
-    
-    .app-option {
-        min-height: 65px;
-        padding: 0.3rem;
-    }
-    
-    .app-icon-container {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .app-name {
-        font-size: 0.7rem;
-    }
-    
-    .app-version {
-        font-size: 0.6rem;
-    }
-    
-    .upload-icon {
-        font-size: 1.3rem;
-    }
-    
-    .app-status {
-        font-size: 0.7rem;
-        padding: 0.4rem 0.6rem;
+        gap: 0.5rem;
     }
 }
