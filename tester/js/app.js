@@ -202,7 +202,7 @@ new Vue({
             });
         },
         
-        // Xử lý khi chọn custom IPA - FIXED VERSION
+        // Xử lý khi chọn custom IPA
         handleCustomIpa(event) {
             console.log('Handling custom IPA selection:', event);
             const file = event.target.files[0] || null;
@@ -950,6 +950,13 @@ new Vue({
         // Thêm watcher cho biến ipa duy nhất
         ipa(newVal) {
             console.log('IPA variable changed:', newVal ? `Có file (${newVal.name})` : 'Không có file');
+            this.$nextTick(() => {
+                this.$forceUpdate();
+            });
+        },
+        
+        customIpaFile(newVal) {
+            console.log('Custom IPA file changed:', newVal ? `Có file (${newVal.name})` : 'Không có file');
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
