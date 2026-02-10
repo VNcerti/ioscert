@@ -349,17 +349,17 @@ h1 {
 }
 
 .app-icon {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4361ee, #3f37c9);
+  
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 12px;
   color: white;
   font-size: 20px;
-  border: 3px solid rgba(219, 234, 254, 0.3);
+  
   position: relative;
   flex-shrink: 0;
 }
@@ -632,8 +632,8 @@ footer a:hover {
   }
 
   .app-icon {
-    width: 45px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
     margin-right: 10px;
   }
 
