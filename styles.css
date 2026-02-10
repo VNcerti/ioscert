@@ -326,22 +326,26 @@ h1 {
 .app-card {
   background: var(--card-bg);
   border-radius: 12px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: var(--card-shadow);
   transition: opacity 0.3s ease, transform 0.3s ease;
   border: 3px solid rgba(219, 234, 254, 0.3);
   backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .app-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .app-header {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  flex: 1;
+  min-width: 0;
 }
 
 .app-icon {
@@ -352,11 +356,12 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 15px;
+  margin-right: 12px;
   color: white;
   font-size: 20px;
   border: 3px solid rgba(219, 234, 254, 0.3);
   position: relative;
+  flex-shrink: 0;
 }
 
 .new-badge {
@@ -369,90 +374,82 @@ h1 {
   z-index: 10;
 } 
 
+.app-content {
+  flex: 1;
+  min-width: 0;
+  margin-right: 10px;
+}
+
 .app-title {
   font-weight: 600;
-  font-size: 16px;
-  margin-bottom: 3px;
+  font-size: 15px;
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
   gap: 4px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status-dot {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-color: #4ade80;
   border-radius: 50%;
   animation: pulseDot 1.5s infinite;
-  box-shadow: 0 0 5px #4ade80;
+  box-shadow: 0 0 4px #4ade80;
   margin-left: 5px;
+  flex-shrink: 0;
 }
 
 .app-meta {
   display: flex;
   align-items: center;
   color: var(--gray);
-  font-size: 13px;
+  font-size: 9px; /* GIẢM TỪ 13px XUỐNG 9px */
+  margin-bottom: 2px;
 }
 
 .app-meta i {
-  margin-right: 5px;
+  margin-right: 4px;
   color: var(--primary);
-  font-size: 12px;
+  font-size: 8px; /* GIẢM TỪ 12px XUỐNG 8px */
 }
 
 .download-count {
   display: flex;
   align-items: center;
   color: var(--gray);
-  font-size: 13px;
-  margin-top: 5px;
+  font-size: 13px; /* GIẢM TỪ 13px XUỐNG 9px */
 }
 
 .download-count i {
-  margin-right: 5px;
+  margin-right: 4px;
   color: var(--primary);
-  font-size: 12px;
+  font-size: 8px; /* GIẢM TỪ 12px XUỐNG 8px */
 }
 
+/* NÚT DOWNLOAD MỚI - BIỂU TƯỢNG ICON */
 .download-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px;
-  background: var(--button-bg);
-  border-radius: 8px;
-  color: var(--primary);
-  font-weight: 600;
-  text-decoration: none;
-  transition: var(--transition);
-  margin-top: 15px;
-  border: 1px solid var(--button-border);
+  width: 36px;
+  height: 36px;
+  background-image: url(https://i.imgur.com/luDUiou.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-}
-
-.app-card .download-btn {
-  background: var(--button-bg);
-  border: 1px solid var(--button-border);
-  color: var(--primary);
-}
-
-.app-card .download-btn:hover {
-  background: var(--primary);
-  color: white;
+  transition: transform 0.3s ease;
+  border: none;
+  background-color: transparent;
+  flex-shrink: 0;
+  margin-left: 10px;
 }
 
 .download-btn:hover {
-  background: var(--primary);
-  color: white;
-}
-
-.download-btn i {
-  margin-left: 8px;
+  transform: scale(1.1);
 }
 
 #no-results {
@@ -580,6 +577,20 @@ footer a:hover {
     width: 20px;
     height: 20px;
   }
+
+  .app-title {
+    font-size: 14px;
+  }
+
+  .app-meta,
+  .download-count {
+    font-size: 13px;
+  }
+
+  .download-btn {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -614,5 +625,29 @@ footer a:hover {
   .home-link img {
     width: 18px;
     height: 18px;
+  }
+
+  .app-card {
+    padding: 12px;
+  }
+
+  .app-icon {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+  }
+
+  .app-title {
+    font-size: 13px;
+  }
+
+  .app-meta,
+  .download-count {
+    font-size: 10px;
+  }
+
+  .download-btn {
+    width: 28px;
+    height: 28px;
   }
 }
