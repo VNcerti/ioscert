@@ -7,6 +7,7 @@
 
   <link rel="icon" href="https://i.imgur.com/BIbDCrO.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   
@@ -18,10 +19,10 @@
   <div id="particles-js"></div>
   
   <div class="container">
-    <!-- Top Header - ĐÃ XÓA ICON HOME, THAY BẰNG CHỮ -->
+    <!-- Top Header - ĐÃ CHỈNH SỬA -->
     <div class="top-header">
-      <div class="brand-text">
-        CHỨNG CHỈ <span class="p12-blue">P12</span>
+      <div class="brand-logo">
+        <span class="brand-text">CHỨNG CHỈ <span class="brand-highlight">P12</span></span>
       </div>
       <div class="header-controls">
         <button class="lang-btn active" data-lang="vi">
@@ -36,40 +37,57 @@
       </div>
     </div>
 
-    <!-- Header - ĐÃ XÓA LOGO ẢNH, THÊM HEADER MỚI ĐẸP HƠN -->
+    <!-- Header - ĐÃ XOÁ LOGO -->
     <header>
       <div class="header-content">
-        <h1 data-i18n="title" class="glow-text">APPLE CERTIFICATE.</h1>
+        <div class="animated-title">
+          <h1 data-i18n="title">APPLE CERTIFICATE.</h1>
+          <div class="gradient-bar"></div>
+        </div>
         <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
       </div>
 
       <div class="social-icons">
-        <img src="https://i.imgur.com/ymVow5f.png" class="social-icon" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
-        <img src="https://i.imgur.com/WM9zEpQ.png" class="social-icon" onclick="window.open('https://t.me/vietnamcert', '_blank')">
-        <img src="https://i.imgur.com/MbPA3iX.png" class="social-icon" onclick="window.open('https://t.me/p12certvn', '_blank')">
+        <div class="social-icon-wrapper" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
+          <img src="https://i.imgur.com/ymVow5f.png" class="social-icon" alt="YouTube">
+          <span class="social-tooltip">YouTube</span>
+        </div>
+        <div class="social-icon-wrapper" onclick="window.open('https://t.me/vietnamcert', '_blank')">
+          <img src="https://i.imgur.com/WM9zEpQ.png" class="social-icon" alt="Telegram">
+          <span class="social-tooltip">Telegram</span>
+        </div>
+        <div class="social-icon-wrapper" onclick="window.open('https://t.me/p12certvn', '_blank')">
+          <img src="https://i.imgur.com/MbPA3iX.png" class="social-icon" alt="Telegram Channel">
+          <span class="social-tooltip">P12 Channel</span>
+        </div>
       </div>
 
       <div class="links-container">
-        <a href="https://t.me/m/8QBiXPz3Yzg1" target="_blank" class="support-link" data-i18n="support">
-          <i class="fas fa-headset"></i> Admin Hỗ Trợ 24/7
+        <a href="https://t.me/m/8QBiXPz3Yzg1" target="_blank" class="support-link glass-effect" data-i18n="support">
+          <i class="fas fa-headset"></i> <span>Admin Hỗ Trợ 24/7</span>
+          <div class="link-glow"></div>
         </a>
-        <a href="https://chungchip12.com" target="_self" class="website-link" data-i18n="website">
-          <i class="fas fa-globe"></i> Website Bán Chứng Chỉ Tự Động
+        <a href="https://chungchip12.com" target="_self" class="website-link glass-effect" data-i18n="website">
+          <i class="fas fa-globe"></i> <span>Website Bán Chứng Chỉ Tự Động</span>
+          <div class="link-glow"></div>
         </a>
-        <a href="https://download1588.mediafire.com/r75t6sxs2gxg9MbJlCSaTR8_OO0hZA4O0GFUiYvYKKHudakSWBfzp96wgu_7icBr8CiOiNr9G_botiNJhH-jvohRGnTWLqEWJ46_IbIAJOObUz9Xv-BSwtbJVMfAl8Q-BeglNq7W8MHS9zTxnBg_mKijA1EOebiNN1UFEL-G794/rfwgpy8u8rxfkms/DNS+Anti-Revoke%28ioscert%29.mobileconfig" target="_self" class="dns-link" data-i18n="dns">
-          <i class="fas fa-shield-alt"></i> DNS Chặn Thu Hồi và Quảng Cáo
+        <a href="https://download1588.mediafire.com/r75t6sxs2gxg9MbJlCSaTR8_OO0hZA4O0GFUiYvYKKHudakSWBfzp96wgu_7icBr8CiOiNr9G_botiNJhH-jvohRGnTWLqEWJ46_IbIAJOObUz9Xv-BSwtbJVMfAl8Q-BeglNq7W8MHS9zTxnBg_mKijA1EOebiNN1UFEL-G794/rfwgpy8u8rxfkms/DNS+Anti-Revoke%28ioscert%29.mobileconfig" target="_self" class="dns-link glass-effect" data-i18n="dns">
+          <i class="fas fa-shield-alt"></i> <span>DNS Chặn Thu Hồi và Quảng Cáo</span>
+          <div class="link-glow"></div>
         </a>
-        <a href="https://sign.chungchip12.com" target="_self" class="ipa-sign-link" data-i18n="ipa-sign">
-          <i class="fas fa-signature"></i> Ký IPA Trực Tuyến
+        <a href="https://sign.chungchip12.com" target="_self" class="ipa-sign-link glass-effect" data-i18n="ipa-sign">
+          <i class="fas fa-signature"></i> <span>Ký IPA Trực Tuyến</span>
+          <div class="link-glow"></div>
         </a>
-        <a href="https://modos.site" target="_self" class="ipa-store-link" data-i18n="ipa-store">
-          <i class="fas fa-box-open"></i> Kho Ứng Dụng iPA MOD
+        <a href="https://modos.site" target="_self" class="ipa-store-link glass-effect" data-i18n="ipa-store">
+          <i class="fas fa-box-open"></i> <span>Kho Ứng Dụng iPA MOD</span>
+          <div class="link-glow"></div>
         </a>
       </div>
     </header>
 
     <!-- Tab Container -->
-    <div class="tab-container glass-effect">
+    <div class="tab-container glass-tabs">
       <button class="tab-btn active" data-tab="esign">
         <i class="fas fa-signature"></i> ESign
       </button>
@@ -83,7 +101,7 @@
 
     <!-- Search Container -->
     <div id="search-container" class="search-container hidden">
-      <div class="search-wrapper glass-effect">
+      <div class="search-wrapper glass-search">
         <input type="text" id="mods-search" class="search-input" placeholder="Tìm kiếm ứng dụng...">
         <i class="fas fa-search search-icon"></i>
       </div>
@@ -95,39 +113,42 @@
     <div id="mods-list" class="app-grid hidden"></div>
 
     <!-- No Results Message -->
-    <div id="no-results" class="hidden glass-effect">
+    <div id="no-results" class="no-results glass-card hidden">
       <i class="fas fa-search"></i>
       <p data-i18n="no-results">Không tìm thấy ứng dụng</p>
     </div>
 
     <!-- Footer -->
-    <footer class="glass-effect">
-      <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
-      <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền. Design by ioscert.site</p>
+    <footer>
+      <div class="footer-content">
+        <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
+        <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Design by <span class="highlight">ioscert.site</span></p>
+      </div>
     </footer>
   </div>
 
   <!-- App Store Modal (Chỉ dùng cho ESign và Mods) -->
   <div id="app-modal" class="modal">
-    <div class="modal-content glass-effect">
+    <div class="modal-content glass-modal">
       <button class="modal-close">
         <i class="fas fa-times"></i>
       </button>
       
       <div class="modal-header">
-        <div class="app-icon-large">
+        <div class="app-icon-large glass-icon">
           <img id="modal-app-icon" src="" alt="App Icon">
         </div>
         <div class="app-info">
           <h2 id="modal-app-title">ESign 5.0.2</h2>
           <p id="modal-app-company">China Academy of Railway Sciences</p>
           <button id="modal-get-btn" class="get-btn" data-url="">
-            NHẬN
+            <span>NHẬN</span>
+            <i class="fas fa-arrow-right"></i>
           </button>
         </div>
       </div>
       
-      <div class="modal-stats">
+      <div class="modal-stats glass-stats">
         <div class="stat-item">
           <div class="stat-value" id="modal-rating">4.9</div>
           <div class="stat-label">XẾP HẠNG</div>
