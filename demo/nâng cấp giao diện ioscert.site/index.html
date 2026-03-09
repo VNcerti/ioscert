@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESign & Cert | Vietnam Certificate Hub</title>
+
+  <link rel="icon" href="https://i.imgur.com/BIbDCrO.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="modal.css">
+</head>
+<body>
+  <div id="particles-js"></div>
+  
+  <!-- Animated background elements -->
+  <div class="gradient-bg">
+    <div class="gradient-circle circle-1"></div>
+    <div class="gradient-circle circle-2"></div>
+    <div class="gradient-circle circle-3"></div>
+  </div>
+  
+  <div class="container">
+    <!-- Top Header với hiệu ứng mới -->
+    <div class="top-header glass-effect">
+      <a href="https://ioscert.site/" class="home-link" title="Home">
+        <img src="https://i.imgur.com/rM8vpto.png" alt="Home Icon">
+        <span class="home-tooltip">Trang chủ</span>
+      </a>
+      <div class="header-controls">
+        <div class="language-switcher">
+          <button class="lang-btn active" data-lang="vi">
+            <span>VI</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <button class="lang-btn" data-lang="en">
+            <span>EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Header với hiệu ứng mới -->
+    <header>
+      <div class="logo-wrapper">
+        <div class="logo-glow"></div>
+        <img src="https://i.imgur.com/gyJ5hF1.png" alt="VIET NAM CERT Logo" class="logo">
+      </div>
+      <h1 class="gradient-text" data-i18n="title">APPLE CERTIFICATE.</h1>
+      <p class="subtitle" data-i18n="subtitle">Website for Esign/Certificate on iPhone/iPad With Anti-Revoke</p>
+
+      <div class="social-icons">
+        <div class="social-icon-wrapper" onclick="window.open('https://www.youtube.com/@P12Cert/videos', '_blank')">
+          <img src="https://i.imgur.com/ymVow5f.png" class="social-icon">
+          <span class="social-tooltip">YouTube</span>
+        </div>
+        <div class="social-icon-wrapper" onclick="window.open('https://t.me/vietnamcert', '_blank')">
+          <img src="https://i.imgur.com/WM9zEpQ.png" class="social-icon">
+          <span class="social-tooltip">Telegram</span>
+        </div>
+        <div class="social-icon-wrapper" onclick="window.open('https://t.me/p12certvn', '_blank')">
+          <img src="https://i.imgur.com/MbPA3iX.png" class="social-icon">
+          <span class="social-tooltip">Channel</span>
+        </div>
+      </div>
+
+      <div class="links-container">
+        <a href="https://t.me/m/8QBiXPz3Yzg1" target="_blank" class="support-link glass-card" data-i18n="support">
+          <i class="fas fa-headset"></i> 
+          <span>Admin Hỗ Trợ 24/7</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="https://chungchip12.com" target="_self" class="website-link glass-card" data-i18n="website">
+          <i class="fas fa-globe"></i> 
+          <span>Website Bán Chứng Chỉ Tự Động</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="https://download1588.mediafire.com/r75t6sxs2gxg9MbJlCSaTR8_OO0hZA4O0GFUiYvYKKHudakSWBfzp96wgu_7icBr8CiOiNr9G_botiNJhH-jvohRGnTWLqEWJ46_IbIAJOObUz9Xv-BSwtbJVMfAl8Q-BeglNq7W8MHS9zTxnBg_mKijA1EOebiNN1UFEL-G794/rfwgpy8u8rxfkms/DNS+Anti-Revoke%28ioscert%29.mobileconfig" target="_self" class="dns-link glass-card" data-i18n="dns">
+          <i class="fas fa-shield-alt"></i> 
+          <span>DNS Chặn Thu Hồi và Quảng Cáo</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="https://sign.chungchip12.com" target="_self" class="ipa-sign-link glass-card" data-i18n="ipa-sign">
+          <i class="fas fa-signature"></i> 
+          <span>Ký IPA Trực Tuyến</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="https://modos.site" target="_self" class="ipa-store-link glass-card" data-i18n="ipa-store">
+          <i class="fas fa-box-open"></i> 
+          <span>Kho Ứng Dụng iPA MOD</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </header>
+
+    <!-- Tab Container với hiệu ứng mới -->
+    <div class="tab-container glass-effect">
+      <button class="tab-btn active" data-tab="esign">
+        <i class="fas fa-signature"></i>
+        <span>ESign</span>
+      </button>
+      <button class="tab-btn" data-tab="cert">
+        <i class="fas fa-certificate"></i>
+        <span>Cert</span>
+      </button>
+      <button class="tab-btn" data-tab="mods">
+        <i class="fas fa-cogs"></i>
+        <span>Mods</span>
+      </button>
+      <div class="tab-indicator"></div>
+    </div>
+
+    <!-- Search Container với hiệu ứng mới -->
+    <div id="search-container" class="search-container hidden">
+      <div class="search-wrapper glass-card">
+        <i class="fas fa-search search-icon-left"></i>
+        <input type="text" id="mods-search" class="search-input" placeholder="Tìm kiếm ứng dụng...">
+        <button class="search-clear hidden">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Areas -->
+    <div id="esign-list" class="app-grid"></div>
+    <div id="cert-list" class="app-grid hidden"></div>
+    <div id="mods-list" class="app-grid hidden"></div>
+
+    <!-- No Results Message -->
+    <div id="no-results" class="no-results glass-card hidden">
+      <div class="no-results-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <p data-i18n="no-results">Không tìm thấy ứng dụng</p>
+      <button class="reset-search-btn hidden">Xem tất cả</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <p data-i18n="contact">Contact me: <a href="mailto:vncert.site@gmail.com">vncert.site@gmail.com</a></p>
+        <p data-i18n="copyright">Copyright © 2022 CHUNGCHIP12.COM . All rights reserved. Bảo lưu mọi quyền. Design by ioscert.site</p>
+      </div>
+      <div class="footer-wave">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+          <path d="M0,0V15.81C13,21.25,27.93,25.2,43.72,27.92c63.09,12.57,129.16,5.22,190.94-19.71C283.53,5.37,338.43-6.91,392.37.1c57.84,7.3,110.23,32.13,168.1,38.56,96.52,10.7,193.72-19,286.67-38.42,33.85-7.1,69.37-9.68,104.66-6.79,25.24,2.07,49.7,8.42,73.36,15.13V0Z" opacity=".5"></path>
+          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+        </svg>
+      </div>
+    </footer>
+  </div>
+
+  <!-- App Store Modal (Chỉ dùng cho ESign và Mods) -->
+  <div id="app-modal" class="modal">
+    <div class="modal-content glass-card">
+      <button class="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="modal-header">
+        <div class="app-icon-large-wrapper">
+          <div class="app-icon-glow"></div>
+          <div class="app-icon-large">
+            <img id="modal-app-icon" src="" alt="App Icon">
+          </div>
+        </div>
+        <div class="app-info">
+          <h2 id="modal-app-title">ESign 5.0.2</h2>
+          <p id="modal-app-company">China Academy of Railway Sciences</p>
+          <!-- Nút NHẬN với data-url -->
+          <button id="modal-get-btn" class="get-btn" data-url="">
+            <span>NHẬN</span>
+            <i class="fas fa-arrow-down"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="modal-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="modal-rating">4.9</div>
+          <div class="stat-label">XẾP HẠNG</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="modal-developer">Tung Lam Vu</div>
+          <div class="stat-label">NHÀ PHÁT TRIỂN</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="modal-size">11.05 MB</div>
+          <div class="stat-label">KÍCH THƯỚC</div>
+        </div>
+      </div>
+      
+      <div class="modal-rating-stars">
+        <div class="stars" id="modal-stars">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+        </div>
+        <span class="rating-count" id="modal-rating-count">(3,742 đánh giá)</span>
+      </div>
+      
+      <div class="modal-details">
+        <div class="detail-section">
+          <h3 id="modal-info-title">
+            <i class="fas fa-info-circle"></i>
+            Thông tin bổ sung
+          </h3>
+          <p id="modal-description" class="description-content">
+            Vì đây là ứng dụng được ký bằng chứng chỉ doanh nghiệp nên dùng không được ổn định và lâu dài. Nếu cần sử dụng lâu dài và đảm bảo thì hãy nâng cấp gói <a href='https://chungchip12.com' class='promo-link price-tag'>chứng chỉ cá nhân tại CHUNGCHIP12.COM</a> chỉ <span class='price-tag'>69.000đ</span> cho <span class='highlight'>1 năm sử dụng</span> ESign và Chứng Chỉ riêng biệt <span class='highlight'>không lo bị thu hồi</span>.
+          </p>
+        </div>
+        
+        <div class="detail-section">
+          <h3 id="modal-version-title">
+            <i class="fas fa-code-branch"></i>
+            Phiên bản
+          </h3>
+          <p id="modal-version-text">5.0.2</p>
+        </div>
+        
+        <div class="detail-section">
+          <h3 id="modal-requirements-title">
+            <i class="fas fa-mobile-alt"></i>
+            Yêu cầu hệ thống
+          </h3>
+          <p>iOS 12.0 trở lên</p>
+        </div>
+      </div>
+      
+      <p class="download-note" id="modal-download-note">
+        <i class="fas fa-info-circle"></i>
+        Sau khi nhấn "NHẬN", ứng dụng sẽ được thêm vào thư viện của bạn
+      </p>
+    </div>
+  </div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7d14d39c4a3e419e80e4c4f718f3a28b"}'></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js"></script>
+  
+  <!-- App Scripts -->
+  <script type="module" src="config.js"></script>
+  <script type="module" src="data/esign-data.js"></script>
+  <script type="module" src="data/cert-data.js"></script>
+  <script type="module" src="data/mods-data.js"></script>
+  <script type="module" src="components/particles-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
