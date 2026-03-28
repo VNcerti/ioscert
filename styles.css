@@ -409,27 +409,27 @@ h1 {
   display: flex;
   align-items: center;
   color: var(--gray);
-  font-size: 9px; /* GIẢM TỪ 13px XUỐNG 9px */
+  font-size: 9px;
   margin-bottom: 2px;
 }
 
 .app-meta i {
   margin-right: 4px;
   color: var(--primary);
-  font-size: 8px; /* GIẢM TỪ 12px XUỐNG 8px */
+  font-size: 8px;
 }
 
 .download-count {
   display: flex;
   align-items: center;
   color: var(--gray);
-  font-size: 13px; /* GIẢM TỪ 13px XUỐNG 9px */
+  font-size: 13px;
 }
 
 .download-count i {
   margin-right: 4px;
   color: var(--primary);
-  font-size: 8px; /* GIẢM TỪ 12px XUỐNG 8px */
+  font-size: 8px;
 }
 
 /* NÚT DOWNLOAD MỚI - BIỂU TƯỢNG ICON */
