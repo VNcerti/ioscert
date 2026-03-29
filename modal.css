@@ -1,4 +1,4 @@
-/* modal.css - iOS Style Modal */
+/* modal.css - iOS Style Modal - FULLSCREEN trên mọi thiết bị */
 .modal {
   display: none;
   position: fixed;
@@ -13,6 +13,7 @@
   overflow-y: auto;
 }
 
+/* LUÔN FULLSCREEN - KHÔNG PHÂN BIỆT PC HAY MOBILE */
 .modal-content {
   position: relative;
   background: #F2F2F7;
@@ -26,39 +27,21 @@
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
 }
 
-@media (min-width: 768px) {
-  .modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    margin: 20px auto;
-    width: 90%;
-    max-width: 500px;
-    min-height: auto;
-    max-height: 85vh;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
-  }
+/* KHÔNG CÓ MEDIA QUERIES LÀM THAY ĐỔI KÍCH THƯỚC - LUÔN FULL MÀN HÌNH */
+/* Tất cả các styles đều được giữ nguyên nhưng không giới hạn kích thước */
+
+/* Tùy chỉnh scrollbar cho mọi thiết bị */
+.modal-content::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* Tùy chỉnh scrollbar cho desktop */
-@media (min-width: 768px) {
-  .modal-content::-webkit-scrollbar {
-    width: 4px;
-  }
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .modal-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .modal-content::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 [data-theme="dark"] .modal-content {
@@ -105,12 +88,6 @@
   gap: 16px;
 }
 
-@media (min-width: 768px) {
-  .modal-header {
-    padding: 16px 20px;
-  }
-}
-
 .app-icon-large {
   width: 80px;
   height: 80px;
@@ -141,12 +118,6 @@
   line-height: 1.2;
 }
 
-@media (min-width: 768px) {
-  .app-info h2 {
-    font-size: 18px;
-  }
-}
-
 .app-info p {
   font-size: 14px;
   color: #007AFF;
@@ -154,13 +125,6 @@
   text-align: left;
   font-weight: 500;
   word-break: break-word;
-}
-
-@media (min-width: 768px) {
-  .app-info p {
-    font-size: 13px;
-    margin-bottom: 10px;
-  }
 }
 
 .get-btn {
@@ -175,14 +139,6 @@
   transition: opacity 0.2s;
   min-width: 100px;
   box-shadow: none;
-}
-
-@media (min-width: 768px) {
-  .get-btn {
-    padding: 7px 14px;
-    font-size: 14px;
-    min-width: 90px;
-  }
 }
 
 .get-btn:hover {
@@ -201,12 +157,6 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-@media (min-width: 768px) {
-  .modal-rating-stars {
-    padding: 0 20px 12px 20px;
-  }
-}
-
 [data-theme="dark"] .modal-rating-stars {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -218,22 +168,10 @@
   font-size: 16px;
 }
 
-@media (min-width: 768px) {
-  .stars {
-    font-size: 14px;
-  }
-}
-
 .rating-count {
   color: #8E8E93;
   font-size: 14px;
   white-space: nowrap;
-}
-
-@media (min-width: 768px) {
-  .rating-count {
-    font-size: 12px;
-  }
 }
 
 /* Certificate Card - iOS Style */
@@ -243,13 +181,6 @@
   border-radius: 8px;
   padding: 12px 16px;
   margin: 12px 20px;
-}
-
-@media (min-width: 768px) {
-  .certificate-card {
-    padding: 10px 14px;
-    margin: 10px 20px;
-  }
 }
 
 .certificate-title {
@@ -269,7 +200,7 @@
   word-break: break-word;
 }
 
-/* Important Notice Section - Nổi bật - THU NHỎ */
+/* Important Notice Section - Nổi bật */
 .detail-section.important-notice {
   margin-bottom: 16px;
 }
@@ -406,20 +337,8 @@
   padding: 0 20px 16px 20px;
 }
 
-@media (min-width: 768px) {
-  .modal-details {
-    padding: 0 20px 12px 20px;
-  }
-}
-
 .detail-section {
   margin-bottom: 16px;
-}
-
-@media (min-width: 768px) {
-  .detail-section {
-    margin-bottom: 12px;
-  }
 }
 
 .detail-section:last-child {
@@ -432,13 +351,6 @@
   margin-bottom: 8px;
   color: var(--text);
   display: block;
-}
-
-@media (min-width: 768px) {
-  .detail-section h3 {
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
 }
 
 .detail-section h3::before {
@@ -468,12 +380,6 @@
   justify-content: space-between;
   padding: 10px 14px;
   border-bottom: 1px solid var(--ios-separator);
-}
-
-@media (min-width: 768px) {
-  .info-row {
-    padding: 8px 12px;
-  }
 }
 
 [data-theme="light"] .info-row {
@@ -512,13 +418,6 @@
   margin: 0;
 }
 
-@media (min-width: 768px) {
-  .download-note {
-    padding: 10px 20px;
-    font-size: 10px;
-  }
-}
-
 [data-theme="dark"] .download-note {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -530,14 +429,6 @@
   color: #8E8E93;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   margin-top: 0;
-}
-
-@media (min-width: 768px) {
-  .footer-text {
-    padding: 8px 20px;
-    font-size: 10px;
-    margin-top: 2px;
-  }
 }
 
 [data-theme="dark"] .footer-text {
