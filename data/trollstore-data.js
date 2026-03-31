@@ -1,12 +1,1 @@
-// data/trollstore-data.js
-export const trollstoreItems = [
-    {
-      id: 'trollstore-v1',
-      title: 'TrollStore X',
-      company: 'XL AXIATA, PT TBK',
-      iconUrl: 'https://vsacheat.com/img/trollx.png',
-      badge: true,
-      statusDot: true,
-      url: 'https://link4m.net/rRvDsVq3'
-    },
-  ];
+const _0x18e9d4=_0x22e1;(function(_0x4c7441,_0x55f9ae){const _0x2d4559=_0x22e1,_0x444600=_0x4c7441();while(!![]){try{const _0x33fba9=parseInt(_0x2d4559(0x12a))/0x1*(parseInt(_0x2d4559(0x131))/0x2)+-parseInt(_0x2d4559(0x12e))/0x3+-parseInt(_0x2d4559(0x12b))/0x4+parseInt(_0x2d4559(0x129))/0x5+parseInt(_0x2d4559(0x12f))/0x6+-parseInt(_0x2d4559(0x133))/0x7+parseInt(_0x2d4559(0x132))/0x8*(-parseInt(_0x2d4559(0x135))/0x9);if(_0x33fba9===_0x55f9ae)break;else _0x444600['push'](_0x444600['shift']());}catch(_0x536bd8){_0x444600['push'](_0x444600['shift']());}}}(_0x47f9,0x584e2));function _0x22e1(_0x3fb905,_0x527f5a){_0x3fb905=_0x3fb905-0x129;const _0x47f9a6=_0x47f9();let _0x22e109=_0x47f9a6[_0x3fb905];return _0x22e109;}export const trollstoreItems=[{'id':_0x18e9d4(0x12d),'title':_0x18e9d4(0x134),'company':_0x18e9d4(0x12c),'iconUrl':_0x18e9d4(0x136),'badge':!![],'statusDot':!![],'url':_0x18e9d4(0x130)}];function _0x47f9(){const _0x1c7100=['TrollStore\x20X','92592IzaHqK','https://vsacheat.com/img/trollx.png','3605365MRjmxx','690394tJTZBh','2165512maIsJe','XL\x20AXIATA,\x20PT\x20TBK','trollstore-v1','958785XfnCUK','2491674diBzoF','https://link4m.net/rRvDsVq3','2MTkQCL','464Dbhrgp','51597tmijAw'];_0x47f9=function(){return _0x1c7100;};return _0x47f9();}
